@@ -8,32 +8,6 @@
     "email": "cinuor@gmail.com",
     "url": "https://github.com/NanoBoom"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/NanoBoom/nano-claude-code-plugins.git"
-  },
-  "categories": [
-    {
-      "id": "development",
-      "name": "Development Tools",
-      "description": "Tools and workflows for software development"
-    },
-    {
-      "id": "productivity",
-      "name": "Productivity",
-      "description": "Tools to enhance development productivity and efficiency"
-    },
-    {
-      "id": "project-management",
-      "name": "Project Management",
-      "description": "Planning, tracking, and management tools for software projects"
-    },
-    {
-      "id": "ai-development",
-      "name": "AI Development",
-      "description": "Tools optimized for AI-assisted development workflows"
-    }
-  ],
   "plugins": [
     {
       "name": "prp",
@@ -42,10 +16,17 @@
       "category": "development",
       "categories": ["development", "productivity", "project-management", "ai-development"],
       "version": "1.0.0",
+      "license": "MIT",
+      "strict": true,
+      "homepage": "https://github.com/NanoBoom/nano-claude-code-plugins/tree/main/plugins/prp",
       "author": {
         "name": "NanoBoom",
         "email": "cinuor@gmail.com"
       },
+      "keywords": [
+        "development",
+        "workflow"
+      ],
       "tags": [
         "prp",
         "workflow",
@@ -59,30 +40,7 @@
         "ai-development",
         "research",
         "documentation"
-      ],
-      "features": {
-        "commands": 14,
-        "agents": 2,
-        "hooks": 0,
-        "mcp_servers": 0
-      },
-      "homepage": "https://github.com/NanoBoom/nano-claude-code-plugins/tree/main/plugins/prp",
-      "featured": true,
-      "compatibility": {
-        "claude_code_version": ">=1.0.0",
-        "platforms": ["darwin", "linux", "win32"]
-      }
+      ]
     }
-  ],
-  "metadata": {
-    "created": "2024-10-10",
-    "updated": "2024-10-10",
-    "license": "MIT",
-    "compatibility": {
-      "claude_code_version": ">=1.0.0"
-    },
-    "total_plugins": 1,
-    "website": "https://github.com/NanoBoom/nano-claude-code-plugins",
-    "support": "https://github.com/NanoBoom/nano-claude-code-plugins/issues"
-  }
+  ]
 }
