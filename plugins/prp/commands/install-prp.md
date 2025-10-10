@@ -1,42 +1,69 @@
-# Install PRP Templates
+# Install PRP Templates and Configure MCP
 
-This command will install the PRP (Product Requirements Prompt) templates from the NanoBoom/nano-claude-code-plugins repository to your project.
+## Task 1: Install PRP Templates
 
-## Task: Install PRP Templates to Project Root
+1. Check if `PRPs` directory exists in project root
+   - If exists: ask user to overwrite/skip/backup
+   - If not: proceed to download
 
-Please perform the following steps to install the PRP templates:
+2. Download PRPs from GitHub:
 
-1. First, check if a PRPs directory already exists in the project root. If it does, ask the user if they want to:
-   - Overwrite it completely (delete and re-download)
-   - Skip the installation
-   - Backup the existing directory first (rename to PRPs.backup.<timestamp>)
+   ```bash
+   # Use git sparse checkout
+   mkdir -p /tmp/prp-install && cd /tmp/prp-install
+   git init && git remote add origin https://github.com/NanoBoom/nano-claude-code-plugins.git
+   git config core.sparseCheckout true
+   echo "plugins/prp/PRPs/*" > .git/info/sparse-checkout
+   git pull origin main
+   cp -r plugins/prp/PRPs <project-root>/
+   rm -rf /tmp/prp-install
+   ```
 
-2. Download the PRPs directory from the GitHub repository:
-   - Repository: <https://github.com/NanoBoom/nano-claude-code-plugins>
-   - Path: plugins/prp/PRPs
-   - Target: Project root directory
+3. Verify: List templates and count total files
 
-3. Use one of the following methods to copy the PRPs directory:
+## Task 2: Add MCP Server Configuration
 
-   **Method A - Using git sparse checkout (preferred):**
-   - Create a temporary directory
-   - Clone the repository with sparse checkout enabled
-   - Configure sparse checkout to only get the prp/PRPs directory
-   - Copy the PRPs directory to the project root
-   - Clean up the temporary directory
+After installing the PRP templates, configure the MCP (Model Context Protocol) server:
 
-   **Method B - Using GitHub API (if git sparse checkout fails):**
-   - Use the GitHub API to download the directory contents
-   - Recreate the directory structure in the project root
+### Step 1: Check existing MCP configuration
 
-4. After successful installation:
-   - List the installed PRP templates
-   - Show a summary of what was installed
-   - Provide instructions on how to use the PRP templates
+1. Check if `.mcp.json` exists in project root
+2. If file exists:
+   - Read the current `.mcp.json` file
+   - Check if `context7` server already exists in `mcpServers`
+   - If `context7` exists: Skip this task (inform user that context7 is already configured)
+   - If `context7` doesn't exist: Proceed to Step 2
+3. If file doesn't exist: Proceed to Step 2
 
-5. Verify the installation:
-   - Check that all .md files in the PRPs directory are readable
-   - Report the total number of PRP templates installed
+### Step 2: Add context7 configuration
+
+The context7 configuration to add:
+```json
+{
+  "context7": {
+    "type": "http",
+    "url": "https://mcp.context7.com/mcp",
+    "headers": {
+      "CONTEXT7_API_KEY": "YOUR_API_KEY"
+    }
+  }
+}
+```
+
+**Actions:**
+- If `.mcp.json` exists: Merge context7 into existing `mcpServers` object
+- If `.mcp.json` doesn't exist: Create new file with context7 configuration
+- Ensure proper JSON formatting and indentation after modification
+
+### Step 3: Verify configuration
+
+1. **Validate JSON**: Parse the modified/created `.mcp.json` to ensure valid syntax
+2. **Confirm context7 addition**: Verify that context7 server is present in the configuration
+3. **Display result**:
+   - If added: "✅ Context7 MCP server added to configuration"
+   - If skipped: "ℹ️ Context7 server already configured, skipping"
+   - Remind user: "⚠️ Replace `YOUR_API_KEY` with your actual Context7 API key"
+   - Note: "🔄 Restart your development environment to activate changes"
 
 ## Error Handling
 
