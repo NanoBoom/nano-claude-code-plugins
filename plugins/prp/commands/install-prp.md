@@ -1,6 +1,6 @@
 # Install PRP Templates
 
-This command will install the PRP (Product Requirements Prompt) templates from the NanoBoom/plugins repository to your project.
+This command will install the PRP (Product Requirements Prompt) templates from the NanoBoom/nano-claude-code-plugins repository to your project.
 
 ## Task: Install PRP Templates to Project Root
 
@@ -12,8 +12,8 @@ Please perform the following steps to install the PRP templates:
    - Backup the existing directory first (rename to PRPs.backup.<timestamp>)
 
 2. Download the PRPs directory from the GitHub repository:
-   - Repository: <https://github.com/NanoBoom/plugins>
-   - Path: prp/PRPs
+   - Repository: <https://github.com/NanoBoom/nano-claude-code-plugins>
+   - Path: plugins/prp/PRPs
    - Target: Project root directory
 
 3. Use one of the following methods to copy the PRPs directory:
@@ -45,4 +45,3 @@ Please perform the following steps to install the PRP templates:
 - If network issues occur, suggest retrying or manual installation steps
 
 Please proceed with the installation now.
-
