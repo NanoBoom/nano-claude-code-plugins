@@ -13,7 +13,7 @@ Please perform the following steps to install the PRP templates:
 
 2. Download the PRPs directory from the GitHub repository:
    - Repository: <https://github.com/NanoBoom/plugins>
-   - Path: prp-workflow/PRPs
+   - Path: prp/PRPs
    - Target: Project root directory
 
 3. Use one of the following methods to copy the PRPs directory:
@@ -21,7 +21,7 @@ Please perform the following steps to install the PRP templates:
    **Method A - Using git sparse checkout (preferred):**
    - Create a temporary directory
    - Clone the repository with sparse checkout enabled
-   - Configure sparse checkout to only get the prp-workflow/PRPs directory
+   - Configure sparse checkout to only get the prp/PRPs directory
    - Copy the PRPs directory to the project root
    - Clean up the temporary directory
 

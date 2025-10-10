@@ -32,7 +32,7 @@ The plugin follows these core principles:
 /plugin marketplace add [marketplace-url]
 
 # Install the plugin
-/plugin install prp-workflow@[marketplace-name]
+/plugin install prp@[marketplace-name]
 ```
 
 ### Local Development
@@ -46,7 +46,7 @@ cd nano-claude-code-plugins
 /plugin marketplace add ./
 
 # Install the plugin
-/plugin install prp-workflow@local
+/plugin install prp@local
 ```
 
 ## Commands

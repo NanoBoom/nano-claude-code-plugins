@@ -1,5 +1,5 @@
 {
-  "name": "prp-workflow",
+  "name": "prp",
   "description": "A comprehensive Product Requirements Prompt (PRP) workflow system for AI-driven feature development with systematic research, planning, and execution capabilities",
   "version": "1.0.0",
   "author": {
@@ -23,7 +23,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/NanoBoom/nano-claude-code-plugins.git",
-    "directory": "plugins/prp-workflow"
+    "directory": "plugins/prp"
   },
   "categories": [
     "productivity",
@@ -117,7 +117,7 @@
     "automation"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/NanoBoom/nano-claude-code-plugins/tree/main/plugins/prp-workflow",
+  "homepage": "https://github.com/NanoBoom/nano-claude-code-plugins/tree/main/plugins/prp",
   "bugs": {
     "url": "https://github.com/NanoBoom/nano-claude-code-plugins/issues"
   },

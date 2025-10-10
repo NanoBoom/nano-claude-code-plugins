@@ -16,7 +16,7 @@ This marketplace provides high-quality plugins that extend Claude Code's capabil
 
 A comprehensive Product Requirements Prompt (PRP) workflow system that transforms ideas into working code through systematic research, planning, and execution. This plugin provides 14 specialized commands and 2 expert agents for complete feature development lifecycle.
 
-[Learn more →](./plugins/prp-workflow/README.md)
+[Learn more →](./plugins/prp/README.md)
 
 ## Installation
 
@@ -34,7 +34,7 @@ A comprehensive Product Requirements Prompt (PRP) workflow system that transform
 
 3. **Install a plugin:**
    ```bash
-   /plugin install prp-workflow@nano-claude-plugins
+   /plugin install prp@nano-claude-plugins
    ```
 
 ### Local Development Installation
@@ -53,7 +53,7 @@ claude
 /plugin marketplace add ./
 
 # Install plugins
-/plugin install prp-workflow@nano-claude-code-plugins
+/plugin install prp@nano-claude-code-plugins
 ```
 
 ## Plugin Development
