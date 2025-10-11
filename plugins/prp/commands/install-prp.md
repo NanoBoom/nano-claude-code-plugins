@@ -38,6 +38,7 @@ After installing the PRP templates, configure the MCP (Model Context Protocol) s
 ### Step 2: Add context7 configuration
 
 The context7 configuration to add:
+
 ```json
 {
   "context7": {
@@ -51,6 +52,7 @@ The context7 configuration to add:
 ```
 
 **Actions:**
+
 - If `.mcp.json` exists: Merge context7 into existing `mcpServers` object
 - If `.mcp.json` doesn't exist: Create new file with context7 configuration
 - Ensure proper JSON formatting and indentation after modification
@@ -82,7 +84,7 @@ After configuring the MCP server, set up the project documentation:
 
 The template content to add:
 
-```markdown
+````markdown
 ## 项目概览
 
 (需要补全，不超过200字. 简要介绍项目背景, 目标及核心功能)
@@ -94,6 +96,46 @@ The template content to add:
 ## 开发工具
 
 (需要补全，不超过500字. 列出包管理器, 代码风格检查工具, 测试框架等)
+
+## 工具使用策略
+
+### 工具选择原则
+
+**优先使用专用工具（精准安全）**
+
+- 代码搜索：Grep（支持正则、上下文、行号）
+- 文件查找：Glob（支持通配符模式）
+- 文件读取：Read（支持行范围、语法高亮）
+- 文件编辑：Edit（精准替换、支持正则）
+
+**辅助使用 CLI 命令（高效批量）**
+
+- 项目结构：`tree -L 2` 快速预览
+- JSON 解析：`jq '.key' file.json` 提取数据
+- 批量重构：先用工具分析，确认后用 CLI 执行
+
+### 批量操作流程
+
+对于需要修改多个文件的重构任务：
+
+1. **探索阶段** - 使用 Grep 找到所有匹配项
+2. **分析阶段** - 使用 Read 确认需要修改的内容
+3. **执行阶段** - 根据规模选择：
+   - ≤5 个文件：使用 Edit 工具逐个修改（精准控制）
+   - > 5 个文件：与用户确认后使用 CLI 批量操作
+
+### 常用 CLI 命令
+
+```bash
+# 批量重命名/替换（需确认）
+rg -l "pattern" | xargs sed -i 's/old/new/g'
+
+# 统计代码行数
+fd -e ts -e tsx | xargs wc -l
+
+# 查找大文件
+fd -e ts -e tsx -x wc -l {} \; | sort -rn | head -10
+```
 
 ---
 
@@ -252,9 +294,10 @@ The template content to add:
    "这10行可以变成3行"
    "数据结构错了，应该是..."
    ```
-```
+````
 
 **Actions:**
+
 - If `CLAUDE.md` exists: Append the template content to the end of the file
 - If `CLAUDE.md` doesn't exist: Create new file with the template content
 - Add a blank line before the appended content if the file already exists
