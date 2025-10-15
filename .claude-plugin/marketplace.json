@@ -14,7 +14,6 @@
       "description": "A comprehensive Product Requirements Prompt (PRP) workflow system for AI-driven feature development with systematic research, planning, and execution capabilities",
       "source": "./plugins/prp",
       "category": "development",
-      "categories": ["development", "productivity", "project-management", "ai-development"],
       "version": "1.0.0",
       "license": "MIT",
       "strict": true,
