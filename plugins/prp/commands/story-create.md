@@ -66,6 +66,7 @@ Create detailed todos and spawn parallel subagents to analyze (Use specialized s
 ```
 
 **PRP Creation Red Flags (Remove if found):**
+
 - 🚫 Tasks beyond story acceptance criteria
 - 🚫 "Future-proofing" tasks not in current story
 - 🚫 New patterns when existing ones work
@@ -118,7 +119,7 @@ Get a deep understanding about the story/task before proceeding so that you can 
 - Find router/API registration patterns
 - Understand database/model patterns if relevant
 
-### Phase 3: Think harder about the story and its components.
+### Phase 3: Think harder about the story and its components
 
 Really think hard about everything you just learned during the research phases.
 
@@ -126,7 +127,7 @@ Really think hard about everything you just learned during the research phases.
 
 Transform analysis into concrete tasks:
 
-Read and understand the template @PRPs/templates/prp_story_task.md
+Read and understand the template @PRPs/templates/prp_story.md
 
 **Task Rules**:
 

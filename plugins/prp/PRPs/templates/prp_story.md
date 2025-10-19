@@ -39,7 +39,7 @@ Paste in the original story shared by the user below:
 - The tasks have to be detailed and specific to ensure clarity and accuracy.
 - The developer that will execute the tasks should be able to complete the task using only the context of this file, with references to relevant codebase paths and integration points.
 
-### {ACTION} {target_file}:
+### {ACTION} {target_file}
 
 - {VERB/KEYWORD}: {Specific implementation detail}
 - {PATTERN}: {Existing pattern to follow from codebase}
@@ -47,17 +47,17 @@ Paste in the original story shared by the user below:
 - {GOTCHA}: {Known issues or constraints to avoid}
 - **VALIDATE**: `{executable validation command}`
 
-### Example Format:
+### Example Format
 
-### CREATE services/user_service.py:
+### CREATE services/user_service.py
 
 - IMPLEMENT: UserService class with async CRUD operations
 - PATTERN: Follow services/product_service.py structure
 - IMPORTS: from models.user import User; from db import get_session
 - GOTCHA: Always use async session context manager
-- **VALIDATE**: ` uv run python -c "from services.user_service import UserService; print('✓ Import successful')"`
+- **VALIDATE**: `uv run python -c "from services.user_service import UserService; print('✓ Import successful')"`
 
-### UPDATE api/routes.py:
+### UPDATE api/routes.py
 
 - ADD: user_router to main router
 - FIND: `app.include_router(product_router)`
