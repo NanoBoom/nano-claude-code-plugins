@@ -48,6 +48,7 @@ Generate a comprehensive task list for focused changes with validation.
 ```
 
 **Task PRP Red Flags (Remove if found):**
+
 - 🚫 Tasks for features not in current scope
 - 🚫 "Preparatory" tasks for future work
 - 🚫 Tasks that mix unrelated changes
@@ -76,7 +77,7 @@ Generate a comprehensive task list for focused changes with validation.
 ## PRP Generation
 
 **READ**
-Using TASK_PRP/PRPs/prp_task.md format:
+Using PRPs/templates/prp_task.md format:
 
 ### Context Section
 

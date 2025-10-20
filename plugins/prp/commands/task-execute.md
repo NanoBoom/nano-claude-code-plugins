@@ -72,8 +72,10 @@ Run through a task list from an existing TASK PRP.
    - Run final validation commands
    - Check no regressions introduced
    - Confirm no scope creep occurred
+   - Move completed PRP to PRPs/completed/ create the folder if it does not exist
 
 **Execution Red Flags (Fix if found):**
+
 - 🚫 Changes not listed in any task
 - 🚫 "Improvements" made while executing
 - 🚫 Code refactored outside task scope

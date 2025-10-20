@@ -127,7 +127,7 @@ Really think hard about everything you just learned during the research phases.
 
 Transform analysis into concrete tasks:
 
-Read and understand the template @PRPs/templates/prp_story.md
+Read and understand the template PRPs/templates/prp_story.md
 
 **Task Rules**:
 

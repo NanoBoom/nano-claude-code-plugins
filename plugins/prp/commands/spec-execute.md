@@ -79,6 +79,7 @@ Implement a specification using an existing SPEC PRP.
    - Run all validation gates from SPEC
    - Test integration points
    - Verify no scope creep occurred
+   - Move completed PRP to PRPs/completed/ create the folder if it does not exist
 
 **Over-Engineering Red Flags (Fix if found):**
 
@@ -88,4 +89,3 @@ Implement a specification using an existing SPEC PRP.
 - 🚫 Complex solutions where simple ones work
 
 Progress through each objective systematically. **Implement only what's specified, nothing more.**
-

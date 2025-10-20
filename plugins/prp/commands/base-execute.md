@@ -103,10 +103,12 @@ PRPs enable working code on the first attempt through:
    - Verify all Success Criteria from the "What" section are met
    - Confirm all Anti-Patterns were avoided
    - Implementation is ready and working
+   - Move completed PRP to PRPs/completed/ create the folder if it does not exist
 
 **Failure Protocol**: When validation fails, use the patterns and gotchas from the PRP to fix issues, then re-run validation until passing.
 
 **Over-Engineering Red Flags (Fix if found):**
+
 - 🚫 New patterns not in existing codebase
 - 🚫 Features beyond PRP requirements
 - 🚫 Complex abstractions for simple problems

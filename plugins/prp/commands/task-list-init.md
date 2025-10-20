@@ -1,5 +1,6 @@
-claude
-\*\* Create a comprehensive task list in PRPs/checklist.md for PRP $ARGIMENTS
+# Create task list for PRP
+
+**Create a comprehensive task list in PRPs/checklist.md for PRP $ARGIMENTS**
 
 ## Core Design Philosophy
 
