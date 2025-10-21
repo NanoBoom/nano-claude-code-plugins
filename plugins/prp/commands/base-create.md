@@ -127,7 +127,7 @@ After research completion, create comprehensive PRP writing plan using TodoWrite
 
 ## Output
 
-Save as: `PRPs/{feature-name}.md`
+Save as: `PRPs/{feature-name}-base.md`
 
 ## PRP Quality Gates
 

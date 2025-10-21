@@ -81,6 +81,10 @@ Task N:
 
 Each task should have unit test coverage, make tests pass on each task
 
+## Output
+
+Save as: `PRPs/{task-summary}-checklist.md`
+
 ## Task List Quality Checklist
 
 ### Design Principle Compliance (Must Pass First)

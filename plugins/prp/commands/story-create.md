@@ -198,7 +198,7 @@ For each task, design validation that:
 
 ## Output
 
-Save as: `PRPs/story_{kebab-case-summary}.md`
+Save as: `PRPs/{kebab-case-summary}-story.md`
 
 ## Success Metrics
 

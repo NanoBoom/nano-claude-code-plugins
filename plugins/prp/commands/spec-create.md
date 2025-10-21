@@ -48,6 +48,7 @@ Generate a comprehensive specification-driven PRP with clear transformation goal
 ```
 
 **Transformation Red Flags (Reject if found):**
+
 - 🚫 Scope creep beyond stated pain points
 - 🚫 "Modernize" tasks without clear benefit
 - 🚫 Introducing patterns not in existing codebase
@@ -75,7 +76,7 @@ Generate a comprehensive specification-driven PRP with clear transformation goal
 
 ## PRP Generation
 
-Using /PRPs/templates/prp_spec.md:
+Using PRPs/templates/prp_spec.md:
 
 ### State Documentation
 
@@ -99,7 +100,7 @@ desired_state:
 
 ### Task Specification with information dense keywords
 
-#### Information dense keywords:
+#### Information dense keywords
 
 - MIRROR: Mirror the state of existing code to be mirrored to another use case
 - COPY: Copy the state of existing code to be copied to another use case
@@ -111,7 +112,7 @@ desired_state:
 - REPLACE: Replace existing code
 - CREATE: Create new code
 
-#### Example:
+#### Example
 
 ```yaml
 task_name:
@@ -154,7 +155,7 @@ task_name:
 
 ## Output
 
-Save as: `SPEC_PRP/PRPs/{spec-name}.md`
+Save as: `PRPs/{spec-name}-spec.md`
 
 ## Quality Checklist
 

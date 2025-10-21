@@ -142,7 +142,7 @@ ACTION path/to/file:
 
 ## Output
 
-Save as: `TASK_PRP/PRPs/{task-name}.md`
+Save as: `PRPs/{task-name}-task.md`
 
 ## Quality Checklist
 
