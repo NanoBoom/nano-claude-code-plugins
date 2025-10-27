@@ -6,54 +6,61 @@ Transform rough ideas into comprehensive PRDs with rich visual documentation.
 
 ## Core Design Philosophy
 
-**These principles override everything else. When in doubt, do less.**
+**SOLID Principles - These principles are the foundation of software design.**
 
-### 1. KISS - Keep It Simple, Stupid
+### 1. Single Responsibility Principle (SRP)
 
-- Simple solutions always beat complex ones
-- If it takes more than 3 layers of abstraction to explain, redesign it
-- Deleting code is more valuable than adding code
+A class should have only one reason to change.
 
-### 2. Ockham's Razor - Entities should not be multiplied without necessity
-
-- Every component, API, and abstraction layer must justify its existence
-- Default answer is "NO" unless there's solid evidence
-- When two solutions work equally well, choose the simpler one
-
-### 3. YAGNI - You Aren't Gonna Need It
-
-- **Only solve problems that exist RIGHT NOW**
-- Reject "maybe we'll need it later" features
-- Reject complexity added "for extensibility"
-- Requirements must be based on real data, not imagination
-
-### 4. DRY - Don't Repeat Yourself
-
-- Consolidate duplicated logic during transformation
-- But: don't force abstraction where duplication is clearer
-- Extract common patterns found during current state analysis
-
-### 5. Single Responsibility Principle
-
-- Each transformation task should change one thing
+- Each module or class should focus on a single functionality or responsibility
+- Changes should have only one clear reason
+- Avoid coupling multiple unrelated functionalities together
+- Each transformation task should change only one thing
 - Don't mix refactoring with feature additions
-- Separate concerns in task breakdown
 
-**Reality Checks:**
+### 2. Open/Closed Principle (OCP)
 
-```
-❌ "This architecture supports 100 future scenarios" → Only need current 2
-❌ "For flexibility, we need a plugin system" → Solve concrete problem first
-❌ "Design a perfect abstraction layer" → Write the dumbest code that works
-✅ "Is this a real problem real users have?" → This is the starting point
-```
+Software entities (classes, modules, functions, etc.) should be open for extension but closed for modification.
+
+- Design should allow adding new features through extension
+- Avoid modifying existing, validated code
+- Use abstractions and interfaces for flexible design
+- Add functionality through composition rather than modification
+
+### 3. Liskov Substitution Principle (LSP)
+
+Subtypes must be substitutable for their base types without affecting program correctness.
+
+- Derived classes should be usable in place of base classes
+- Subtypes should not break the behavioral contract of parent types
+- Inheritance relationships should represent "is-a" relationships
+- Ensure correct use of polymorphism
+
+### 4. Interface Segregation Principle (ISP)
+
+Clients should not be forced to depend on methods they do not use.
+
+- Interfaces should be small and focused
+- Avoid creating bloated interfaces
+- Clients only need to know methods they actually use
+- Prefer multiple specialized interfaces over a single general-purpose interface
+
+### 5. Dependency Inversion Principle (DIP)
+
+High-level modules should not depend on low-level modules; both should depend on abstractions. Abstractions should not depend on details; details should depend on abstractions.
+
+- Depend on abstractions rather than concrete implementations
+- High-level policies should not depend on low-level details
+- Use dependency injection for loose coupling
+- Isolate changes through abstraction layers
 
 **Applied to PRD Generation:**
 
-- Market Analysis: Only study directly relevant competitors, not industry reports
-- Diagrams: Only draw necessary core flows, not all possible paths
-- APIs: Design minimum viable API first, not "perfect" API
-- Phases: First version does core features only, everything else is "maybe later"
+- Market Analysis: Each analysis module focuses on a single aspect (SRP)
+- Architecture Design: Design extensible component interfaces without modifying core (OCP)
+- User Stories: Ensure derived scenarios conform to basic user journeys (LSP)
+- API Design: Provide specialized interfaces for different clients (ISP)
+- Implementation Strategy: Depend on abstract requirement definitions, not concrete implementation details (DIP)
 
 ## Discovery Process
 

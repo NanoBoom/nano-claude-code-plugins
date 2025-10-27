@@ -24,50 +24,60 @@ Create detailed todos and spawn parallel subagents to analyze (Use specialized s
 
 ## Core Design Philosophy
 
-**These principles guide PRP creation and task decomposition. When in doubt, do less.**
+**SOLID Principles - These principles guide PRP creation and task decomposition.**
 
-### 1. KISS - Keep It Simple, Stupid
+### 1. Single Responsibility Principle (SRP)
 
+A class should have only one reason to change.
+
+- Each task changes only ONE thing
+- Don't bundle multiple concerns in the same task
+- Clearly separate CREATE, UPDATE, and TEST tasks
 - Break story into simplest possible tasks
-- Each task should be straightforward to implement
+
+### 2. Open/Closed Principle (OCP)
+
+Software entities (classes, modules, functions, etc.) should be open for extension but closed for modification.
+
+- Implement functionality by extending existing patterns rather than modifying
+- Reuse existing patterns found in the codebase
+- Leverage MIRROR keyword to extend existing implementations
+- Avoid modifying validated core components
+
+### 3. Liskov Substitution Principle (LSP)
+
+Subtypes must be substitutable for their base types without affecting program correctness.
+
+- New implementations must conform to existing interface contracts
+- Follow existing patterns and conventions in the codebase
+- Ensure new components integrate seamlessly into existing systems
+- Maintain compatibility with existing test cases
+
+### 4. Interface Segregation Principle (ISP)
+
+Clients should not be forced to depend on methods they do not use.
+
+- Create focused, small interfaces for each task
+- Don't create tasks unless the story explicitly requires them
+- Each task must justify its existence for the story
 - Avoid complex multi-step tasks; split them
 
-### 2. Ockham's Razor - Entities should not be multiplied without necessity
+### 5. Dependency Inversion Principle (DIP)
 
-- Don't create tasks unless story explicitly requires them
-- Reuse existing patterns found in codebase
-- Every task must justify its existence for the story
+High-level modules should not depend on low-level modules; both should depend on abstractions. Abstractions should not depend on details; details should depend on abstractions.
 
-### 3. YAGNI - You Aren't Gonna Need It
-
-- **Only create tasks for current story requirements**
-- No "preparatory" tasks for hypothetical future stories
-- Skip "nice to have" features not in acceptance criteria
-
-### 4. DRY - Don't Repeat Yourself
-
-- Leverage MIRROR keyword to reuse existing patterns
-- Identify and reuse common codebase utilities
+- Tasks depend on abstract implementation guidelines rather than specific details
+- Use common utilities and abstractions from the codebase
 - Consolidate similar tasks where appropriate
+- High-level task orchestration doesn't depend on specific implementation details
 
-### 5. Single Responsibility Principle
+**Applied to Story PRPs:**
 
-- Each task changes ONE thing only
-- Don't bundle multiple concerns in same task
-- Separate CREATE, UPDATE, and TEST tasks clearly
-
-**Story PRP Reality Checks:**
-
-```
-❌ "Add this task for potential future stories" → Current story only
-❌ "Bundle multiple changes for efficiency" → Keep tasks atomic
-❌ "Create flexible abstraction while implementing" → Use existing patterns
-✅ "Does this story's acceptance criteria require this?" → This is the filter
-```
-
-**PRP Creation Red Flags (Remove if found):**
-
-- 🚫 Tasks beyond story acceptance criteria
+- Task Breakdown: Each task focuses on a single change (SRP)
+- Pattern Reuse: Extend existing patterns rather than creating new ones (OCP)
+- Integration Strategy: Ensure new components conform to existing interfaces (LSP)
+- Task Scope: Create only focused tasks required by the story (ISP)
+- Implementation Guidance: Depend on abstract codebase patterns (DIP)
 - 🚫 "Future-proofing" tasks not in current story
 - 🚫 New patterns when existing ones work
 - 🚫 Complex tasks mixing multiple concerns

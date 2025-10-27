@@ -6,53 +6,60 @@ Generate a comprehensive specification-driven PRP with clear transformation goal
 
 ## Core Design Philosophy
 
-**These principles guide specification and transformation design. When in doubt, do less.**
+**SOLID Principles - These principles guide specification and transformation design.**
 
-### 1. KISS - Keep It Simple, Stupid
+### 1. Single Responsibility Principle (SRP)
 
-- Prefer incremental changes over big bang rewrites
-- Simple refactoring beats complex architectural overhauls
-- If transformation requires >5 major steps, break it down further
+A class should have only one reason to change.
 
-### 2. Ockham's Razor - Entities should not be multiplied without necessity
-
-- Don't introduce new patterns unless current ones are fundamentally broken
-- Every new abstraction in the spec must justify its existence
-- Reuse existing codebase patterns wherever possible
-
-### 3. YAGNI - You Aren't Gonna Need It
-
-- **Only transform what's causing actual problems NOW**
-- Don't "fix" code that's working fine
-- Skip "while we're at it" scope creep
-
-### 4. DRY - Don't Repeat Yourself
-
-- Consolidate duplicated logic during transformation
-- But: don't force abstraction where duplication is clearer
-- Extract common patterns found during current state analysis
-
-### 5. Single Responsibility Principle
-
-- Each transformation task should change one thing
+- Each transformation task should change only one thing
 - Don't mix refactoring with feature additions
 - Separate concerns in task breakdown
+- Each specification module focuses on a single transformation goal
 
-**Specification Reality Checks:**
+### 2. Open/Closed Principle (OCP)
 
-```
-❌ "While refactoring X, let's also improve Y and Z" → Focus on X only
-❌ "Rewrite everything to be more flexible" → Fix specific pain points
-❌ "Create perfect abstraction layer" → Solve concrete problem simply
-✅ "Is this transformation fixing a real, current issue?" → This is the filter
-```
+Software entities (classes, modules, functions, etc.) should be open for extension but closed for modification.
 
-**Transformation Red Flags (Reject if found):**
+- Prefer incremental changes over large-scale rewrites
+- Improve architecture through extension rather than modification
+- Reuse existing codebase patterns in specifications
+- Don't introduce new patterns unless existing ones are fundamentally broken
 
-- 🚫 Scope creep beyond stated pain points
-- 🚫 "Modernize" tasks without clear benefit
-- 🚫 Introducing patterns not in existing codebase
-- 🚫 Tasks that don't map to measurable improvements
+### 3. Liskov Substitution Principle (LSP)
+
+Subtypes must be substitutable for their base types without affecting program correctness.
+
+- Ensure refactored components can seamlessly replace original components
+- Maintain interface contract consistency
+- Transformations should preserve existing behavioral semantics
+- New implementations must satisfy original test cases
+
+### 4. Interface Segregation Principle (ISP)
+
+Clients should not be forced to depend on methods they do not use.
+
+- Create focused, small interfaces in transformations
+- Avoid introducing bloated abstractions during refactoring
+- Only expose methods that clients actually need
+- Break large transformations into specialized smaller transformations
+
+### 5. Dependency Inversion Principle (DIP)
+
+High-level modules should not depend on low-level modules; both should depend on abstractions. Abstractions should not depend on details; details should depend on abstractions.
+
+- Depend on abstractions rather than concrete implementations in transformations
+- Isolate changes through abstraction layers
+- High-level transformation logic should not depend on specific implementation details
+- Use dependency injection for loosely coupled transformations
+
+**Applied to Specification Design:**
+
+- Current State Assessment: Each analysis module focuses on a single aspect (SRP)
+- Target State Design: Design extensible transformation paths (OCP)
+- Migration Strategy: Ensure new implementations can replace old ones (LSP)
+- Transformation Tasks: Provide specialized interfaces for different transformation phases (ISP)
+- Implementation Guidance: Depend on abstract transformation definitions (DIP)
 
 ## Analysis Process
 

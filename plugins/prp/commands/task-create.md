@@ -6,53 +6,61 @@ Generate a comprehensive task list for focused changes with validation.
 
 ## Core Design Philosophy
 
-**These principles guide task breakdown and planning. When in doubt, do less.**
+**SOLID Principles - These principles guide task breakdown and planning.**
 
-### 1. KISS - Keep It Simple, Stupid
+### 1. Single Responsibility Principle (SRP)
 
+A class should have only one reason to change.
+
+- Each task changes ONE thing
+- Don't bundle unrelated changes in the same task
+- Clearly separate setup, execution, and validation
 - Break complex tasks into simple, atomic steps
 - Each task should be explainable in one sentence
-- Prefer multiple simple tasks over one complex task
 
-### 2. Ockham's Razor - Entities should not be multiplied without necessity
+### 2. Open/Closed Principle (OCP)
+
+Software entities (classes, modules, functions, etc.) should be open for extension but closed for modification.
+
+- Complete tasks by extending existing functionality rather than modifying
+- Use existing helper functions rather than rewriting
+- Reference existing patterns rather than creating new ones
+- Prefer composition and extension strategies
+
+### 3. Liskov Substitution Principle (LSP)
+
+Subtypes must be substitutable for their base types without affecting program correctness.
+
+- Task execution should maintain system behavioral consistency
+- New tasks should not break existing workflows
+- Follow established task execution patterns
+- Ensure task outputs meet expected contracts
+
+### 4. Interface Segregation Principle (ISP)
+
+Clients should not be forced to depend on methods they do not use.
 
 - Don't add tasks unless they solve a specific problem
 - Don't create unnecessary intermediate steps
 - Each task must justify its existence in the workflow
+- Prefer multiple simple tasks over one complex task
 
-### 3. YAGNI - You Aren't Gonna Need It
+### 5. Dependency Inversion Principle (DIP)
 
-- **Only include tasks required to complete current change**
-- Skip "preparatory" tasks for hypothetical future work
-- No tasks for "nice to have" improvements
+High-level modules should not depend on low-level modules; both should depend on abstractions. Abstractions should not depend on details; details should depend on abstractions.
 
-### 4. DRY - Don't Repeat Yourself
-
+- Tasks should depend on abstract workflow definitions
 - Consolidate similar tasks into one where appropriate
-- Use existing helper functions rather than rewriting
-- Reference existing patterns rather than creating new ones
+- High-level task planning should not depend on specific implementation details
+- Use abstract validation criteria rather than specific implementation checks
 
-### 5. Single Responsibility Principle
+**Applied to Task Planning:**
 
-- Each task changes ONE thing
-- Don't bundle unrelated changes in same task
-- Separate setup, execution, and validation clearly
-
-**Task Planning Reality Checks:**
-
-```
-❌ "Add this task in case we need it later" → Only current requirements
-❌ "Bundle these changes for efficiency" → Keep tasks atomic and focused
-❌ "Create new pattern while fixing bug" → One concern per task
-✅ "Is this task essential for current change?" → This is the filter
-```
-
-**Task PRP Red Flags (Remove if found):**
-
-- 🚫 Tasks for features not in current scope
-- 🚫 "Preparatory" tasks for future work
-- 🚫 Tasks that mix unrelated changes
-- 🚫 Overly complex tasks needing >3 validation steps
+- Task Definition: Each task focuses on a single change (SRP)
+- Execution Strategy: Extend existing patterns rather than modifying (OCP)
+- Workflow Integration: Maintain consistency in task execution (LSP)
+- Task Scope: Only include tasks that solve the current problem (ISP)
+- Planning Approach: Depend on abstract task definitions (DIP)
 
 ## Analysis Process
 

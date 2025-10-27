@@ -4,46 +4,61 @@
 
 ## Core Design Philosophy
 
-**These principles guide task list creation. When in doubt, do less.**
+**SOLID Principles - These principles guide task list creation.**
 
-### 1. KISS - Keep It Simple, Stupid
+### 1. Single Responsibility Principle (SRP)
 
+A class should have only one reason to change.
+
+- Each task changes only ONE thing
+- Don't bundle unrelated changes in the same task
+- Clearly separate CREATE, MODIFY, and TEST
 - Each task should be simple and atomic
 - Break complex tasks into smaller, simpler steps
-- If a task needs extensive explanation, split it
 
-### 2. Ockham's Razor - Entities should not be multiplied without necessity
+### 2. Open/Closed Principle (OCP)
 
-- Don't create tasks unless they solve a specific PRP requirement
-- Each task must justify its existence
-- Eliminate redundant or unnecessary steps
+Software entities (classes, modules, functions, etc.) should be open for extension but closed for modification.
 
-### 3. YAGNI - You Aren't Gonna Need It
-
-- **Only include tasks required by the PRP**
-- No preparatory tasks for hypothetical future needs
-- Skip "nice to have" tasks not in PRP scope
-
-### 4. DRY - Don't Repeat Yourself
-
-- Consolidate similar tasks where appropriate
+- Complete tasks by extending existing code rather than modifying
 - Reference existing patterns rather than recreating
 - Use MIRROR/COPY keywords to leverage existing code
+- Prefer extension strategies to implement new functionality
 
-### 5. Single Responsibility Principle
+### 3. Liskov Substitution Principle (LSP)
 
-- Each task changes ONE thing only
-- Don't bundle unrelated changes in same task
-- Separate CREATE, MODIFY, and TEST clearly
+Subtypes must be substitutable for their base types without affecting program correctness.
 
-**Task List Reality Checks:**
+- Task execution should maintain system consistency
+- New tasks should conform to existing execution patterns
+- Follow established task format and conventions
+- Ensure task outputs meet PRP expectations
 
-```
-❌ "Add this task in case we need it" → Only PRP requirements
-❌ "Bundle these for efficiency" → Keep tasks atomic
-❌ "Prepare for future extension" → Current scope only
-✅ "Does the PRP explicitly require this?" → This is the filter
-```
+### 4. Interface Segregation Principle (ISP)
+
+Clients should not be forced to depend on methods they do not use.
+
+- Don't create tasks unless they solve specific PRP requirements
+- Each task must justify its existence
+- Eliminate redundant or unnecessary steps
+- If a task needs extensive explanation, split it
+
+### 5. Dependency Inversion Principle (DIP)
+
+High-level modules should not depend on low-level modules; both should depend on abstractions. Abstractions should not depend on details; details should depend on abstractions.
+
+- Tasks should depend on abstract PRP requirements rather than specific details
+- Consolidate similar tasks where appropriate
+- High-level task orchestration doesn't depend on specific implementation steps
+- Use information-dense keywords to express abstract task intent
+
+**Applied to Task Lists:**
+
+- Task Definition: Each task focuses on a single operation (SRP)
+- Execution Method: Use MIRROR/COPY to extend existing code (OCP)
+- Task Format: Follow consistent task structure (LSP)
+- Task Scope: Only include tasks explicitly required by PRP (ISP)
+- Task Description: Use abstract keywords rather than specific details (DIP)
 
 ## Task List Creation Process
 
