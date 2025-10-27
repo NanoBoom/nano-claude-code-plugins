@@ -176,6 +176,9 @@ fd -e ts -e tsx | xargs wc -l
 
 # 查找大文件
 fd -e ts -e tsx -x wc -l {} \; | sort -rn | head -10
+
+# 查看代码文件
+bat src/main.ts
 ```
 
 ---
