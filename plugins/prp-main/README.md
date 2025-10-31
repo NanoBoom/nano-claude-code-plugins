@@ -1,4 +1,4 @@
-# PRP Workflow Plugin for Claude Code
+# PRP Main Workflow Plugin for Claude Code
 
 ## Overview
 
@@ -32,7 +32,7 @@ The plugin follows these core principles:
 /plugin marketplace add [marketplace-url]
 
 # Install the plugin
-/plugin install prp@[marketplace-name]
+/plugin install prp-main@[marketplace-name]
 ```
 
 ### Local Development
@@ -46,7 +46,7 @@ cd nano-claude-code-plugins
 /plugin marketplace add ./
 
 # Install the plugin
-/plugin install prp@local
+/plugin install prp-main@local
 ```
 
 ## Commands
@@ -145,31 +145,23 @@ Install and configure the PRP workflow system in your project:
 
 ## Agents
 
-### codebase-analyst
+The PRP workflow system uses specialized agents for research and analysis. These agents are now available as a separate plugin for modularity and reuse.
 
-Specialized agent for deep codebase analysis, pattern recognition, and architectural insights.
+**Note**: For detailed agent documentation and standalone usage, see the [prp-agents plugin](../prp-agents/README.md).
 
-**Capabilities:**
-- Identify similar patterns and implementations
-- Analyze code structure and dependencies
-- Discover conventions and best practices
-- Map component relationships
+### Quick Reference
 
-**Usage:**
-The agent is automatically invoked during PRP creation for codebase research.
+- **codebase-analyst**: Deep codebase pattern analysis and convention discovery
+- **library-researcher**: External library documentation research and best practices
 
-### library-researcher
+Both agents are automatically used during PRP creation commands and can be explicitly invoked via the Task tool.
 
-Expert agent for researching external libraries, documentation, and best practices.
+### Installation
 
-**Capabilities:**
-- Find relevant documentation
-- Discover implementation examples
-- Identify best practices
-- Research common pitfalls
-
-**Usage:**
-Automatically used during PRP creation for external research.
+If you want to use these agents standalone or in other plugins:
+```bash
+/plugin install prp-agents@[marketplace-name]
+```
 
 ## Configuration
 
@@ -262,6 +254,16 @@ MIT License - See LICENSE file for details
 - **Author**: NanoBoom (cinuor@gmail.com)
 
 ## Version History
+
+### v1.2.0 (2025-10-31)
+- Renamed plugin from "prp" to "prp-main" for clarity
+- Updated all documentation and installation instructions
+- Maintained backward compatibility (directory path unchanged)
+
+### v1.1.0 (2025-10-31)
+- Extracted agents into separate prp-agents plugin for modularity
+- Maintained backward compatibility with existing workflows
+- Updated documentation with cross-references
 
 ### v1.0.0 (2024-10-10)
 - Initial release with comprehensive PRP workflow system

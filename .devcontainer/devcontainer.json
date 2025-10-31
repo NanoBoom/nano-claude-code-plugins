@@ -1,0 +1,57 @@
+{
+  "name": "nanodev-claude-code",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "args": {
+      "HOST_USER": "${localEnv:USER}"
+    }
+  },
+
+  // 挂载配置：直接映射用户配置文件
+  "mounts": [
+    // SSH 密钥和配置（只读，安全第一）
+    "source=${localEnv:HOME}/.ssh,target=/home/node/.ssh,type=bind,readonly",
+
+    // Git 配置（可写，需要在容器内提交）
+    "source=${localEnv:HOME}/.gitconfig,target=/home/node/.gitconfig,type=bind",
+
+    // Claude Code 配置（路径映射解决 macOS 绝对路径问题）
+    "source=${localEnv:HOME}/.claude,target=/home/node/.claude,type=bind",
+
+    // 下载目录
+    "source=${localEnv:HOME}/Downloads,target=/home/node/Downloads,type=bind"
+  ],
+
+  // 容器运行时设置
+  "runArgs": [
+    "--network=host",
+    "--dns=8.8.8.8",
+    "--dns=223.5.5.5",
+    "--memory=1g"
+  ],
+
+  // 环境变量
+  "containerEnv": {
+    "TERM": "xterm-256color"
+  },
+
+  // 容器启动后执行的命令（可选：安装额外工具）
+  "postCreateCommand": "sudo npm install -g @anthropic-ai/claude-code",
+
+  // VS Code 扩展（推荐的开发工具扩展）
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  },
+
+  // 使用开发用户（与宿主机 UID/GID 匹配）
+  "remoteUser": "node"
+}

@@ -1,7 +1,7 @@
 {
-  "name": "prp",
+  "name": "prp-main",
   "description": "A comprehensive Product Requirements Prompt (PRP) workflow system for AI-driven feature development with systematic research, planning, and execution capabilities",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "author": {
     "name": "NanoBoom",
     "email": "cinuor@gmail.com",

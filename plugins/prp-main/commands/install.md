@@ -13,9 +13,9 @@
    mkdir -p /tmp/prp-install && cd /tmp/prp-install
    git init && git remote add origin https://github.com/NanoBoom/nano-claude-code-plugins.git
    git config core.sparseCheckout true
-   echo "plugins/prp/PRPs/*" > .git/info/sparse-checkout
+   echo "PRPs/*" > .git/info/sparse-checkout
    git pull origin main
-   cp -r plugins/prp/PRPs <project-root>/
+   cp -r PRPs <project-root>/
    rm -rf /tmp/prp-install
    ```
 
