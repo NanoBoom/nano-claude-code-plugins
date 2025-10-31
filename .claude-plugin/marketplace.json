@@ -40,6 +40,69 @@
         "research",
         "documentation"
       ]
+    },
+    {
+      "name": "prp-agents",
+      "description": "Specialized AI agents for PRP workflow providing codebase analysis and library research capabilities through codebase-analyst and library-researcher agents",
+      "source": "./plugins/prp-agents",
+      "category": "development",
+      "version": "1.0.0",
+      "license": "MIT",
+      "strict": true,
+      "homepage": "https://github.com/NanoBoom/nano-claude-code-plugins/tree/main/plugins/prp-agents",
+      "author": {
+        "name": "NanoBoom",
+        "email": "cinuor@gmail.com"
+      },
+      "keywords": [
+        "development",
+        "agents",
+        "research"
+      ],
+      "tags": [
+        "prp",
+        "agents",
+        "codebase-analysis",
+        "library-research",
+        "workflow",
+        "ai-agents",
+        "research",
+        "architecture",
+        "documentation",
+        "pattern-recognition"
+      ]
+    },
+    {
+      "name": "prp-core",
+      "description": "Complete PRP workflow automation with commands for creating, executing, committing, and shipping features using the PRP methodology with validation and CI/CD integration",
+      "source": "./plugins/prp-core",
+      "category": "development",
+      "version": "1.0.0",
+      "license": "MIT",
+      "strict": true,
+      "homepage": "https://github.com/NanoBoom/nano-claude-code-plugins/tree/main/plugins/prp-core",
+      "author": {
+        "name": "NanoBoom",
+        "email": "cinuor@gmail.com"
+      },
+      "keywords": [
+        "development",
+        "workflow",
+        "automation"
+      ],
+      "tags": [
+        "prp",
+        "workflow",
+        "automation",
+        "feature-development",
+        "commit",
+        "pull-request",
+        "validation",
+        "ci-cd",
+        "git",
+        "testing",
+        "deployment"
+      ]
     }
   ]
 }
