@@ -99,7 +99,7 @@ Method is optional (defaults to `GET`).
 **Named Requests:**
 
 ```http
-### Get User Profile
+### GET_USER_PROFILE
 GET https://api.example.com/users/123 HTTP/1.1
 ```
 
@@ -252,10 +252,16 @@ Reference data from other requests:
 
 **Syntax:** `{{REQUEST_NAME.response|request.body|headers.*}}`
 
+**REQUEST_NAME Naming Rules:**
+
+- **MUST use uppercase letters only** (e.g., `LOGIN`, `GET_USER`, `REQUEST_ONE`)
+- **MUST NOT contain spaces** - use underscores to separate words
+- **MUST use underscores (`_`) as word separators** (e.g., `GET_SESSION`, not `Get_Session` or `get-session`)
+
 **JSONPath for Body:**
 
 ```http
-### Login
+### LOGIN
 POST https://api.example.com/auth/login HTTP/1.1
 Content-Type: application/json
 
@@ -263,15 +269,15 @@ Content-Type: application/json
 
 ###
 
-### Get Profile
+### GET_PROFILE
 GET https://api.example.com/profile HTTP/1.1
-Authorization: Bearer {{Login.response.body.$.access_token}}
+Authorization: Bearer {{LOGIN.response.body.$.access_token}}
 ```
 
 **Header Access:**
 
 ```http
-### Request_One
+### REQUEST_ONE
 GET https://api.example.com/data HTTP/1.1
 
 ###
@@ -280,20 +286,20 @@ POST https://api.example.com/track HTTP/1.1
 Content-Type: application/json
 
 {
-  "request_date": "{{Request_One.response.headers.Date}}"
+  "request_date": "{{REQUEST_ONE.response.headers.Date}}"
 }
 ```
 
 **Cookie Access:**
 
 ```http
-### Get_Session
+### GET_SESSION
 GET https://api.example.com/login HTTP/1.1
 
 ###
 
 GET https://api.example.com/dashboard HTTP/1.1
-Cookie: session={{Get_Session.response.cookies.sessionId.value}}
+Cookie: session={{GET_SESSION.response.cookies.sessionId.value}}
 ```
 
 **Multiple Header Values:**
@@ -373,7 +379,7 @@ Authorization: Bearer {{token}}
 **Workflow with Login:**
 
 ```http
-### Login
+### LOGIN
 POST https://api.example.com/oauth/token HTTP/1.1
 Content-Type: application/x-www-form-urlencoded
 
@@ -381,9 +387,9 @@ client_id={{client_id}}&client_secret={{client_secret}}&grant_type=client_creden
 
 ###
 
-### Get Resource
+### GET_RESOURCE
 GET https://api.example.com/resource HTTP/1.1
-Authorization: Bearer {{Login.response.body.$.access_token}}
+Authorization: Bearer {{LOGIN.response.body.$.access_token}}
 ```
 
 ### OAuth 2.0
@@ -471,7 +477,7 @@ Configure in plugin options (per-host basis):
 ### Browser-Based Authentication Example
 
 ```http
-### Acquire_XSRF_TOKEN
+### ACQUIRE_XSRF_TOKEN
 GET localhost:8000/login
 
 > {%
@@ -480,7 +486,7 @@ GET localhost:8000/login
   client.global.session = response.cookies["laravel_session"].value
 %}
 
-### Authenticate
+### AUTHENTICATE
 POST localhost:8000/login
 Content-Type: application/json
 X-Xsrf-Token: {{decoded_token}}
@@ -493,9 +499,9 @@ Cookie: laravel_session={{session}}
   client.global.session = response.cookies["laravel_session"].value
 %}
 
-### Dashboard
-run #Acquire_XSRF_TOKEN
-run #Authenticate
+### DASHBOARD
+run #ACQUIRE_XSRF_TOKEN
+run #AUTHENTICATE
 
 GET http://localhost:8000/dashboard
 Cookie: laravel_session={{session}}
@@ -686,7 +692,7 @@ WS wss://echo.websocket.org
 **Inline Lua Script:**
 
 ```http
-### Create User
+### CREATE_USER
 POST https://api.example.com/users HTTP/1.1
 Content-Type: application/json
 
@@ -808,7 +814,7 @@ POST https://api.example.com/init HTTP/1.1
 
 ###
 
-### Request 1
+### REQUEST_1
 GET {{base_url}}/users HTTP/1.1
 Authorization: Bearer {{api_key}}
 ```
@@ -840,8 +846,8 @@ POST https://api.example.com/data HTTP/1.1
 ```http
 import ./common-requests.http
 
-run #Login
-run #Get Token
+run #LOGIN
+run #GET_TOKEN
 
 GET https://api.example.com/profile HTTP/1.1
 Authorization: Bearer {{token}}
@@ -852,19 +858,19 @@ Authorization: Bearer {{token}}
 ```http
 import ./requests.http
 
-run #Get User (@userId=123, @include=details)
+run #GET_USER (@userId=123, @include=details)
 ```
 
 **Run Request with Metadata Application:**
 
 ```http
-### Main Request
+### MAIN_REQUEST
 GET https://api.example.com/data HTTP/1.1
 
 ###
 
-### Filtered Output
-run #Main Request
+### FILTERED_OUTPUT
+run #MAIN_REQUEST
 
 # @jq .items[] | {id, name}
 ```
@@ -950,14 +956,14 @@ Important document
 ### Iterating Over Results
 
 ```http
-### Get Users
+### GET_USERS
 GET https://api.example.com/users HTTP/1.1
 
 ###
 
-### Process Each User
+### PROCESS_EACH_USER
 < {%
-  local response = client.responses["Get Users"].json
+  local response = client.responses["GET_USERS"].json
   if not response then return end
 
   local user = response.users[request.iteration()]
@@ -991,7 +997,7 @@ POST https://api.example.com/config HTTP/1.1
 ### Modify Request Body in Script
 
 ```http
-### Dynamic Body
+### DYNAMIC_BODY
 < {%
   local json = require("kulala.utils.json")
   local body = json.parse(request.body)
@@ -1013,19 +1019,19 @@ Content-Type: application/json
 
 ### Variable Syntax
 
-| Type            | Syntax                                | Example                               |
-| :-------------- | :------------------------------------ | :------------------------------------ |
-| Basic           | `@var=value`                          | `@host=api.example.com`               |
-| Usage           | `{{var}}`                             | `GET {{host}}/users`                  |
-| Magic UUID      | `{{$uuid}}`                           | `"id": "{{$uuid}}"`                   |
-| Magic Timestamp | `{{$timestamp}}`                      | `"ts": {{$timestamp}}`                |
-| Magic Date      | `{{$date}}`                           | `"date": "{{$date}}"`                 |
-| Magic Random    | `{{$randomInt}}`                      | `"code": {{$randomInt}}`              |
-| Environment     | `{{VAR}}`                             | `{{API_KEY}}`                         |
-| Request Body    | `{{REQ.response.body.$.path}}`        | `{{Login.response.body.$.token}}`     |
-| Request Header  | `{{REQ.response.headers.Name}}`       | `{{Req.response.headers.ETag}}`       |
-| Request Cookie  | `{{REQ.response.cookies.name.value}}` | `{{Auth.response.cookies.sid.value}}` |
-| OAuth Token     | `{{$auth.token("config")}}`           | `{{$auth.token("my-oauth")}}`         |
+| Type            | Syntax                                | Example                                |
+| :-------------- | :------------------------------------ | :------------------------------------- |
+| Basic           | `@var=value`                          | `@host=api.example.com`                |
+| Usage           | `{{var}}`                             | `GET {{host}}/users`                   |
+| Magic UUID      | `{{$uuid}}`                           | `"id": "{{$uuid}}"`                    |
+| Magic Timestamp | `{{$timestamp}}`                      | `"ts": {{$timestamp}}`                 |
+| Magic Date      | `{{$date}}`                           | `"date": "{{$date}}"`                  |
+| Magic Random    | `{{$randomInt}}`                      | `"code": {{$randomInt}}`               |
+| Environment     | `{{VAR}}`                             | `{{API_KEY}}`                          |
+| Request Body    | `{{REQ.response.body.$.path}}`        | `{{LOGIN.response.body.$.token}}`      |
+| Request Header  | `{{REQ.response.headers.Name}}`       | `{{REQUEST.response.headers.ETag}}`    |
+| Request Cookie  | `{{REQ.response.cookies.name.value}}` | `{{AUTH.response.cookies.sid.value}}`  |
+| OAuth Token     | `{{$auth.token("config")}}`           | `{{$auth.token("my-oauth")}}`          |
 
 ### Directive Summary
 
