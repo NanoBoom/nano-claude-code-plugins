@@ -82,7 +82,7 @@ After configuring the MCP server, set up the project documentation:
 
 ### Step 2: Add/Create documentation template
 
-The template location: PRPS/templates/CLAUDE.md
+The template location: PRPS/CLAUDE.md
 
 **Actions:**
 

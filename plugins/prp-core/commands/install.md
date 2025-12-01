@@ -16,7 +16,6 @@
    echo "PRPs/*" > .git/info/sparse-checkout
    git pull origin main
    cp -r PRPs <project-root>/
-   rm -f <project-root>/PRPs/templates/prp_*.md
    rm -rf /tmp/prp-install
    ```
 
@@ -83,7 +82,7 @@ After configuring the MCP server, set up the project documentation:
 
 ### Step 2: Add/Create documentation template
 
-The template location: PRPS/templates/CLAUDE.md
+The template location: PRPS/CLAUDE.md
 
 **Actions:**
 
