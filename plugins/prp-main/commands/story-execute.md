@@ -12,47 +12,57 @@ Execute a story/task PRP through **sequential task completion** with immediate v
 
 **Execution Philosophy**: Complete one task, validate it, then move to the next. No task left behind.
 
-## Core Implementation Principles
+## Core Implementation Philosophy
 
 **These principles guide every implementation decision. When in doubt, choose simpler.**
 
-### 1. KISS - Keep It Simple, Stupid
+### 1. Simplicity First
+
+Write the simplest code that solves the problem.
 
 - Implement tasks exactly as specified, no clever variations
 - Choose straightforward solutions over elegant complexity
 - If implementation feels complex, question the approach
 
-### 2. Ockham's Razor - Entities should not be multiplied without necessity
+### 2. Minimal Addition
+
+Don't introduce new code unless required.
 
 - Don't add code beyond what task requires
 - Reuse existing patterns and utilities from codebase
-- Every line of code must be in the task specification
+- Every line of code must justify its existence
 
-### 3. YAGNI - You Aren't Gonna Need It
+### 3. Scope Discipline
 
-- **Only implement what the task explicitly requires**
+Only implement what the task explicitly requires.
+
 - No "improvements" or "enhancements" while coding
 - Resist adding features not in story acceptance criteria
+- If task doesn't mention it, don't build it
 
-### 4. DRY - Don't Repeat Yourself
+### 4. Pattern Reuse
+
+Follow existing codebase patterns.
 
 - Use existing utilities and patterns (especially MIRROR tasks)
 - But: don't refactor code outside task scope
-- Follow DRY only where task specifies
+- Match the style and structure of similar code
 
-### 5. Single Responsibility Principle
+### 5. Focused Components
 
-- Each task implementation changes ONE thing
+Each task implementation changes ONE thing.
+
 - Don't bundle multiple tasks in one commit
 - Keep modifications focused and isolated
+- If describing what code does requires "and", split it
 
 **Implementation Reality Checks:**
 
 ```
-❌ "While implementing this, I'll also improve..." → Execute only the task
-❌ "This could be more elegant if I..." → Follow task specification
-❌ "Let me refactor this nearby code" → Only touch task scope
-✅ "Does this task explicitly require this code?" → This is the filter
+WRONG: "While implementing this, I'll also improve..." → Execute only the task
+WRONG: "This could be more elegant if I..." → Follow task specification
+WRONG: "Let me refactor this nearby code" → Only touch task scope
+RIGHT: "Does this task explicitly require this code?" → This is the filter
 ```
 
 ## Execution Process
@@ -110,19 +120,19 @@ After all tasks complete:
 
 ### 5. Completion
 
-**Design Principle Compliance:**
-- [ ] ✅ KISS: All implementations are straightforward, no clever tricks
-- [ ] ✅ Ockham's Razor: No code added beyond task specifications
-- [ ] ✅ YAGNI: Zero features/changes outside story acceptance criteria
-- [ ] ✅ DRY: Used existing patterns (MIRROR tasks), no unnecessary refactoring
-- [ ] ✅ SRP: Each task implementation changed ONE thing only
+**Implementation Principle Compliance:**
+- [ ] Simplicity First: All implementations are straightforward, no clever tricks
+- [ ] Minimal Addition: No code added beyond task specifications
+- [ ] Scope Discipline: Zero features/changes outside story acceptance criteria
+- [ ] Pattern Reuse: Used existing patterns (MIRROR tasks), no unnecessary refactoring
+- [ ] Focused Components: Each task implementation changed ONE thing only
 
 **Story Validation:**
 - Work through completion checklist
 - Ensure story requirements satisfied
 - Verify all acceptance criteria met
 - Confirm no scope creep occurred
-- Move completed PRP to PRPs/completed/ create the folder if it does not exist
+- Move completed PRP to PRPs/story/completed/ (create folder if needed)
 
 ## Execution Rules
 
@@ -146,13 +156,13 @@ When a task fails validation:
 - Full test suite green
 - Story acceptance criteria met
 - Code follows project conventions
-- Design principles adhered to throughout
+- Implementation principles adhered to throughout
 
 **Implementation Red Flags (Fix if found):**
-- 🚫 Code changes not in any task specification
-- 🚫 "Improvements" or features beyond story scope
-- 🚫 New patterns introduced when existing ones work
-- 🚫 Refactoring outside task boundaries
-- 🚫 Multiple concerns mixed in single task
+- Code changes not in any task specification
+- "Improvements" or features beyond story scope
+- New patterns introduced when existing ones work
+- Refactoring outside task boundaries
+- Multiple concerns mixed in single task
 
 **Remember: Implement exactly what the story requires, using existing patterns, nothing more.**

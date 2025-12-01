@@ -4,175 +4,199 @@ Generate a comprehensive specification-driven PRP with clear transformation goal
 
 ## Specification: $ARGUMENTS
 
-## Core Design Philosophy
+## PRP Creation Mission
 
-**SOLID Principles - These principles guide specification and transformation design.**
+Create a specification PRP that enables **successful state transformation** through systematic current-state analysis and target-state research.
 
-### 1. Single Responsibility Principle (SRP)
+**Critical Understanding**: The executing AI agent only receives:
 
-A class should have only one reason to change.
+- Start by reading and understanding the PRP concepts in PRPs/README.md
+- The PRP content you create
+- Its training data knowledge
+- Access to codebase files (but needs guidance on which ones)
 
-- Each transformation task should change only one thing
-- Don't mix refactoring with feature additions
-- Separate concerns in task breakdown
-- Each specification module focuses on a single transformation goal
+**Therefore**: Your research and context curation directly determines implementation success. Incomplete context = implementation failure.
 
-### 2. Open/Closed Principle (OCP)
+## Core Transformation Philosophy
 
-Software entities (classes, modules, functions, etc.) should be open for extension but closed for modification.
+**These principles guide state transformation design. Safety over speed.**
 
-- Prefer incremental changes over large-scale rewrites
-- Improve architecture through extension rather than modification
-- Reuse existing codebase patterns in specifications
-- Don't introduce new patterns unless existing ones are fundamentally broken
+### 1. Incremental Transformation
 
-### 3. Liskov Substitution Principle (LSP)
+Small steps, each verifiable.
 
-Subtypes must be substitutable for their base types without affecting program correctness.
+- Transform in small, atomic steps rather than big-bang rewrites
+- Each step should be independently testable
+- If a step fails, only that step needs to be fixed
 
-- Ensure refactored components can seamlessly replace original components
-- Maintain interface contract consistency
-- Transformations should preserve existing behavioral semantics
-- New implementations must satisfy original test cases
+### 2. Behavior Preservation
 
-### 4. Interface Segregation Principle (ISP)
+The system must work the same after transformation.
 
-Clients should not be forced to depend on methods they do not use.
+- All existing tests must continue to pass
+- External interfaces remain unchanged unless explicitly intended
+- Side effects and edge cases must be preserved
 
-- Create focused, small interfaces in transformations
-- Avoid introducing bloated abstractions during refactoring
-- Only expose methods that clients actually need
-- Break large transformations into specialized smaller transformations
+### 3. Reversibility
 
-### 5. Dependency Inversion Principle (DIP)
+Every transformation step can be undone.
 
-High-level modules should not depend on low-level modules; both should depend on abstractions. Abstractions should not depend on details; details should depend on abstractions.
+- Maintain rollback capability for each step
+- Keep the old implementation available until new one is verified
+- Document rollback commands for each task
 
-- Depend on abstractions rather than concrete implementations in transformations
-- Isolate changes through abstraction layers
-- High-level transformation logic should not depend on specific implementation details
-- Use dependency injection for loosely coupled transformations
+### 4. Minimal Change
+
+Change only what's necessary to achieve the goal.
+
+- Don't refactor code that isn't part of the transformation scope
+- Resist "while I'm here" improvements
+- One transformation goal per SPEC
+
+### 5. Validation-Driven
+
+Every step has explicit success criteria.
+
+- Define validation commands before executing changes
+- Stop immediately on validation failure
+- Never proceed to next step until current step passes
 
 **Applied to Specification Design:**
 
-- Current State Assessment: Each analysis module focuses on a single aspect (SRP)
-- Target State Design: Design extensible transformation paths (OCP)
-- Migration Strategy: Ensure new implementations can replace old ones (LSP)
-- Transformation Tasks: Provide specialized interfaces for different transformation phases (ISP)
-- Implementation Guidance: Depend on abstract transformation definitions (DIP)
+- Task Breakdown: Each task is one atomic transformation step (Incremental)
+- Test Strategy: Document which tests must pass after each task (Behavior Preservation)
+- Risk Planning: Include rollback command for every task (Reversibility)
+- Scope Control: Only include tasks that address documented pain points (Minimal Change)
+- Success Criteria: Every task has VALIDATE command with expected output (Validation-Driven)
 
-## Analysis Process
+## Research Process
 
-1. **Current State Assessment**
-   - Map existing implementation
-   - Identify pain points
-   - Document technical debt
-   - Note integration points
+> During the research process, create clear tasks and spawn as many agents and subagents as needed using the batch tools. The deeper research we do here the better the PRP will be. We optimize for chance of success and not for speed.
 
-2. **Desired State Research**
-   - Best practices for target state
-   - Implementation examples
-   - Migration strategies
-   - Risk assessment
-   - Dependency mapping
+### 1. Current State Assessment
 
-3. **User Clarification**
-   - Confirm transformation goals
-   - Priority of objectives
-   - Acceptable trade-offs
+- Create clear todos and spawn subagents to analyze the existing implementation
+- Map all affected files and their dependencies
+- Identify specific pain points with concrete examples
+- Document technical debt with severity levels
+- Note all integration points and side effects
 
-## PRP Generation
+### 2. Desired State Research
 
-Using PRPs/templates/prp_spec.md:
+- Spawn subagents to research best practices for the target state
+- Find implementation examples (GitHub/StackOverflow/blogs) with specific URLs
+- For critical documentation, add a .md file to PRPs/ai_docs and reference it
+- Research migration strategies and common pitfalls
+- Assess risks and create dependency mapping
 
-### State Documentation
+### 3. User Clarification (Before Proceeding)
 
-```yaml
-current_state:
-  files: [list affected files]
-  behavior: [how it works now]
-  issues: [specific problems]
+Use AskUserQuestion tool to confirm:
 
-desired_state:
-  files: [expected structure]
-  behavior: [target functionality]
-  benefits: [improvements gained]
+- Transformation goals and scope boundaries
+- Priority of objectives (must-have vs nice-to-have)
+- Acceptable trade-offs and constraints
+- Go/no-go criteria for the transformation
+
+## PRP Generation Process
+
+### Step 1: Choose Template
+
+Use `PRPs/templates/prp_spec.md` as your template structure.
+
+### Step 2: Transform Research into Template Sections
+
+**High-Level Objective**: The overall transformation goal
+
+```markdown
+## High-Level Objective
+
+- Transform [current state] to [desired state] to solve [specific pain point]
 ```
 
-### Hierarchical Objectives
+**Mid-Level Objectives**: Major milestones with measurable outcomes
 
-1. **High-Level**: Overall transformation goal
-2. **Mid-Level**: Major milestones
-3. **Low-Level**: Specific tasks with validation
+```markdown
+## Mid-Level Objective
 
-### Task Specification with information dense keywords
-
-#### Information dense keywords
-
-- MIRROR: Mirror the state of existing code to be mirrored to another use case
-- COPY: Copy the state of existing code to be copied to another use case
-- ADD: Add new code to the codebase
-- MODIFY: Modify existing code
-- DELETE: Delete existing code
-- RENAME: Rename existing code
-- MOVE: Move existing code
-- REPLACE: Replace existing code
-- CREATE: Create new code
-
-#### Example
-
-```yaml
-task_name:
-  action: MODIFY/CREATE
-  file: path/to/file
-  changes: |
-    - Specific modifications
-    - Implementation details
-    - With clear markers
-  validation:
-    - command: "test command"
-    - expect: "success criteria"
+- Milestone 1: [concrete deliverable with success criteria]
+- Milestone 2: [concrete deliverable with success criteria]
 ```
 
-### Implementation Strategy
+**Implementation Notes**: Technical context and constraints
 
-- Identify dependencies
-- Order tasks by priority and implementation order and dependencies logic
-- Include rollback plans
-- Progressive enhancement
+```markdown
+## Implementation Notes
 
-## User Interaction Points
+- Current state: [specific files, behaviors, issues]
+- Target state: [expected structure, new behaviors, benefits]
+- Migration constraints: [backwards compatibility, rollback needs]
+- Dependencies: [external libs, internal modules affected]
+```
 
-1. **Objective Validation**
-   - Review hierarchical breakdown
-   - Confirm priorities
-   - Identify missing pieces
+**Low-Level Tasks**: Specific implementation steps with validation
 
-2. **Risk Review**
-   - Document identified risks
-   - Find mitigations
-   - Set go/no-go criteria
+### Step 3: Task Specification with Action Keywords
 
-## Context Requirements
+Use these action keywords for clarity:
 
-- Current implementation details
-- Target architecture examples
-- Migration best practices
-- Testing strategies
+| Keyword | Usage                                                |
+| ------- | ---------------------------------------------------- |
+| MODIFY  | Change existing code in place                        |
+| CREATE  | Add new files or functions                           |
+| DELETE  | Remove deprecated code                               |
+| RENAME  | Change names (files, functions, variables)           |
+| MOVE    | Relocate code to different location                  |
+| MIRROR  | Replicate pattern from existing code to new use case |
+
+**Task Format**:
+
+```markdown
+1. [Task name]
+
+ACTION: MODIFY
+FILE: path/to/file.ts
+CHANGES:
+
+- Specific modification with line/function reference
+- Implementation detail with pattern to follow
+  VALIDATE: npm test -- path/to/file.test.ts
+  IF_FAIL: Check [specific debugging steps]
+  ROLLBACK: git checkout path/to/file.ts
+```
+
+### Step 4: Context Completeness Validation
+
+Apply the **"No Prior Knowledge" test**:
+_"If someone knew nothing about this codebase, would they have everything needed to implement this successfully?"_
+
+### Step 5: ULTRATHINK Before Writing
+
+After research completion, create comprehensive PRP writing plan using TodoWrite tool:
+
+- Plan how to structure each template section with your research findings
+- Identify gaps that need additional research
+- Create systematic approach to filling template with actionable context
 
 ## Output
 
-Save as: `PRPs/{spec-name}-spec.md`
+Save as: `PRPs/spec/{specification-name}.md`
+
+**Naming convention**: Derive `{specification-name}` from $ARGUMENTS by:
+
+1. Converting to lowercase kebab-case
+2. Removing common words (the, a, an)
+3. Example: "Migrate to React Hooks" → `migrate-react-hooks-spec.md`
 
 ## Quality Checklist
 
-### Design Principle Compliance (Must Pass First)
+### Transformation Principle Compliance (Must Pass First)
 
-- [ ] ✅ KISS: Transformation is incremental, not big bang rewrite
-- [ ] ✅ Ockham's Razor: Reuses existing patterns, adds nothing unnecessary
-- [ ] ✅ YAGNI: Only fixes actual, current pain points
-- [ ] ✅ DRY: Consolidates duplication found in current state
-- [ ] ✅ SRP: Each task changes one thing, cleanly separated
+- [ ] Incremental: Each task is atomic, independently testable
+- [ ] Behavior Preservation: Existing tests identified, must pass after each task
+- [ ] Reversibility: Rollback command documented for every task
+- [ ] Minimal Change: No tasks beyond documented pain points
+- [ ] Validation-Driven: Every task has VALIDATE with concrete success criteria
 
 ### Specification Completeness
 
@@ -180,17 +204,23 @@ Save as: `PRPs/{spec-name}-spec.md`
 - [ ] Desired state clearly defined with measurable benefits
 - [ ] All objectives measurable and tied to real issues
 - [ ] Tasks ordered by dependency and risk
-- [ ] Each task has validation that AI can run
+- [ ] Each task has validation command that AI can run
 - [ ] Risks identified with mitigations
-- [ ] Rollback strategy included
+- [ ] Rollback strategy included for each task
 - [ ] Integration points noted
 
 ### Red Flags (Reject Spec if found)
 
-- [ ] 🚫 Scope includes "nice to have" improvements
-- [ ] 🚫 Tasks that don't address documented pain points
-- [ ] 🚫 New patterns introduced without justification
-- [ ] 🚫 "While we're at it" transformations
-- [ ] 🚫 Benefits described as "future-proofing" or "flexibility"
+- [ ] Scope includes "nice to have" improvements
+- [ ] Tasks that don't address documented pain points
+- [ ] New patterns introduced without justification
+- [ ] "While we're at it" transformations
+- [ ] Benefits described as "future-proofing" or "flexibility"
+
+## Success Metrics
+
+**Confidence Score**: Rate 1-10 for transformation success likelihood
+
+**Validation**: The completed PRP should enable an AI agent unfamiliar with the codebase to execute the transformation successfully using only the PRP content and codebase access.
 
 Remember: Focus on the transformation journey, not just the destination. **Transform only what's broken.**

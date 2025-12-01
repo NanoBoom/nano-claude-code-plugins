@@ -4,63 +4,63 @@ Generate a comprehensive task list for focused changes with validation.
 
 ## Task: $ARGUMENTS
 
-## Core Design Philosophy
+## Core Task Decomposition Philosophy
 
-**SOLID Principles - These principles guide task breakdown and planning.**
+**These principles guide task breakdown and planning. Clarity enables execution.**
 
-### 1. Single Responsibility Principle (SRP)
+### 1. Atomic Tasks
 
-A class should have only one reason to change.
+Each task does exactly ONE thing.
 
-- Each task changes ONE thing
-- Don't bundle unrelated changes in the same task
-- Clearly separate setup, execution, and validation
-- Break complex tasks into simple, atomic steps
+- A task should be completable in a single focused session
+- If a task has multiple concerns, split it
+- Each task can be validated independently
+- Clearly separate setup, execution, and validation steps
 - Each task should be explainable in one sentence
 
-### 2. Open/Closed Principle (OCP)
+### 2. Context Sufficiency
 
-Software entities (classes, modules, functions, etc.) should be open for extension but closed for modification.
+Tasks contain everything needed for execution.
 
-- Complete tasks by extending existing functionality rather than modifying
-- Use existing helper functions rather than rewriting
-- Reference existing patterns rather than creating new ones
-- Prefer composition and extension strategies
+- Include specific file paths and patterns to follow
+- Reference existing code examples from codebase
+- Document gotchas and edge cases discovered in analysis
+- The executor should not need to search for missing information
 
-### 3. Liskov Substitution Principle (LSP)
+### 3. Pattern Reuse
 
-Subtypes must be substitutable for their base types without affecting program correctness.
+Leverage existing codebase patterns.
 
-- Task execution should maintain system behavioral consistency
-- New tasks should not break existing workflows
-- Follow established task execution patterns
-- Ensure task outputs meet expected contracts
+- Search for similar changes in history before defining tasks
+- Use existing helper functions rather than creating new ones
+- Reference existing patterns rather than inventing new ones
+- Reference specific files as implementation examples
 
-### 4. Interface Segregation Principle (ISP)
+### 4. Task Alignment
 
-Clients should not be forced to depend on methods they do not use.
+Every task directly serves the stated change goal.
 
 - Don't add tasks unless they solve a specific problem
-- Don't create unnecessary intermediate steps
+- No tasks for hypothetical future needs
+- No "while we're here" improvements
 - Each task must justify its existence in the workflow
-- Prefer multiple simple tasks over one complex task
 
-### 5. Dependency Inversion Principle (DIP)
+### 5. Validation Completeness
 
-High-level modules should not depend on low-level modules; both should depend on abstractions. Abstractions should not depend on details; details should depend on abstractions.
+Every task has executable success criteria.
 
-- Tasks should depend on abstract workflow definitions
-- Consolidate similar tasks into one where appropriate
-- High-level task planning should not depend on specific implementation details
-- Use abstract validation criteria rather than specific implementation checks
+- Include specific validation commands that can run immediately
+- Define expected output or behavior
+- Tasks without validation are incomplete
+- Use project-specific test commands discovered in analysis
 
 **Applied to Task Planning:**
 
-- Task Definition: Each task focuses on a single change (SRP)
-- Execution Strategy: Extend existing patterns rather than modifying (OCP)
-- Workflow Integration: Maintain consistency in task execution (LSP)
-- Task Scope: Only include tasks that solve the current problem (ISP)
-- Planning Approach: Depend on abstract task definitions (DIP)
+- Task Definition: Each task does exactly one thing (Atomic Tasks)
+- Task Content: All context included, nothing guessed (Context Sufficiency)
+- Implementation: Use existing patterns and helpers (Pattern Reuse)
+- Scope: Only tasks required by change goal (Task Alignment)
+- Verification: Every task has runnable validation (Validation Completeness)
 
 ## Analysis Process
 
@@ -150,17 +150,17 @@ ACTION path/to/file:
 
 ## Output
 
-Save as: `PRPs/{task-name}-task.md`
+Save as: `PRPs/task/{task-name}.md`
 
 ## Quality Checklist
 
-### Design Principle Compliance (Must Pass First)
+### Task Decomposition Compliance (Must Pass First)
 
-- [ ] ✅ KISS: Each task is simple and atomic
-- [ ] ✅ Ockham's Razor: Every task justified, no unnecessary steps
-- [ ] ✅ YAGNI: Only tasks for current change, no future prep
-- [ ] ✅ DRY: Similar tasks consolidated, existing patterns reused
-- [ ] ✅ SRP: Each task changes ONE thing only
+- [ ] Atomic Tasks: Each task does exactly one thing, independently validatable
+- [ ] Context Sufficiency: Tasks include all needed file paths, patterns, examples
+- [ ] Pattern Reuse: Existing patterns and helpers leveraged
+- [ ] Task Alignment: Every task maps to change goal, nothing extra
+- [ ] Validation Completeness: Every task has executable validation command
 
 ### Task Completeness
 
@@ -175,9 +175,9 @@ Save as: `PRPs/{task-name}-task.md`
 
 ### Red Flags (Reject Task PRP if found)
 
-- [ ] 🚫 Tasks bundling multiple unrelated changes
-- [ ] 🚫 "Preparatory" tasks for hypothetical needs
-- [ ] 🚫 Complex tasks requiring extensive explanation
-- [ ] 🚫 Scope creep beyond stated change
+- [ ] Tasks bundling multiple unrelated changes
+- [ ] "Preparatory" tasks for hypothetical needs
+- [ ] Complex tasks requiring extensive explanation
+- [ ] Scope creep beyond stated change
 
 Remember: Small, focused changes with immediate validation. **Each task should do ONE thing well.**

@@ -15,63 +15,57 @@ Create a comprehensive PRP that enables **one-pass implementation success** thro
 
 **Therefore**: Your research and context curation directly determines implementation success. Incomplete context = implementation failure.
 
-## Core Design Philosophy
+## Core Context Curation Philosophy
 
-**SOLID Principles - These principles guide PRP creation.**
+**These principles guide PRP creation. Completeness enables one-pass success.**
 
-### 1. Single Responsibility Principle (SRP)
+### 1. Context Completeness
 
-A class should have only one reason to change.
+The executor must have everything needed, nothing guessed.
 
-- Each module or class should focus on a single functionality or responsibility
-- Changes should have only one clear reason
-- Avoid coupling multiple unrelated functionalities together
-- Each transformation task should change only one thing
-- Don't mix refactoring with feature additions
+- Include all files, patterns, and conventions to reference
+- Document every assumption and decision
+- Apply "No Prior Knowledge" test before finalizing
 
-### 2. Open/Closed Principle (OCP)
+### 2. Actionable Specificity
 
-Software entities (classes, modules, functions, etc.) should be open for extension but closed for modification.
+Every reference must be specific and executable.
 
-- Design should allow adding new features through extension
-- Avoid modifying existing, validated code
-- Use abstractions and interfaces for flexible design
-- Add functionality through composition rather than modification
+- URLs include section anchors, not just domains
+- File references include exact patterns to follow
+- Task specifications include naming conventions and placement
 
-### 3. Liskov Substitution Principle (LSP)
+### 3. Pattern Alignment
 
-Subtypes must be substitutable for their base types without affecting program correctness.
+Follow existing codebase patterns, not ideal patterns.
 
-- Derived classes should be usable in place of base classes
-- Subtypes should not break the behavioral contract of parent types
-- Inheritance relationships should represent "is-a" relationships
-- Ensure correct use of polymorphism
+- Research and document existing conventions
+- Only introduce new patterns if existing ones are broken
+- Reference specific examples from the codebase
 
-### 4. Interface Segregation Principle (ISP)
+### 4. Validation Readiness
 
-Clients should not be forced to depend on methods they do not use.
+Every task has runnable success criteria.
 
-- Interfaces should be small and focused
-- Avoid creating bloated interfaces
-- Clients only need to know methods they actually use
-- Prefer multiple specialized interfaces over a single general-purpose interface
+- Include project-specific validation commands
+- Define measurable success for each task
+- Verify commands actually work in this codebase
 
-### 5. Dependency Inversion Principle (DIP)
+### 5. Dependency Ordering
 
-High-level modules should not depend on low-level modules; both should depend on abstractions. Abstractions should not depend on details; details should depend on abstractions.
+Tasks are sequenced by their dependencies.
 
-- Depend on abstractions rather than concrete implementations
-- High-level policies should not depend on low-level details
-- Use dependency injection for loose coupling
-- Isolate changes through abstraction layers
+- Identify what must exist before each task
+- Order tasks so prerequisites come first
+- Note integration points between tasks
 
 **Applied to PRP Creation:**
 
-- Research: Each research module focuses on a single aspect of analysis (SRP)
-- Context: Design extensible component structures without modifying core (OCP)
-- Tasks: Ensure derived tasks conform to basic implementation flow (LSP)
-- Interfaces: Provide specialized interfaces for different execution phases (ISP)
-- Validation: Depend on abstract test definitions, not concrete implementation details (DIP)
+- Research: Gather all context executor needs (Context Completeness)
+- References: Use specific URLs, file paths, line numbers (Actionable Specificity)
+- Conventions: Document existing patterns to follow (Pattern Alignment)
+- Tasks: Include VALIDATE command for each task (Validation Readiness)
+- Sequencing: Order tasks by what must exist first (Dependency Ordering)
 
 ## Research Process
 
@@ -134,16 +128,17 @@ After research completion, create comprehensive PRP writing plan using TodoWrite
 
 ## Output
 
-Save as: `PRPs/{feature-name}-base.md`
+Save as: `PRPs/base/{feature-name}.md`
 
 ## PRP Quality Gates
 
-### Design Philosophy Compliance (Must Pass First)
+### Context Curation Compliance (Must Pass First)
 
-- [ ] ✅ Solves a REAL, CURRENT problem (not hypothetical)
-- [ ] ✅ Solution is the SIMPLEST possible approach
-- [ ] ✅ No "future-proofing" complexity added
-- [ ] ✅ Every task/component justified by immediate need
+- [ ] Context Completeness: Passes "No Prior Knowledge" test
+- [ ] Actionable Specificity: All references are specific (URLs with anchors, exact file paths)
+- [ ] Pattern Alignment: Uses existing codebase patterns, not ideal patterns
+- [ ] Validation Readiness: Every task has runnable VALIDATE command
+- [ ] Dependency Ordering: Tasks sequenced by prerequisites
 
 ### Context Completeness Check
 
@@ -168,10 +163,10 @@ Save as: `PRPs/{feature-name}-base.md`
 
 ### Red Flags (Reject PRP if found)
 
-- [ ] 🚫 "This could support..." (future speculation)
-- [ ] 🚫 Tasks for features not in current requirements
-- [ ] 🚫 "Flexible architecture for any use case"
-- [ ] 🚫 Abstraction layers without concrete immediate use
+- [ ] "This could support..." (future speculation)
+- [ ] Tasks for features not in current requirements
+- [ ] "Flexible architecture for any use case"
+- [ ] Abstraction layers without concrete immediate use
 
 ## Success Metrics
 

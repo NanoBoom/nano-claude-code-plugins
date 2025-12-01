@@ -13,47 +13,65 @@ PRPs enable working code on the first attempt through:
 
 **Your Goal**: Transform the PRP into working code that passes all validation gates.
 
-## Core Implementation Principles
+## Core Implementation Philosophy
 
 **These principles guide every implementation decision. When in doubt, choose simpler.**
 
-### 1. KISS - Keep It Simple, Stupid
+### 1. Simplicity First
 
-- Write the simplest code that solves the problem
+Write the simplest code that solves the problem.
+
 - Avoid clever solutions that sacrifice clarity
-- If implementation gets complex, step back and rethink approach
+- If implementation gets complex, step back and rethink
+- Start with the "dumbest" solution that works
 
-### 2. Ockham's Razor - Entities should not be multiplied without necessity
+### 2. Minimal Addition
 
-- Don't introduce new abstractions unless absolutely required
+Don't introduce new abstractions unless required.
+
 - Reuse existing patterns from the codebase
 - Every new file/class/function must justify its existence
+- Prefer using what exists over creating something new
 
-### 3. YAGNI - You Aren't Gonna Need It
+### 3. Scope Discipline
 
-- **Only implement what the PRP explicitly requires**
+Only implement what the PRP explicitly requires.
+
 - Resist adding "might be useful" features
 - No premature optimization or generalization
+- If PRP doesn't mention it, don't build it
 
-### 4. DRY - Don't Repeat Yourself
+### 4. Pattern Reuse
 
-- Extract repeated logic into shared utilities
-- Follow existing abstraction patterns in the codebase
-- But: prefer clear duplication over forced abstraction
+Follow existing codebase patterns.
 
-### 5. Single Responsibility Principle
+- Extract repeated logic using existing utilities
+- Match the style and structure of similar code
+- Prefer clear duplication over forced abstraction
 
-- Each function/class does ONE thing well
+### 5. Focused Components
+
+Each function/class does ONE thing well.
+
 - If describing what code does requires "and", split it
 - Follow separation patterns shown in PRP examples
+- Keep components small and testable
+
+**Applied to Implementation:**
+
+- Code Style: Match existing codebase simplicity (Simplicity First)
+- New Code: Only add what's absolutely necessary (Minimal Addition)
+- Features: Only what PRP specifies, nothing more (Scope Discipline)
+- Structure: Follow patterns from PRP references (Pattern Reuse)
+- Design: Single responsibility per component (Focused Components)
 
 **Implementation Reality Checks:**
 
 ```
-❌ "Let me add flexibility for future cases" → Only code what's specified
-❌ "I'll create a new abstraction pattern" → Use existing patterns first
-❌ "This needs a sophisticated architecture" → Start with dumbest solution
-✅ "Does the PRP explicitly require this?" → This is the decision filter
+WRONG: "Let me add flexibility for future cases" → Only code what's specified
+WRONG: "I'll create a new abstraction pattern" → Use existing patterns first
+WRONG: "This needs a sophisticated architecture" → Start with dumbest solution
+RIGHT: "Does the PRP explicitly require this?" → This is the decision filter
 ```
 
 ## Execution Process
@@ -91,25 +109,25 @@ PRPs enable working code on the first attempt through:
 
 5. **Completion Verification**
 
-   **Design Principle Compliance:**
-   - [ ] ✅ KISS: Solution is simple and clear (no clever tricks)
-   - [ ] ✅ Ockham's Razor: No unnecessary abstractions added
-   - [ ] ✅ YAGNI: Only implemented what PRP requires
-   - [ ] ✅ DRY: Repeated logic properly extracted
-   - [ ] ✅ SRP: Each component has single, clear responsibility
+   **Implementation Principle Compliance:**
+   - [ ] Simplicity First: Solution is simple and clear (no clever tricks)
+   - [ ] Minimal Addition: No unnecessary abstractions added
+   - [ ] Scope Discipline: Only implemented what PRP requires
+   - [ ] Pattern Reuse: Followed existing codebase patterns
+   - [ ] Focused Components: Each component has single, clear responsibility
 
    **PRP Validation:**
    - Work through the Final Validation Checklist in the PRP
    - Verify all Success Criteria from the "What" section are met
    - Confirm all Anti-Patterns were avoided
    - Implementation is ready and working
-   - Move completed PRP to PRPs/completed/ create the folder if it does not exist
+   - Move completed PRP to PRPs/base/completed/ (create folder if needed)
 
 **Failure Protocol**: When validation fails, use the patterns and gotchas from the PRP to fix issues, then re-run validation until passing.
 
 **Over-Engineering Red Flags (Fix if found):**
 
-- 🚫 New patterns not in existing codebase
-- 🚫 Features beyond PRP requirements
-- 🚫 Complex abstractions for simple problems
-- 🚫 Code that needs extensive comments to explain
+- New patterns not in existing codebase
+- Features beyond PRP requirements
+- Complex abstractions for simple problems
+- Code that needs extensive comments to explain

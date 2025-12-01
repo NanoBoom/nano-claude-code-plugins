@@ -22,65 +22,62 @@ Remember that subagents will only receive their details from you, the user has n
 
 Create detailed todos and spawn parallel subagents to analyze (Use specialized subagents when apropriate):
 
-## Core Design Philosophy
+## Core Task Decomposition Philosophy
 
-**SOLID Principles - These principles guide PRP creation and task decomposition.**
+**These principles guide story-to-task transformation. Clarity enables execution.**
 
-### 1. Single Responsibility Principle (SRP)
+### 1. Atomic Tasks
 
-A class should have only one reason to change.
+Each task does exactly ONE thing.
 
-- Each task changes only ONE thing
-- Don't bundle multiple concerns in the same task
+- A task should be completable in a single focused session
+- If a task has multiple concerns, split it
+- Each task can be validated independently
 - Clearly separate CREATE, UPDATE, and TEST tasks
-- Break story into simplest possible tasks
 
-### 2. Open/Closed Principle (OCP)
+### 2. Context Sufficiency
 
-Software entities (classes, modules, functions, etc.) should be open for extension but closed for modification.
+Tasks contain everything needed for execution.
 
-- Implement functionality by extending existing patterns rather than modifying
-- Reuse existing patterns found in the codebase
-- Leverage MIRROR keyword to extend existing implementations
-- Avoid modifying validated core components
+- Include specific file paths and patterns to follow
+- Reference existing code examples from codebase analysis
+- Document gotchas and edge cases discovered in analysis
+- The executor should not need to search for missing information
 
-### 3. Liskov Substitution Principle (LSP)
+### 3. Pattern Reuse
 
-Subtypes must be substitutable for their base types without affecting program correctness.
+Leverage existing codebase patterns.
 
-- New implementations must conform to existing interface contracts
-- Follow existing patterns and conventions in the codebase
-- Ensure new components integrate seamlessly into existing systems
-- Maintain compatibility with existing test cases
+- Search for similar implementations before defining tasks
+- Use MIRROR keyword to extend existing patterns
+- Avoid introducing new patterns when existing ones work
+- Reference specific files as implementation examples
 
-### 4. Interface Segregation Principle (ISP)
+### 4. Story Alignment
 
-Clients should not be forced to depend on methods they do not use.
+Every task directly serves story acceptance criteria.
 
-- Create focused, small interfaces for each task
-- Don't create tasks unless the story explicitly requires them
+- No tasks for hypothetical future needs
+- No "while we're here" improvements
+- If story doesn't require it, don't create a task for it
 - Each task must justify its existence for the story
-- Avoid complex multi-step tasks; split them
 
-### 5. Dependency Inversion Principle (DIP)
+### 5. Validation Completeness
 
-High-level modules should not depend on low-level modules; both should depend on abstractions. Abstractions should not depend on details; details should depend on abstractions.
+Every task has executable success criteria.
 
-- Tasks depend on abstract implementation guidelines rather than specific details
-- Use common utilities and abstractions from the codebase
-- Consolidate similar tasks where appropriate
-- High-level task orchestration doesn't depend on specific implementation details
+- Include specific validation commands that can run immediately
+- Define expected output or behavior
+- Tasks without validation are incomplete
+- Use project-specific test commands discovered in analysis
 
 **Applied to Story PRPs:**
 
-- Task Breakdown: Each task focuses on a single change (SRP)
-- Pattern Reuse: Extend existing patterns rather than creating new ones (OCP)
-- Integration Strategy: Ensure new components conform to existing interfaces (LSP)
-- Task Scope: Create only focused tasks required by the story (ISP)
-- Implementation Guidance: Depend on abstract codebase patterns (DIP)
-- 🚫 "Future-proofing" tasks not in current story
-- 🚫 New patterns when existing ones work
-- 🚫 Complex tasks mixing multiple concerns
+- Task Breakdown: Each task does exactly one thing (Atomic Tasks)
+- Task Content: All context included, nothing guessed (Context Sufficiency)
+- Implementation: Use existing patterns via MIRROR (Pattern Reuse)
+- Scope: Only tasks required by acceptance criteria (Story Alignment)
+- Verification: Every task has runnable validation (Validation Completeness)
 
 ## Analysis Process
 
@@ -171,17 +168,17 @@ For each task, design validation that:
 
 ## Quality Criteria
 
-### Design Principle Compliance (Must Pass First)
+### Task Decomposition Compliance (Must Pass First)
 
-- [ ] ✅ KISS: All tasks are simple and atomic
-- [ ] ✅ Ockham's Razor: Every task justified by story requirements
-- [ ] ✅ YAGNI: No tasks for hypothetical future needs
-- [ ] ✅ DRY: Existing patterns reused via MIRROR/existing utilities
-- [ ] ✅ SRP: Each task has single, clear responsibility
+- [ ] Atomic Tasks: Each task does exactly one thing, independently validatable
+- [ ] Context Sufficiency: Tasks include all needed file paths, patterns, examples
+- [ ] Pattern Reuse: Existing patterns leveraged via MIRROR keyword
+- [ ] Story Alignment: Every task maps to acceptance criteria, nothing extra
+- [ ] Validation Completeness: Every task has executable validation command
 
 ### Task Clarity
 
-- [ ] The PRP is clear and concise and follows KISS principle
+- [ ] The PRP is clear and concise
 - [ ] Each task has clear action and target
 - [ ] Implementation details reference specific patterns
 - [ ] Validation commands are executable
@@ -201,14 +198,14 @@ For each task, design validation that:
 
 ### Red Flags (Reject PRP if found)
 
-- [ ] 🚫 Tasks outside story acceptance criteria
-- [ ] 🚫 "Future-proofing" or preparatory tasks
-- [ ] 🚫 New abstractions when existing patterns work
-- [ ] 🚫 Complex tasks bundling multiple changes
+- [ ] Tasks outside story acceptance criteria
+- [ ] "Future-proofing" or preparatory tasks
+- [ ] New abstractions when existing patterns work
+- [ ] Complex tasks bundling multiple changes
 
 ## Output
 
-Save as: `PRPs/{kebab-case-summary}-story.md`
+Save as: `PRPs/story/{kebab-case-summary}.md`
 
 ## Success Metrics
 

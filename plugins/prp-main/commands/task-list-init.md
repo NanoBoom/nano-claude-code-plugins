@@ -2,63 +2,63 @@
 
 **Create a comprehensive task list in PRPs/checklist.md for PRP $ARGIMENTS**
 
-## Core Design Philosophy
+## Core Task Decomposition Philosophy
 
-**SOLID Principles - These principles guide task list creation.**
+**These principles guide task list creation. Clarity enables execution.**
 
-### 1. Single Responsibility Principle (SRP)
+### 1. Atomic Tasks
 
-A class should have only one reason to change.
+Each task does exactly ONE thing.
 
-- Each task changes only ONE thing
+- A task should be completable in a single focused session
 - Don't bundle unrelated changes in the same task
 - Clearly separate CREATE, MODIFY, and TEST
 - Each task should be simple and atomic
-- Break complex tasks into smaller, simpler steps
+- If a task needs extensive explanation, split it
 
-### 2. Open/Closed Principle (OCP)
+### 2. Context Sufficiency
 
-Software entities (classes, modules, functions, etc.) should be open for extension but closed for modification.
+Tasks contain everything needed for execution.
 
-- Complete tasks by extending existing code rather than modifying
-- Reference existing patterns rather than recreating
+- Include specific file paths and patterns to follow
+- Use information-dense keywords (ADD, CREATE, MODIFY, MIRROR, etc.)
+- Reference existing code examples from codebase
+- The executor should not need to search for missing information
+
+### 3. Pattern Reuse
+
+Leverage existing codebase patterns.
+
 - Use MIRROR/COPY keywords to leverage existing code
-- Prefer extension strategies to implement new functionality
+- Reference existing patterns rather than recreating
+- Search for similar implementations before defining tasks
+- Reference specific files as implementation examples
 
-### 3. Liskov Substitution Principle (LSP)
+### 4. PRP Alignment
 
-Subtypes must be substitutable for their base types without affecting program correctness.
-
-- Task execution should maintain system consistency
-- New tasks should conform to existing execution patterns
-- Follow established task format and conventions
-- Ensure task outputs meet PRP expectations
-
-### 4. Interface Segregation Principle (ISP)
-
-Clients should not be forced to depend on methods they do not use.
+Every task directly serves PRP requirements.
 
 - Don't create tasks unless they solve specific PRP requirements
 - Each task must justify its existence
+- No tasks for hypothetical future needs
 - Eliminate redundant or unnecessary steps
-- If a task needs extensive explanation, split it
 
-### 5. Dependency Inversion Principle (DIP)
+### 5. Validation Completeness
 
-High-level modules should not depend on low-level modules; both should depend on abstractions. Abstractions should not depend on details; details should depend on abstractions.
+Every task has executable success criteria.
 
-- Tasks should depend on abstract PRP requirements rather than specific details
-- Consolidate similar tasks where appropriate
-- High-level task orchestration doesn't depend on specific implementation steps
-- Use information-dense keywords to express abstract task intent
+- Each task should have unit test coverage
+- Make tests pass on each task before proceeding
+- Include specific validation commands
+- Tasks without validation are incomplete
 
 **Applied to Task Lists:**
 
-- Task Definition: Each task focuses on a single operation (SRP)
-- Execution Method: Use MIRROR/COPY to extend existing code (OCP)
-- Task Format: Follow consistent task structure (LSP)
-- Task Scope: Only include tasks explicitly required by PRP (ISP)
-- Task Description: Use abstract keywords rather than specific details (DIP)
+- Task Definition: Each task does exactly one thing (Atomic Tasks)
+- Task Content: All context included with dense keywords (Context Sufficiency)
+- Implementation: Use MIRROR/COPY to leverage existing code (Pattern Reuse)
+- Scope: Only tasks required by PRP, nothing extra (PRP Alignment)
+- Verification: Every task has test coverage (Validation Completeness)
 
 ## Task List Creation Process
 
@@ -98,17 +98,17 @@ Each task should have unit test coverage, make tests pass on each task
 
 ## Output
 
-Save as: `PRPs/{task-summary}-checklist.md`
+Save as: `PRPs/task-list/{task-summary}.md`
 
 ## Task List Quality Checklist
 
-### Design Principle Compliance (Must Pass First)
+### Task Decomposition Compliance (Must Pass First)
 
-- [ ] ✅ KISS: All tasks are simple and atomic
-- [ ] ✅ Ockham's Razor: Every task justified by PRP requirements
-- [ ] ✅ YAGNI: No tasks for hypothetical future needs
-- [ ] ✅ DRY: Similar tasks consolidated, existing patterns reused
-- [ ] ✅ SRP: Each task changes ONE thing only
+- [ ] Atomic Tasks: Each task does exactly one thing, independently executable
+- [ ] Context Sufficiency: Tasks include file paths, patterns, dense keywords
+- [ ] Pattern Reuse: Existing patterns leveraged via MIRROR/COPY
+- [ ] PRP Alignment: Every task maps to PRP requirements, nothing extra
+- [ ] Validation Completeness: Every task has test coverage
 
 ### Task List Completeness
 
@@ -121,9 +121,9 @@ Save as: `PRPs/{task-summary}-checklist.md`
 
 ### Red Flags (Remove Tasks if Found)
 
-- [ ] 🚫 Tasks not in PRP scope
-- [ ] 🚫 "Preparatory" tasks for future work
-- [ ] 🚫 Complex tasks needing multiple actions
-- [ ] 🚫 Tasks bundling unrelated changes
+- [ ] Tasks not in PRP scope
+- [ ] "Preparatory" tasks for future work
+- [ ] Complex tasks needing multiple actions
+- [ ] Tasks bundling unrelated changes
 
 **Remember: Create the minimal task list that fulfills the PRP, nothing more.**

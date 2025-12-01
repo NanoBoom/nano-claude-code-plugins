@@ -4,63 +4,57 @@ Transform rough ideas into comprehensive PRDs with rich visual documentation.
 
 ## Idea: $ARGUMENTS
 
-## Core Design Philosophy
+## Core Planning Philosophy
 
-**SOLID Principles - These principles are the foundation of software design.**
+**These principles guide product discovery and PRD creation. Clarity over completeness.**
 
-### 1. Single Responsibility Principle (SRP)
+### 1. Problem-First
 
-A class should have only one reason to change.
+Define the problem before designing solutions.
 
-- Each module or class should focus on a single functionality or responsibility
-- Changes should have only one clear reason
-- Avoid coupling multiple unrelated functionalities together
-- Each transformation task should change only one thing
-- Don't mix refactoring with feature additions
+- Articulate the specific pain point being solved
+- Validate that the problem is real and worth solving
+- Resist jumping to solutions before understanding the problem
 
-### 2. Open/Closed Principle (OCP)
+### 2. User-Centric
 
-Software entities (classes, modules, functions, etc.) should be open for extension but closed for modification.
+Every feature must have clear user value.
 
-- Design should allow adding new features through extension
-- Avoid modifying existing, validated code
-- Use abstractions and interfaces for flexible design
-- Add functionality through composition rather than modification
+- Define who the user is and what they need
+- Write requirements from user perspective (user stories)
+- Prioritize based on user impact, not technical interest
 
-### 3. Liskov Substitution Principle (LSP)
+### 3. Minimal Viable
 
-Subtypes must be substitutable for their base types without affecting program correctness.
+Include only what's essential for MVP.
 
-- Derived classes should be usable in place of base classes
-- Subtypes should not break the behavioral contract of parent types
-- Inheritance relationships should represent "is-a" relationships
-- Ensure correct use of polymorphism
+- Strip features to the core necessity
+- Ask "can we launch without this?" for every feature
+- Phase 1 should be embarrassingly small
 
-### 4. Interface Segregation Principle (ISP)
+### 4. Measurable Outcomes
 
-Clients should not be forced to depend on methods they do not use.
+Every feature has success criteria.
 
-- Interfaces should be small and focused
-- Avoid creating bloated interfaces
-- Clients only need to know methods they actually use
-- Prefer multiple specialized interfaces over a single general-purpose interface
+- Define how you'll know if it works
+- Specific, measurable acceptance criteria
+- Avoid vague "improve user experience" goals
 
-### 5. Dependency Inversion Principle (DIP)
+### 5. Iterative Discovery
 
-High-level modules should not depend on low-level modules; both should depend on abstractions. Abstractions should not depend on details; details should depend on abstractions.
+Refine through research and feedback.
 
-- Depend on abstractions rather than concrete implementations
-- High-level policies should not depend on low-level details
-- Use dependency injection for loose coupling
-- Isolate changes through abstraction layers
+- Start with assumptions, validate through research
+- Incorporate market and technical findings
+- Allow scope to adjust based on discoveries
 
-**Applied to PRD Generation:**
+**Applied to PRD Creation:**
 
-- Market Analysis: Each analysis module focuses on a single aspect (SRP)
-- Architecture Design: Design extensible component interfaces without modifying core (OCP)
-- User Stories: Ensure derived scenarios conform to basic user journeys (LSP)
-- API Design: Provide specialized interfaces for different clients (ISP)
-- Implementation Strategy: Depend on abstract requirement definitions, not concrete implementation details (DIP)
+- Concept Expansion: Define problem clearly before exploring solutions (Problem-First)
+- User Research: Write all requirements from user perspective (User-Centric)
+- Feature Scoping: Only include MVP-essential features (Minimal Viable)
+- Acceptance Criteria: Every story has measurable success criteria (Measurable Outcomes)
+- Research Integration: Adjust direction based on findings (Iterative Discovery)
 
 ## Discovery Process
 
@@ -190,16 +184,17 @@ diagrams_needed:
 10. Appendices
 ```
 
-Save as: `PRPs/{feature-name}-prd.md`
+Save as: `PRPs/planning/{feature-name}.md`
 
 ## Quality Checklist
 
-**Design Philosophy (Must Pass First):**
+**Planning Principle Compliance (Must Pass First):**
 
-- [ ] ✅ Solves a REAL problem (not hypothetical)
-- [ ] ✅ Solution is the SIMPLEST possible
-- [ ] ✅ No "future-proofing" complexity
-- [ ] ✅ Every component justified by current need
+- [ ] Problem-First: Problem clearly defined before solution details
+- [ ] User-Centric: All features written as user stories with clear value
+- [ ] Minimal Viable: Only MVP-essential features included
+- [ ] Measurable Outcomes: Every feature has specific success criteria
+- [ ] Iterative Discovery: Research findings incorporated, assumptions validated
 
 **Content Quality:**
 
@@ -218,9 +213,9 @@ Save as: `PRPs/{feature-name}-prd.md`
 
 **Red Flags (Reject if found):**
 
-- [ ] 🚫 "This could support..." (future speculation)
-- [ ] 🚫 More than 5 core components
-- [ ] 🚫 "Flexible architecture for any use case"
-- [ ] 🚫 Abstraction layers without concrete use
+- [ ] "This could support..." (future speculation)
+- [ ] More than 5 core components
+- [ ] "Flexible architecture for any use case"
+- [ ] Abstraction layers without concrete use
 
 Remember: Great PRDs are MINIMAL, not comprehensive. Implementation beats planning.

@@ -4,54 +4,73 @@ Feature: $ARGUMENTS
 
 ## Task: Create detailed API contract specification for backend/frontend coordination
 
-## Core API Design Principles
+## Core API Design Philosophy
 
-**These principles guide contract design. When in doubt, do less.**
+**These principles guide API contract design. When in doubt, keep it simple.**
 
-### 1. KISS - Keep It Simple, Stupid
+### 1. Resource-Oriented Design
 
-- Simple, flat endpoints over nested routes
-- Avoid complex query parameter combinations
-- Standard REST verbs, no custom actions unless absolutely necessary
+Model APIs around resources, not actions.
 
-### 2. Ockham's Razor - Entities should not be multiplied without necessity
+- Use nouns for endpoints (`/users`, `/orders`), not verbs (`/getUsers`)
+- HTTP methods define operations: GET (read), POST (create), PUT (update), DELETE (remove)
+- Keep resource hierarchy flat (max 2 levels: `/users/{id}/orders`)
 
-- Don't create endpoints you don't immediately need
-- Don't add DTO fields "just in case"
-- Every response field must have a current, concrete use
+### 2. Contract Stability
 
-### 3. YAGNI - You Aren't Gonna Need It
+Never break existing clients.
 
-- **Only define APIs for current features**
-- No "flexible" endpoints for hypothetical future needs
-- Skip optional parameters until actually required
+- Additive changes only: new fields, new endpoints, new optional parameters
+- Existing fields must not change type or meaning
+- Version APIs (`/api/v1/`, `/api/v2/`) only when breaking changes are unavoidable
 
-### 4. DRY - Don't Repeat Yourself
+### 3. Consistency
 
-- Reuse common DTO patterns (Page, Error)
-- Standardize validation rules across endpoints
-- Share response structures where applicable
+Uniform patterns across all endpoints.
 
-### 5. Single Responsibility Principle
+- Naming conventions: camelCase for JSON fields, kebab-case for URLs
+- Standardized error response structure across all endpoints
+- Consistent pagination, filtering, and sorting patterns
 
-- One endpoint = one resource operation
-- Separate DTOs for request/response concerns
-- Don't mix unrelated data in same endpoint
+### 4. Minimal Exposure
+
+Return only what clients actually need.
+
+- Don't expose internal implementation details (database IDs vs public IDs)
+- Separate Request DTOs (write) from Response DTOs (read)
+- Avoid deeply nested objects; flatten when possible
+
+### 5. Idempotency & Safety
+
+Predictable behavior on retries and failures.
+
+- GET: safe, cacheable, no side effects
+- PUT/DELETE: idempotent, same result on retry
+- POST: document side effects clearly, consider idempotency keys
+
+**Applied to Contract Design:**
+
+- Endpoints: Resource nouns with HTTP verb operations
+- Evolution: Add new fields/endpoints, never modify existing
+- Structure: Same patterns for pagination, errors, validation everywhere
+- Responses: Only fields the frontend actually consumes
+- Reliability: Clear idempotency guarantees for each operation
 
 **API Design Reality Checks:**
 
 ```
-❌ "Add this field for potential future use" → Only current requirements
-❌ "Support every possible query combination" → Start with essential filters
-❌ "Create flexible polymorphic endpoints" → Simple, specific endpoints
-✅ "Does the frontend need this right now?" → This is the decision filter
+WRONG: "Add this field for potential future use" → Only current requirements
+WRONG: "Support every possible query combination" → Start with essential filters
+WRONG: "Create flexible polymorphic endpoints" → Simple, specific endpoints
+RIGHT: "Does the frontend need this right now?" → This is the decision filter
 ```
 
 **Contract Red Flags (Remove if found):**
-- 🚫 Endpoints not mapped to current UI features
-- 🚫 DTO fields with no immediate consumer
-- 🚫 Complex nested routes beyond 2 levels
-- 🚫 "Flexible" parameters accepting any structure
+
+- Endpoints not mapped to current UI features
+- DTO fields with no immediate consumer
+- Complex nested routes beyond 2 levels
+- "Flexible" parameters accepting any structure
 
 ## Contract Definition Steps
 
@@ -180,13 +199,15 @@ Save this contract as: `PRPs/contracts/{feature}-api-contract.md`
 ## Contract Quality Checklist
 
 **Design Principle Compliance (Must Pass First):**
-- [ ] ✅ KISS: All endpoints simple and straightforward
-- [ ] ✅ Ockham's Razor: Every endpoint/field justified by current need
-- [ ] ✅ YAGNI: No endpoints/fields for hypothetical future use
-- [ ] ✅ DRY: Common patterns reused (Page, Error, validation)
-- [ ] ✅ SRP: Each endpoint has single, clear responsibility
+
+- [ ] Resource-Oriented: Endpoints use nouns, HTTP verbs define operations
+- [ ] Contract Stability: No breaking changes to existing fields/endpoints
+- [ ] Consistency: Uniform naming, error format, pagination across all endpoints
+- [ ] Minimal Exposure: Only fields frontend actually needs, no internal details
+- [ ] Idempotency: GET safe, PUT/DELETE idempotent, POST side effects documented
 
 **Contract Completeness:**
+
 - [ ] All current UI features have corresponding endpoints
 - [ ] Request/Response DTOs match actual data flow
 - [ ] Validation rules cover all required fields
@@ -194,12 +215,14 @@ Save this contract as: `PRPs/contracts/{feature}-api-contract.md`
 - [ ] Status codes appropriate for each operation
 
 **Red Flags (Reject if found):**
-- [ ] 🚫 Endpoints with no current consumer
-- [ ] 🚫 DTO fields marked "for future extensibility"
-- [ ] 🚫 Complex nested routes (>2 levels)
-- [ ] 🚫 "Flexible" or "generic" endpoint designs
+
+- [ ] Endpoints with no current consumer
+- [ ] DTO fields marked "for future extensibility"
+- [ ] Complex nested routes (>2 levels)
+- [ ] "Flexible" or "generic" endpoint designs
 
 **Integration Alignment:**
+
 - [ ] Backend team confirms feasibility
 - [ ] Frontend team confirms sufficiency
 - [ ] Both teams agree on validation rules
