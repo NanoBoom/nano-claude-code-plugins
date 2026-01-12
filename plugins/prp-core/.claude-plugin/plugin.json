@@ -1,21 +1,23 @@
 {
   "name": "prp-core",
   "version": "1.0.0",
-  "description": "Complete PRP (Product Requirement Prompt) workflow automation - create, execute, commit, and PR commands with orchestration scripts",
+  "description": "Complete PRP (Product Requirement Prompt) workflow system with planning, implementation, debugging, issue management, and code review capabilities",
   "author": {
-    "name": "Wirasm",
-    "email": "hello@rasmuswiding.com"
+    "name": "NanoBoom",
+    "email": "cinuor@gmail.com"
   },
-  "repository": "https://github.com/Wirasm/PRPs-agentic-eng.git",
+  "repository": "https://github.com/NanoBoom/nano-claude-code-plugins.git",
   "commands": ["./commands/"],
+  "agents": ["./agents/"],
   "keywords": [
     "prp",
-    "prp-main",
+    "planning",
+    "implementation",
+    "debugging",
+    "issue-management",
+    "code-review",
     "workflow",
     "automation",
-    "product-requirements",
-    "implementation",
-    "git",
-    "ci-cd"
+    "git"
   ]
 }

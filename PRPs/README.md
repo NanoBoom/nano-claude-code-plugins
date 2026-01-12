@@ -15,7 +15,7 @@ A PRP keeps the goal and justification sections of a PRD yet adds three AI-criti
 
 ### Context
 
-- Precise file paths and content, library versions and library context, code snippets examples. LLMs generate higher-quality code when given direct, in-prompt references instead of broad descriptions. Usage of a ai_docs/ directory to pipe in library and other docs.
+- Precise file paths and content, library versions and library context, code snippets examples. LLMs generate higher-quality code when given direct, in-prompt references instead of broad descriptions. Usage of a .claude/PRPs/ai_docs/ directory to pipe in library and other docs.
 
 ### Implementation Details and Strategy
 

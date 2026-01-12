@@ -1,378 +1,364 @@
-# PRP Core Plugin
-
-Complete PRP (Product Requirement Prompt) workflow automation for Claude Code.
+# PRP Core Plugin for Claude Code
 
 ## Overview
 
-This plugin provides a comprehensive workflow for creating, executing, and shipping features using the PRP methodology - where **PRP = PRD + curated codebase intelligence + agent/runbook** designed to enable AI agents to ship production-ready code on the first pass.
+Complete PRP (Product Requirement Prompt) workflow system providing comprehensive commands for planning, implementation, debugging, issue management, and code review.
 
 ## Features
 
-### 4 Core Commands
+### Planning & Design
+- **PRD Creation**: Generate comprehensive Product Requirement Documents
+- **Planning**: Create detailed implementation plans with validation gates
+- **Implementation Strategy**: Design execution approaches
 
-#### 1. `/prp-core:create`
+### Development Workflow
+- **Implementation**: Execute PRPs with systematic validation
+- **Debugging**: Interactive debugging with step-by-step analysis
+- **Issue Management**: Investigate and fix issues systematically
 
-Create comprehensive feature PRPs with deep codebase analysis.
+### Code Quality
+- **Code Review**: Automated code review with best practices
+- **Validation**: Built-in quality checks and validation gates
+- **Commit Management**: Smart git commits with proper messages
 
-```bash
-/prp-core:create "Add JWT authentication"
-```
-
-**What it does:**
-
-- Analyzes your codebase for patterns and conventions
-- Researches relevant documentation and best practices
-- Creates a detailed, context-rich implementation plan
-- Generates executable validation gates
-- Outputs a complete PRP file ready for execution
-
-**Output:** `PRPs/features/{feature-name}.md`
-
-#### 2. `/prp-core:execute`
-
-Execute a PRP file until fully complete with validation.
-
-```bash
-/prp-core:execute PRPs/features/my-feature.md
-```
-
-**What it does:**
-
-- Ingests and analyzes the complete PRP
-- Executes every task sequentially
-- Validates after each step
-- Runs full validation suite on completion
-- Moves completed PRP to `completed/` directory
-
-**Success Criteria:**
-
-- ✓ Every task completed
-- ✓ All validation commands pass
-- ✓ Acceptance criteria met
-
-#### 3. `/prp-core:commit`
-
-Create atomic git commit with proper formatting and validation.
-
-```bash
-/prp-core:commit
-```
-
-**What it does:**
-
-- Reviews uncommitted changes
-- Runs lint checks and unit tests
-- Stops if validation fails
-- Creates conventional commit with proper format
-- Never mentions Claude Code or AI in commit messages
-
-**Commit Format:** `<type>: <description>`
-
-- Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
-- Present tense, lowercase, ≤50 characters
-
-#### 4. `/prp-core:pr`
-
-Push changes and create pull request with comprehensive description.
-
-```bash
-/prp-core:pr "Add JWT authentication"
-```
-
-**What it does:**
-
-- Validates all changes (lint, tests)
-- Ensures you're on a feature branch
-- Commits any uncommitted changes (if needed)
-- Pushes to remote with tracking
-- Creates GitHub PR with detailed description
-- Adds appropriate labels and metadata
-
-**PR includes:**
-
-- Summary of changes
-- Implementation details
-- Testing validation
-- Checklist for reviewers
-
-## Workflow
-
-The plugin provides a complete end-to-end workflow:
-
-1. **Create PRP** (`/prp-core:create`) - Generates comprehensive implementation plan
-2. **Execute PRP** (`/prp-core:execute`) - Implements the feature
-3. **Commit** (`/prp-core:commit`) - Creates atomic commit with validation
-4. **PR** (`/prp-core:pr`) - Pushes and creates pull request
-
-Execute commands sequentially, or let Claude orchestrate the workflow based on your needs.
+### AI-Powered Development
+- **Ralph**: Autonomous development agent for end-to-end feature development
+- **Codebase Analysis**: Deep pattern and architecture analysis
+- **Library Research**: External library and documentation research
 
 ## Installation
 
-### Option 1: From GitHub (Recommended)
-
-Once the plugin is pushed to GitHub:
-
+### Via Marketplace
 ```bash
-# Add marketplace from GitHub
-/plugin marketplace add NanoBoom/nano-claude-code-plugins
+/plugin marketplace add https://github.com/NanoBoom/nano-claude-code-plugins.git
+/plugin install prp-core@nano-claude-code-plugins
+```
+
+### Local Development
+```bash
+# Clone the repository
+git clone https://github.com/NanoBoom/nano-claude-code-plugins.git
+cd nano-claude-code-plugins
+
+# Add local marketplace
+/plugin marketplace add .
 
 # Install plugin
 /plugin install prp-core@nano-claude-code-plugins
 ```
 
-### Option 2: Local Development/Testing
+## Commands
 
-For testing the plugin locally:
+### Planning Commands
 
+#### `/prp-prd`
+Generate comprehensive Product Requirement Documents (PRD) with deep codebase analysis.
+
+**Usage:**
 ```bash
-# Navigate to the repository root
-cd /path/to/nano-claude-code-plugins
-
-# Start Claude Code
-claude
-
-# Add local marketplace (use absolute path)
-/plugin marketplace add /absolute/path/to/nano-claude-code-plugins
-
-# Install plugin
-/plugin install prp-core@nano-claude-code-plugins
-
-# Restart Claude Code (required)
-# Exit (Ctrl+C) and run 'claude' again
-
-# Verify installation
-/help
+/prp-prd "Feature description"
 ```
 
-**Important Notes:**
+**Output:** Creates a detailed PRD in `PRPs/features/[feature-name].prd.md`
 
-- Use **absolute path** when adding local marketplace
-- **Restart Claude Code** after installation for commands to load
-- Verify commands appear in `/help` output
+#### `/prp-plan`
+Create detailed implementation plans with validation gates and step-by-step tasks.
 
-### Option 3: Team Automatic Installation
-
-Add to your project's `.claude/settings.json`:
-
-```json
-{
-  "extraKnownMarketplaces": {
-    "nano-claude-code-plugins": {
-      "source": "NanoBoom/nano-claude-code-plugins"
-    }
-  },
-  "enabledPlugins": ["prp-core@nano-claude-code-plugins"]
-}
+**Usage:**
+```bash
+/prp-plan "Feature or issue to plan"
 ```
 
-Team members who trust the repository will automatically have the plugin installed.
+**Output:** Creates an implementation plan in `PRPs/features/[feature-name].plan.md`
 
-## Usage
+### Implementation Commands
 
-### Quick Start
+#### `/prp-implement`
+Execute PRPs with systematic validation and quality checks.
+
+**Usage:**
+```bash
+/prp-implement path/to/prp.md
+```
+
+**Features:**
+- Validation loop execution
+- Automated testing
+- Quality gate checks
+- Progress tracking
+
+### Debugging Commands
+
+#### `/prp-debug`
+Interactive debugging with step-by-step analysis and validation.
+
+**Usage:**
+```bash
+/prp-debug "Issue description or error message"
+```
+
+**Features:**
+- Root cause analysis
+- Step-by-step debugging
+- Validation after fixes
+- Documentation of findings
+
+### Issue Management Commands
+
+#### `/prp-issue-investigate`
+Deep investigation of issues with systematic analysis.
+
+**Usage:**
+```bash
+/prp-issue-investigate "Issue description"
+```
+
+**Features:**
+- Multi-angle analysis
+- Pattern recognition
+- Related issue identification
+- Investigation report generation
+
+#### `/prp-issue-fix`
+Systematic issue fixing with validation loops.
+
+**Usage:**
+```bash
+/prp-issue-fix path/to/investigation-report.md
+```
+
+**Features:**
+- Implementation with validation
+- Test coverage
+- Regression prevention
+- Fix verification
+
+### Code Review Commands
+
+#### `/prp-review`
+Comprehensive code review with best practices validation.
+
+**Usage:**
+```bash
+/prp-review [files or directories]
+```
+
+**Features:**
+- Best practices checking
+- Security analysis
+- Performance review
+- Maintainability assessment
+
+### Git & PR Commands
+
+#### `/prp-commit`
+Create atomic git commits with proper messages and validation.
+
+**Usage:**
+```bash
+/prp-commit
+```
+
+**Features:**
+- Smart commit message generation
+- Pre-commit validation
+- Conventional commits format
+- Co-authored attribution
+
+#### `/prp-pr`
+Create pull requests with comprehensive descriptions.
+
+**Usage:**
+```bash
+/prp-pr "PR title"
+```
+
+**Features:**
+- Auto-generated descriptions
+- Test plan generation
+- Related issue linking
+- Review checklist
+
+### AI Agent Commands
+
+#### `/prp-ralph`
+Launch Ralph, the autonomous development agent for end-to-end feature development.
+
+**Usage:**
+```bash
+/prp-ralph "Feature request"
+```
+
+**Features:**
+- Complete workflow automation (PRD → Plan → Implementation → PR)
+- Autonomous decision making
+- Quality validation at each step
+- Human oversight at key checkpoints
+
+#### `/prp-ralph-cancel`
+Cancel the running Ralph agent.
+
+**Usage:**
+```bash
+/prp-ralph-cancel
+```
+
+### Setup Commands
+
+#### `/install`
+Install and configure the PRP system for your project.
+
+**Usage:**
+```bash
+/install
+```
+
+**Features:**
+- Creates PRP directory structure
+- Sets up validation gates
+- Configures git integration
+- Initializes templates
+
+## Agents
+
+### codebase-analyst
+Deep codebase pattern analysis for understanding architecture and conventions.
+
+**Capabilities:**
+- Pattern recognition
+- Architecture discovery
+- Convention detection
+- Similar implementation identification
+
+### library-researcher
+External library and documentation research for best practices.
+
+**Capabilities:**
+- Documentation research
+- API discovery
+- Best practices identification
+- Common pitfalls documentation
+
+## Workflow Examples
+
+### Complete Feature Development
 
 ```bash
-# 1. Create a feature PRP
-/prp-core:create "Add user authentication with JWT tokens"
+# 1. Create PRD with research
+/prp-prd "Add user authentication with JWT"
 
-# 2. Execute the generated PRP
-/prp-core:execute PRPs/features/add-user-authentication.md
+# 2. Create implementation plan
+/prp-plan PRPs/features/add-user-authentication.prd.md
 
-# 3. Commit changes
-/prp-core:commit
+# 3. Implement the feature
+/prp-implement PRPs/features/add-user-authentication.plan.md
+
+# 4. Review the changes
+/prp-review src/auth/
+
+# 5. Commit changes
+/prp-commit
+
+# 6. Create pull request
+/prp-pr "feat: add JWT authentication"
+```
+
+### Autonomous Development with Ralph
+
+```bash
+# Ralph handles the entire workflow
+/prp-ralph "Add user authentication with JWT and session management"
+```
+
+### Bug Investigation & Fix
+
+```bash
+# 1. Investigate the issue
+/prp-issue-investigate "Users can't login after password reset"
+
+# 2. Fix the issue
+/prp-issue-fix PRPs/investigations/login-after-reset.md
+
+# 3. Commit the fix
+/prp-commit
 
 # 4. Create PR
-/prp-core:pr "feat: add JWT authentication"
+/prp-pr "fix: resolve login issue after password reset"
 ```
 
-### Complete Workflow
-
-Execute commands in sequence for the full workflow:
+### Debugging Session
 
 ```bash
-# 1. Create PRP
-/prp-core:create "Add user authentication with JWT tokens"
-
-# 2. Execute the PRP (wait for completion)
-/prp-core:execute .claude/PRPs/features/add-user-authentication.md
-
-# 3. Commit changes
-/prp-core:commit
-
-# 4. Create PR
-/prp-core:pr "feat: add JWT authentication system"
+# Interactive debugging
+/prp-debug "TypeError: Cannot read property 'id' of undefined in user profile"
 ```
-
-This workflow:
-
-- ✅ Creates comprehensive PRP with deep analysis
-- ✅ Executes implementation with validation
-- ✅ Commits changes with proper formatting
-- ✅ Pushes and creates pull request
 
 ## PRP Methodology
 
-### What is a PRP?
+The PRP methodology follows these principles:
 
-**PRP = PRD + curated codebase intelligence + agent/runbook**
+### 1. Context is King
+Include all necessary patterns, documentation, and examples from your codebase.
 
-A PRP is a comprehensive implementation document that contains:
+### 2. Validation Loops
+Provide executable tests that AI can run and fix automatically.
 
-1. **Context** - All necessary patterns, documentation, and examples
-2. **Plan** - Step-by-step tasks with validation gates
-3. **Validation** - Executable commands to verify correctness
+### 3. Information Dense
+Use actual keywords and patterns from your codebase.
 
-### Core Principles
+### 4. Progressive Success
+Start with minimal implementation, validate, then enhance.
 
-1. **Context is King** - Include ALL necessary information
-2. **Validation Loops** - Provide executable tests the AI can run and fix
-3. **Information Dense** - Use keywords and patterns from codebase
-4. **Progressive Success** - Start simple, validate, enhance
-
-### PRP Structure
-
-Every PRP includes:
-
-- **Feature Description** - What we're building and why
-- **Context References** - Files, patterns, documentation
-- **Implementation Plan** - Phased approach with tasks
-- **Step-by-Step Tasks** - Atomic, ordered, independently testable
-- **Testing Strategy** - Unit, integration, edge cases
-- **Validation Commands** - Executable verification (syntax, tests, manual)
-- **Acceptance Criteria** - Measurable completion requirements
-
-## Requirements
-
-- Claude Code installed
-- Git configured
-- GitHub CLI (`gh`) for PR creation
-- Python environment with linters (ruff, mypy) for validation
-
-## Configuration
-
-### Project Structure
-
-The plugin expects this structure in your project:
+## Directory Structure
 
 ```
-your-project/
-├── .claude/
-│   ├── PRPs/
-│   │   ├── features/           # Active PRPs
-│   │   └── completed/          # Completed PRPs
-│   └── settings.json           # Optional: team config
-├── tests/                      # For validation
-└── pyproject.toml             # Or package.json, etc.
+PRPs/
+├── features/               # Feature PRDs and plans
+│   ├── *.prd.md           # Product requirement documents
+│   └── *.plan.md          # Implementation plans
+├── investigations/         # Issue investigation reports
+│   └── *.investigation.md
+├── ai_docs/               # AI-accessible documentation
+│   └── *.md
+└── CLAUDE.md             # Main PRP template reference
 ```
 
-### Validation Commands
+## Integration
 
-The plugin uses these standard validation commands:
+This plugin works standalone and provides comprehensive PRP workflow capabilities:
 
-```bash
-# Syntax & Style
-ruff check --fix
-mypy .
+- Complete development lifecycle (PRD → Plan → Implementation → Review → PR)
+- Autonomous development with Ralph agent
+- Issue investigation and fixing
+- Interactive debugging
+- Code quality and review
 
-# Unit Tests
-pytest tests/ -v
+## Best Practices
 
-# Or for JavaScript/TypeScript
-npm run lint
-npm run type-check
-npm test
-```
+### 1. Start with Research
+Always create PRDs first to gather context and patterns.
 
-Customize validation commands in your PRPs as needed.
+### 2. Plan Before Implementing
+Use `/prp-plan` to create detailed implementation strategies.
 
-## Troubleshooting
+### 3. Validate Frequently
+Use validation gates at each step to catch issues early.
 
-### Plugin Not Loading
+### 4. Document Decisions
+Keep investigation reports and plans for future reference.
 
-```bash
-# Check plugin status
-/plugin
-
-# Reinstall plugin
-/plugin uninstall prp-core@marketplace
-/plugin install prp-core@marketplace
-
-# Restart Claude Code
-```
-
-### Commands Not Found
-
-Ensure Claude Code restarted after installation. Check available commands:
-
-```bash
-/help
-```
-
-### Validation Issues
-
-If validation commands fail, ensure your environment has the required tools:
-
-```bash
-# Install Python linters
-pip install ruff mypy
-
-# Or with uv
-uv pip install ruff mypy
-```
-
-## Development
-
-### Plugin Structure
-
-```
-plugins/prp-core/
-├── .claude-plugin/
-│   └── plugin.json           # Plugin manifest
-├── commands/                  # Slash commands
-│   ├── commit.md
-│   ├── create.md
-│   ├── execute.md
-│   └── pr.md
-└── README.md                  # This file
-```
-
-### Testing Changes
-
-1. Make changes to plugin files
-2. Uninstall plugin: `/plugin uninstall prp-core@marketplace`
-3. Reinstall plugin: `/plugin install prp-core@marketplace`
-4. Test commands
-
-### Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make changes
-4. Test thoroughly
-5. Submit pull request
+### 5. Review Before Committing
+Always run `/prp-review` before creating commits.
 
 ## License
 
-MIT License - See repository for details
+MIT License
 
 ## Support
 
-- **Issues**: <https://github.com/NanoBoom/nano-claude-code-plugins/issues>
-- **Documentation**: <https://github.com/NanoBoom/nano-claude-code-plugins>
-- **Examples**: See `.claude/PRPs/features/` in the repository
+- Issues: https://github.com/NanoBoom/nano-claude-code-plugins/issues
+- Author: NanoBoom (cinuor@gmail.com)
 
-## Version History
+## Attribution
 
-### 1.0.0 (2025-10-22)
-
-- Initial release
-- 4 core commands (create, execute, commit, pr)
-- 2 utility scripts (invoke_command, prp_workflow)
-- Complete PRP workflow automation
-- Team marketplace distribution
-
-## See Also
-
-- [Claude Code Documentation](https://docs.claude.com/en/docs/claude-code)
-- [Plugin Development Guide](https://docs.claude.com/en/docs/claude-code/plugins)
-- [PRP Methodology](https://github.com/NanoBoom/nano-claude-code-plugins/blob/main/CLAUDE.md)
+Based on the PRP methodology from [PRPs-agentic-eng](https://github.com/Wirasm/PRPs-agentic-eng) by [Wirasm](https://github.com/Wirasm).

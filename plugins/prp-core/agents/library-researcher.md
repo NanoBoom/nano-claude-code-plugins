@@ -83,7 +83,7 @@ save_to_ai_docs: [yes/no - if complex enough to warrant local documentation]
 
 When documentation is complex or critical:
 
-1. Create condensed version in PRPs/ai_docs/{library}\_patterns.md
+1. Create condensed version in .claude/PRPs/ai_docs/{library}\_patterns.md
 2. Focus on implementation-relevant sections
 3. Include working code examples
 4. Add project-specific integration notes
@@ -103,6 +103,6 @@ Effective search patterns:
 - Focus on the specific features needed for the story
 - Provide executable code examples, not abstract descriptions
 - Note version differences if relevant
-- Save complex findings to ai_docs for future reference
+- Save complex findings to .claude/PRPs/ai_docs for future reference
 
 Remember: Good library research prevents implementation blockers and reduces debugging time.

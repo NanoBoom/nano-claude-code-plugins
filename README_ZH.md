@@ -1,6 +1,8 @@
 # Nano Claude Code 插件市场
 
-为 Claude Code 打造的生产力和开发工作流插件集合，采用 PRP（产品需求提示词）方法论实现 AI 驱动的软件开发。
+[English Documentation](./README.md)
+
+为 Claude Code 打造的生产力和开发工作流插件市场，采用 PRP（产品需求提示词）方法论实现 AI 驱动的软件开发。
 
 > **致谢**: 本项目基于 [Wirasm](https://github.com/Wirasm) 的 [PRPs-agentic-eng](https://github.com/Wirasm/PRPs-agentic-eng) 项目。我们将原始工作重新组织并改编为模块化的插件市场格式。PRP 方法论和核心概念的所有功劳归原作者所有。
 
@@ -25,99 +27,45 @@ PRP（产品需求提示词）是一份完整的实施文档，包含：
 
 ## 可用插件
 
-| 插件 | 命令数 | 智能体 | 技能 | 用途 |
-|------|--------|--------|------|------|
-| prp-main | 14 | - | - | 主要 PRP 工作流系统 |
-| prp-agents | - | 2 | - | 代码库分析研究智能体 |
-| prp-core | 8 | - | 1 | 自动化与编排 |
-
-### prp-main
+### prp-core
 
 **版本:** 1.0.0 | **作者:** NanoBoom | **分类:** 开发
 
-一个全面的 PRP 工作流系统，用于 AI 驱动的功能开发，具有系统性研究、规划和执行能力。
+完整的 PRP 工作流系统，提供规划、实现、调试、问题管理和代码审查的全面命令。
 
 **特性:**
-- 深度代码库分析的系统性研究
-- 支持一次性实施的结构化文档
-- 并行 POC 执行支持
-- 完整的开发生命周期管理
+- 完整的开发生命周期 (PRD → 计划 → 实现 → 审查 → PR)
+- Ralph 自主开发智能体
+- 交互式调试能力
+- 问题调查和系统化修复
+- 代码质量和审查自动化
+- 智能提交的 Git 集成
 
-**命令 (14个):**
+**命令 (12个):**
 
 | 命令 | 描述 |
 |------|------|
-| `/base-create` | 创建带研究的完整基础 PRP |
-| `/base-execute` | 执行基础 PRP 实施 |
-| `/planning-create` | 创建战略规划文档 |
-| `/spec-create` | 生成技术规格说明 |
-| `/spec-execute` | 执行技术规格说明 |
-| `/story-create` | 创建带验收标准的用户故事 |
-| `/story-execute` | 执行用户故事实施 |
-| `/task-create` | 将功能分解为任务 |
-| `/task-execute` | 执行单个任务 |
-| `/task-list-init` | 初始化和组织任务列表 |
-| `/poc-create-parallel` | 创建并行 POC 实现 |
-| `/poc-execute-parallel` | 并行处理执行 POC |
-| `/api-contract-define` | 定义 API 契约和接口 |
-| `/install-prp` | 安装和配置 PRP 系统 |
-
-[了解更多 ->](./plugins/prp-main/README.md)
-
----
-
-### prp-agents
-
-**版本:** 1.0.0 | **作者:** NanoBoom | **分类:** 开发
-
-为 PRP 工作流提供代码库分析和库研究能力的专业 AI 智能体。
+| `/prp-prd` | 生成带深度分析的完整产品需求文档 |
+| `/prp-plan` | 创建带验证检查点的详细实现计划 |
+| `/prp-implement` | 执行 PRP，带系统化验证和质量检查 |
+| `/prp-debug` | 带逐步分析的交互式调试 |
+| `/prp-issue-investigate` | 带系统化分析的深度问题调查 |
+| `/prp-issue-fix` | 带验证循环的系统化问题修复 |
+| `/prp-review` | 带最佳实践验证的全面代码审查 |
+| `/prp-commit` | 创建带合适消息的原子 git 提交 |
+| `/prp-pr` | 创建带完整描述的拉取请求 |
+| `/prp-ralph` | 启动端到端功能开发的自主开发智能体 |
+| `/prp-ralph-cancel` | 取消正在运行的 Ralph 智能体 |
+| `/install` | 安装和配置 PRP 系统 |
 
 **智能体 (2个):**
 
 | 智能体 | 描述 |
 |--------|------|
-| `codebase-analyst` | 深度代码库模式分析、架构发现、约定检测和相似实现识别 |
-| `library-researcher` | 外部库文档研究、API 发现、最佳实践识别和常见陷阱文档 |
+| `codebase-analyst` | 深度代码库模式分析、架构发现和约定检测 |
+| `library-researcher` | 外部库文档研究、API 发现和最佳实践识别 |
 
-**使用方式:**
-这些智能体在 PRP 创建命令期间自动调用，也可以通过 Task 工具在自定义工作流中显式调用。
-
-[了解更多 ->](./plugins/prp-agents/README.md)
-
----
-
-### prp-core
-
-**版本:** 1.0.0 | **作者:** NanoBoom | **分类:** 开发
-
-完整的 PRP 工作流自动化，提供创建、执行、提交和发布功能的命令，采用 PRP 方法论。
-
-**特性:**
-- 端到端工作流自动化
-- Git 集成（分支、提交、PR）
-- 验证检查点和质量检查
-- CI/CD 集成支持
-
-**命令 (8个):**
-
-| 命令 | 描述 |
-|------|------|
-| `/prp-core:create` | 创建带深度代码库分析的功能 PRP |
-| `/prp-core:execute` | 执行 PRP 直到完成并验证 |
-| `/prp-core:commit` | 创建带验证的原子 git 提交 |
-| `/prp-core:pr` | 推送更改并创建拉取请求 |
-| `/prp-core:new-branch` | 为功能创建新的 git 分支 |
-| `/prp-core:review` | 带验证的代码审查 |
-| `/prp-core:install` | 安装和配置 prp-core |
-| `/prp-core:run-all` | 完整工作流编排（创建 -> 执行 -> 提交 -> PR） |
-
-**技能 (1个):**
-
-| 技能 | 描述 |
-|------|------|
-| `prp-core-runner` | 编排从功能请求到拉取请求的完整 PRP 工作流 |
-
-[了解更多 ->](./plugins/prp-core/README.md)
+[了解更多 →](./plugins/prp-core/README.md)
 
 ---
 
@@ -132,9 +80,7 @@ PRP（产品需求提示词）是一份完整的实施文档，包含：
 # 浏览可用插件
 /plugin
 
-# 安装插件
-/plugin install prp-main@nano-claude-code-plugins
-/plugin install prp-agents@nano-claude-code-plugins
+# 安装 prp-core
 /plugin install prp-core@nano-claude-code-plugins
 ```
 
@@ -152,8 +98,6 @@ claude
 /plugin marketplace add /absolute/path/to/nano-claude-code-plugins
 
 # 安装插件
-/plugin install prp-main@nano-claude-code-plugins
-/plugin install prp-agents@nano-claude-code-plugins
 /plugin install prp-core@nano-claude-code-plugins
 
 # 重启 Claude Code 以加载命令
@@ -171,41 +115,72 @@ claude
     }
   },
   "enabledPlugins": [
-    "prp-main@nano-claude-code-plugins",
-    "prp-agents@nano-claude-code-plugins",
     "prp-core@nano-claude-code-plugins"
   ]
 }
 ```
 
-信任该仓库的团队成员将自动安装这些插件。
+信任该仓库的团队成员将自动安装插件。
 
 ## 快速参考
 
-### 完整工作流示例
+### 完整功能开发工作流
 
 ```bash
-# 1. 创建带深度分析的功能 PRP
-/prp-core:create "添加 JWT 用户认证"
+# 1. 创建带深度代码库分析的 PRD
+/prp-prd "添加 JWT 用户认证"
 
-# 2. 执行 PRP（实现功能）
-/prp-core:execute PRPs/features/add-user-authentication.md
+# 2. 创建实现计划
+/prp-plan PRPs/features/add-user-authentication.prd.md
 
-# 3. 带验证的提交更改
-/prp-core:commit
+# 3. 带验证的功能实现
+/prp-implement PRPs/features/add-user-authentication.plan.md
 
-# 4. 创建拉取请求
-/prp-core:pr "feat: 添加 JWT 认证"
+# 4. 审查更改
+/prp-review src/auth/
+
+# 5. 带智能消息生成的提交
+/prp-commit
+
+# 6. 创建拉取请求
+/prp-pr "feat: add JWT authentication"
 ```
 
-### 备选工作流 (prp-main)
+### Ralph 自主开发
 
 ```bash
-# 创建完整 PRP
-/base-create "添加用户认证"
+# Ralph 自动处理整个工作流
+/prp-ralph "添加带会话管理的 JWT 用户认证"
 
-# 执行实施
-/base-execute PRPs/user-authentication.md
+# Ralph 会：
+# - 生成完整的 PRD
+# - 创建详细的实现计划
+# - 实现功能
+# - 运行验证检查
+# - 创建提交和 PR
+```
+
+### Bug 调查和修复工作流
+
+```bash
+# 1. 系统化调查问题
+/prp-issue-investigate "用户密码重置后无法登录"
+
+# 2. 带验证的问题修复
+/prp-issue-fix PRPs/investigations/login-after-reset.md
+
+# 3. 提交修复
+/prp-commit
+
+# 4. 创建 PR
+/prp-pr "fix: resolve login issue after password reset"
+```
+
+### 交互式调试
+
+```bash
+# 带逐步分析的调试
+/prp-debug "TypeError: Cannot read property 'id' of undefined in user profile"
 ```
 
 ## 插件开发
@@ -306,6 +281,13 @@ plugins/
 本插件市场及其插件基于 MIT 许可证发布。
 
 ## 更新日志
+
+### v1.2.0 (2025-01-12)
+- 整合为单一全面的 prp-core 插件
+- 添加涵盖完整开发生命周期的 12 个命令
+- 添加用于代码库和库研究的 2 个专业智能体
+- 移除 prp-main 和 prp-agents（合并到 prp-core）
+- 更新文档和示例
 
 ### v1.1.0 (2025-12-09)
 - 更新文档以反映所有 3 个插件

@@ -2,7 +2,7 @@
 
 ## Task 1: Install PRP Templates
 
-1. Check if `PRPs` directory exists in project root
+1. Check if `PRPs` directory exists in `<project-root>/.claude/`
    - If exists: ask user to overwrite/skip/backup
    - If not: proceed to download
 
@@ -15,7 +15,7 @@
    git config core.sparseCheckout true
    echo "PRPs/*" > .git/info/sparse-checkout
    git pull origin main
-   cp -r PRPs <project-root>/
+   cp -r PRPs <project-root>/.claude/
    rm -rf /tmp/prp-install
    ```
 
@@ -82,7 +82,7 @@ After configuring the MCP server, set up the project documentation:
 
 ### Step 2: Add/Create documentation template
 
-The template location: PRPS/CLAUDE.md
+The template location: .claude/PRPS/CLAUDE.md
 
 **Actions:**
 

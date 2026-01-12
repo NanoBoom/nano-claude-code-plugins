@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "nano-claude-code-plugins",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A collection of productivity and development workflow plugins for Claude Code, featuring advanced AI-driven development methodologies",
   "owner": {
     "name": "NanoBoom",
@@ -10,71 +10,8 @@
   },
   "plugins": [
     {
-      "name": "prp-main",
-      "description": "A comprehensive Product Requirements Prompt (PRP) workflow system for AI-driven feature development with systematic research, planning, and execution capabilities",
-      "source": "./plugins/prp-main",
-      "category": "development",
-      "version": "1.0.0",
-      "license": "MIT",
-      "strict": true,
-      "homepage": "https://github.com/NanoBoom/nano-claude-code-plugins/tree/main/plugins/prp-main",
-      "author": {
-        "name": "NanoBoom",
-        "email": "cinuor@gmail.com"
-      },
-      "keywords": [
-        "development",
-        "workflow"
-      ],
-      "tags": [
-        "prp",
-        "workflow",
-        "feature-development",
-        "agile",
-        "planning",
-        "poc",
-        "specification",
-        "user-story",
-        "task-management",
-        "ai-development",
-        "research",
-        "documentation"
-      ]
-    },
-    {
-      "name": "prp-agents",
-      "description": "Specialized AI agents for PRP workflow providing codebase analysis and library research capabilities through codebase-analyst and library-researcher agents",
-      "source": "./plugins/prp-agents",
-      "category": "development",
-      "version": "1.0.0",
-      "license": "MIT",
-      "strict": true,
-      "homepage": "https://github.com/NanoBoom/nano-claude-code-plugins/tree/main/plugins/prp-agents",
-      "author": {
-        "name": "NanoBoom",
-        "email": "cinuor@gmail.com"
-      },
-      "keywords": [
-        "development",
-        "agents",
-        "research"
-      ],
-      "tags": [
-        "prp",
-        "agents",
-        "codebase-analysis",
-        "library-research",
-        "workflow",
-        "ai-agents",
-        "research",
-        "architecture",
-        "documentation",
-        "pattern-recognition"
-      ]
-    },
-    {
       "name": "prp-core",
-      "description": "Complete PRP workflow automation with commands for creating, executing, committing, and shipping features using the PRP methodology with validation and CI/CD integration",
+      "description": "Complete PRP workflow system with planning, implementation, debugging, issue management, and code review commands for systematic AI-driven development",
       "source": "./plugins/prp-core",
       "category": "development",
       "version": "1.0.0",
@@ -88,20 +25,24 @@
       "keywords": [
         "development",
         "workflow",
-        "automation"
+        "automation",
+        "planning",
+        "debugging",
+        "issue-management",
+        "code-review"
       ],
       "tags": [
         "prp",
         "workflow",
         "automation",
-        "feature-development",
-        "commit",
-        "pull-request",
-        "validation",
-        "ci-cd",
+        "planning",
+        "implementation",
+        "debugging",
+        "issue-management",
+        "code-review",
         "git",
         "testing",
-        "deployment"
+        "pull-request"
       ]
     }
   ]

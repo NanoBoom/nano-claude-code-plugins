@@ -174,11 +174,11 @@ rg -l "pattern" | xargs sed -i 's/old/new/g'
 # 统计代码行数
 fd -e ts -e tsx | xargs wc -l
 
-# 查找大文件
+# 查找大文件示例
 fd -e ts -e tsx -x wc -l {} \; | sort -rn | head -10
 
-# 查看代码文件
-bat src/main.ts
+# 查看代码文件示例
+bat /path/to/code.txt
 ```
 
 ---

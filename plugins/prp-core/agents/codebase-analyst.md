@@ -52,7 +52,7 @@ Perform deep, systematic analysis of codebases to extract:
 - Check for README files
 - Find API documentation
 - Look for inline code comments with patterns
-- Check PRPs/ai_docs/ for curated documentation
+- Check .claude/PRPs/ai_docs/ for curated documentation
 
 ## Output Format
 
