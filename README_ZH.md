@@ -122,6 +122,231 @@ claude
 
 信任该仓库的团队成员将自动安装插件。
 
+## PRP 工作流程图
+
+### 1. PRP 方法论架构
+
+```mermaid
+graph TB
+    subgraph "PRP = PRD + 代码库知识 + 智能体"
+        PRD[产品需求文档<br/>Product Requirement Document]
+        Intelligence[代码库知识<br/>Codebase Intelligence]
+        Agent[智能体/执行手册<br/>Agent/Runbook]
+
+        PRD --> |提供| Context[上下文与需求<br/>Context & Requirements]
+        Intelligence --> |提供| Patterns[模式与示例<br/>Patterns & Examples]
+        Agent --> |提供| Execution[分步执行<br/>Step-by-step Execution]
+
+        Context --> PRP[完整 PRP<br/>Complete PRP]
+        Patterns --> PRP
+        Execution --> PRP
+    end
+
+    subgraph "核心原则"
+        PRP --> Principle1[上下文为王<br/>Context is King]
+        PRP --> Principle2[验证循环<br/>Validation Loops]
+        PRP --> Principle3[信息密集<br/>Information Dense]
+        PRP --> Principle4[渐进成功<br/>Progressive Success]
+    end
+
+    Principle1 --> Success[一次性交付<br/>生产级代码<br/>Production-Ready Code<br/>on First Pass]
+    Principle2 --> Success
+    Principle3 --> Success
+    Principle4 --> Success
+
+    style PRP fill:#4CAF50,stroke:#333,stroke-width:3px,color:#fff
+    style Success fill:#2196F3,stroke:#333,stroke-width:3px,color:#fff
+```
+
+### 2. 完整功能开发工作流
+
+```mermaid
+flowchart TD
+    Start([开始: 功能需求<br/>Start: Feature Request]) --> PRD["/prp-prd<br/>生成带深度分析的 PRD<br/>Generate PRD with<br/>Deep Analysis"]
+
+    PRD --> PRDOut["📄 PRD 文档<br/>PRPs/features/*.prd.md"]
+    PRDOut --> Plan["/prp-plan<br/>创建带验证检查点的<br/>实现计划<br/>Create Implementation Plan<br/>with Validation Gates"]
+
+    Plan --> PlanOut["📋 计划文档<br/>PRPs/features/*.plan.md"]
+    PlanOut --> Implement["/prp-implement<br/>执行系统化验证<br/>Execute with<br/>Systematic Validation"]
+
+    Implement --> Tests{测试通过?<br/>Tests Pass?}
+    Tests -->|否<br/>No| FixTests[修复问题<br/>Fix Issues]
+    FixTests --> Implement
+    Tests -->|是<br/>Yes| Review["/prp-review<br/>代码审查与<br/>最佳实践检查<br/>Code Review with<br/>Best Practices"]
+
+    Review --> ReviewIssues{发现问题?<br/>Issues Found?}
+    ReviewIssues -->|是<br/>Yes| FixReview[处理审查意见<br/>Address Review Comments]
+    FixReview --> Review
+    ReviewIssues -->|否<br/>No| Commit["/prp-commit<br/>智能提交<br/>Smart Commit with<br/>Proper Messages"]
+
+    Commit --> PR["/prp-pr<br/>创建带描述的<br/>拉取请求<br/>Create Pull Request<br/>with Description"]
+    PR --> End([结束: 功能完成<br/>End: Feature Complete])
+
+    style Start fill:#E1F5FE,stroke:#01579B
+    style End fill:#C8E6C9,stroke:#1B5E20
+    style PRD fill:#FFF9C4,stroke:#F57F17
+    style Plan fill:#FFF9C4,stroke:#F57F17
+    style Implement fill:#FFECB3,stroke:#E65100
+    style Review fill:#FFECB3,stroke:#E65100
+    style Commit fill:#FFECB3,stroke:#E65100
+    style PR fill:#FFECB3,stroke:#E65100
+```
+
+### 3. Ralph 自主开发流程
+
+```mermaid
+flowchart TD
+    Start([开始: 功能需求<br/>Start: Feature Request]) --> Ralph["/prp-ralph<br/>🤖 自主智能体<br/>Autonomous Agent"]
+
+    Ralph --> Phase1["阶段 1: 研究与规划<br/>Phase 1: Research & Planning<br/>🔍 分析代码库<br/>📝 生成完整 PRD"]
+    Phase1 --> Checkpoint1{用户批准?<br/>User Approval?}
+    Checkpoint1 -->|否<br/>No| Refine1[优化 PRD<br/>Refine PRD]
+    Refine1 --> Phase1
+
+    Checkpoint1 -->|是<br/>Yes| Phase2["阶段 2: 设计<br/>Phase 2: Design<br/>🎯 创建实现计划<br/>✅ 定义验证检查点"]
+    Phase2 --> Checkpoint2{用户批准?<br/>User Approval?}
+    Checkpoint2 -->|否<br/>No| Refine2[优化计划<br/>Refine Plan]
+    Refine2 --> Phase2
+
+    Checkpoint2 -->|是<br/>Yes| Phase3["阶段 3: 实现<br/>Phase 3: Implementation<br/>💻 编写代码<br/>🧪 运行测试<br/>🔄 验证循环"]
+
+    Phase3 --> Validate{所有验证通过?<br/>All Validations<br/>Pass?}
+    Validate -->|否<br/>No| AutoFix["🔧 自动修复问题<br/>Auto-fix Issues<br/>重新运行验证<br/>Re-run validations"]
+    AutoFix --> Validate
+
+    Validate -->|是<br/>Yes| Phase4["阶段 4: 质量保证<br/>Phase 4: Quality Assurance<br/>📊 代码审查<br/>🔍 安全检查<br/>📈 性能审查"]
+
+    Phase4 --> QualityCheck{质量检查点通过?<br/>Quality Gates<br/>Pass?}
+    QualityCheck -->|否<br/>No| Improve[改进代码<br/>Improve Code]
+    Improve --> Phase4
+
+    QualityCheck -->|是<br/>Yes| Phase5["阶段 5: 交付<br/>Phase 5: Delivery<br/>📦 创建提交<br/>🚀 创建带文档的 PR"]
+    Phase5 --> End([结束: 等待审查<br/>End: Ready for Review])
+
+    Ralph -.->|随时可取消<br/>Can cancel anytime| Cancel["/prp-ralph-cancel"]
+
+    style Start fill:#E1F5FE,stroke:#01579B
+    style End fill:#C8E6C9,stroke:#1B5E20
+    style Ralph fill:#9C27B0,stroke:#4A148C,color:#fff
+    style Phase1 fill:#CE93D8,stroke:#6A1B9A
+    style Phase2 fill:#CE93D8,stroke:#6A1B9A
+    style Phase3 fill:#CE93D8,stroke:#6A1B9A
+    style Phase4 fill:#CE93D8,stroke:#6A1B9A
+    style Phase5 fill:#CE93D8,stroke:#6A1B9A
+    style Cancel fill:#EF5350,stroke:#B71C1C,color:#fff
+```
+
+### 4. Bug 调查与修复工作流
+
+```mermaid
+flowchart TD
+    Start([Bug 报告<br/>Bug Report]) --> Investigate["/prp-issue-investigate<br/>深度调查<br/>Deep Investigation"]
+
+    Investigate --> Analysis["🔍 分析步骤:<br/>Analysis Steps:<br/>• 多角度分析<br/>• 模式识别<br/>• 关联问题<br/>• 根本原因识别"]
+
+    Analysis --> Report["📄 调查报告<br/>Investigation Report<br/>PRPs/investigations/*.md"]
+    Report --> Review{明确根本原因?<br/>Clear Root<br/>Cause?}
+
+    Review -->|否<br/>No| MoreInvest[深入调查<br/>Deeper Investigation]
+    MoreInvest --> Investigate
+
+    Review -->|是<br/>Yes| Fix["/prp-issue-fix<br/>系统化修复<br/>Systematic Fix"]
+
+    Fix --> Implementation["💻 修复实现:<br/>Fix Implementation:<br/>• 代码更改<br/>• 测试覆盖<br/>• 回归预防"]
+
+    Implementation --> Validate{测试通过?<br/>Tests Pass?}
+    Validate -->|否<br/>No| Debug["/prp-debug<br/>交互式调试<br/>Interactive Debug"]
+    Debug --> Fix
+
+    Validate -->|是<br/>Yes| Verify["✅ 验证:<br/>Verification:<br/>• 原问题已修复<br/>• 无回归问题<br/>• 边界情况已覆盖"]
+
+    Verify --> VerifyCheck{已验证?<br/>Verified?}
+    VerifyCheck -->|否<br/>No| Fix
+    VerifyCheck -->|是<br/>Yes| Commit["/prp-commit<br/>提交修复<br/>Commit Fix"]
+
+    Commit --> PR["/prp-pr<br/>创建修复 PR<br/>Create Fix PR"]
+    PR --> End([结束: 修复完成<br/>End: Fix Complete])
+
+    style Start fill:#FFCDD2,stroke:#B71C1C
+    style End fill:#C8E6C9,stroke:#1B5E20
+    style Investigate fill:#FFCCBC,stroke:#E64A19
+    style Fix fill:#FFCCBC,stroke:#E64A19
+    style Debug fill:#FFE0B2,stroke:#EF6C00
+```
+
+### 5. PRP 命令生态系统
+
+```mermaid
+graph TB
+    subgraph "规划命令<br/>Planning Commands"
+        PRD["/prp-prd<br/>生成 PRD<br/>Generate PRD"]
+        Plan["/prp-plan<br/>创建计划<br/>Create Plan"]
+        Install["/install<br/>设置 PRP 系统<br/>Setup PRP System"]
+    end
+
+    subgraph "实现命令<br/>Implementation Commands"
+        Implement["/prp-implement<br/>执行 PRP<br/>Execute PRP"]
+        Debug["/prp-debug<br/>交互式调试<br/>Interactive Debug"]
+    end
+
+    subgraph "问题管理<br/>Issue Management"
+        Investigate["/prp-issue-investigate<br/>调查问题<br/>Investigate Issue"]
+        Fix["/prp-issue-fix<br/>修复问题<br/>Fix Issue"]
+    end
+
+    subgraph "质量命令<br/>Quality Commands"
+        Review["/prp-review<br/>代码审查<br/>Code Review"]
+        Commit["/prp-commit<br/>智能提交<br/>Smart Commit"]
+        PR["/prp-pr<br/>创建 PR<br/>Create PR"]
+    end
+
+    subgraph "AI 智能体<br/>AI Agents"
+        Ralph["/prp-ralph<br/>🤖 自主智能体<br/>Autonomous Agent"]
+        RalphCancel["/prp-ralph-cancel<br/>取消 Ralph<br/>Cancel Ralph"]
+    end
+
+    subgraph "专业智能体<br/>Specialized Agents"
+        Analyst["codebase-analyst<br/>代码库分析师<br/>Pattern Analysis"]
+        Researcher["library-researcher<br/>库研究员<br/>Library Research"]
+    end
+
+    PRD --> Plan
+    Plan --> Implement
+    Implement --> Review
+    Review --> Commit
+    Commit --> PR
+
+    Investigate --> Fix
+    Fix --> Commit
+
+    Debug -.->|辅助<br/>Assists| Implement
+    Debug -.->|辅助<br/>Assists| Fix
+
+    Ralph -->|编排<br/>Orchestrates| PRD
+    Ralph -->|编排<br/>Orchestrates| Plan
+    Ralph -->|编排<br/>Orchestrates| Implement
+    Ralph -->|编排<br/>Orchestrates| Review
+    Ralph -->|编排<br/>Orchestrates| Commit
+    Ralph -->|编排<br/>Orchestrates| PR
+    RalphCancel -.->|控制<br/>Controls| Ralph
+
+    Analyst -.->|支持<br/>Supports| PRD
+    Analyst -.->|支持<br/>Supports| Plan
+    Analyst -.->|支持<br/>Supports| Investigate
+
+    Researcher -.->|支持<br/>Supports| PRD
+    Researcher -.->|支持<br/>Supports| Plan
+
+    Install -.->|初始化<br/>Initializes| PRD
+    Install -.->|初始化<br/>Initializes| Plan
+
+    style Ralph fill:#9C27B0,stroke:#4A148C,color:#fff
+    style RalphCancel fill:#EF5350,stroke:#B71C1C,color:#fff
+    style Analyst fill:#4CAF50,stroke:#1B5E20,color:#fff
+    style Researcher fill:#2196F3,stroke:#0D47A1,color:#fff
+```
+
 ## 快速参考
 
 ### 完整功能开发工作流

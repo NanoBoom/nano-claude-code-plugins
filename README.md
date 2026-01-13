@@ -122,6 +122,231 @@ Add to your project's `.claude/settings.json`:
 
 Team members who trust the repository will automatically have the plugin installed.
 
+## PRP Workflow Diagrams
+
+### 1. PRP Methodology Architecture
+
+```mermaid
+graph TB
+    subgraph "PRP = PRD + Intelligence + Agent"
+        PRD[Product Requirement Document]
+        Intelligence[Codebase Intelligence]
+        Agent[Agent/Runbook]
+
+        PRD --> |Provides| Context[Context & Requirements]
+        Intelligence --> |Provides| Patterns[Patterns & Examples]
+        Agent --> |Provides| Execution[Step-by-step Execution]
+
+        Context --> PRP[Complete PRP]
+        Patterns --> PRP
+        Execution --> PRP
+    end
+
+    subgraph "Core Principles"
+        PRP --> Principle1[Context is King]
+        PRP --> Principle2[Validation Loops]
+        PRP --> Principle3[Information Dense]
+        PRP --> Principle4[Progressive Success]
+    end
+
+    Principle1 --> Success[Production-Ready Code<br/>on First Pass]
+    Principle2 --> Success
+    Principle3 --> Success
+    Principle4 --> Success
+
+    style PRP fill:#4CAF50,stroke:#333,stroke-width:3px,color:#fff
+    style Success fill:#2196F3,stroke:#333,stroke-width:3px,color:#fff
+```
+
+### 2. Complete Feature Development Workflow
+
+```mermaid
+flowchart TD
+    Start([Start: Feature Request]) --> PRD["/prp-prd<br/>Generate PRD with<br/>Deep Analysis"]
+
+    PRD --> PRDOut["📄 PRD Document<br/>PRPs/features/*.prd.md"]
+    PRDOut --> Plan["/prp-plan<br/>Create Implementation Plan<br/>with Validation Gates"]
+
+    Plan --> PlanOut["📋 Plan Document<br/>PRPs/features/*.plan.md"]
+    PlanOut --> Implement["/prp-implement<br/>Execute with<br/>Systematic Validation"]
+
+    Implement --> Tests{Tests Pass?}
+    Tests -->|No| FixTests[Fix Issues]
+    FixTests --> Implement
+    Tests -->|Yes| Review["/prp-review<br/>Code Review with<br/>Best Practices"]
+
+    Review --> ReviewIssues{Issues Found?}
+    ReviewIssues -->|Yes| FixReview[Address Review Comments]
+    FixReview --> Review
+    ReviewIssues -->|No| Commit["/prp-commit<br/>Smart Commit with<br/>Proper Messages"]
+
+    Commit --> PR["/prp-pr<br/>Create Pull Request<br/>with Description"]
+    PR --> End([End: Feature Complete])
+
+    style Start fill:#E1F5FE,stroke:#01579B
+    style End fill:#C8E6C9,stroke:#1B5E20
+    style PRD fill:#FFF9C4,stroke:#F57F17
+    style Plan fill:#FFF9C4,stroke:#F57F17
+    style Implement fill:#FFECB3,stroke:#E65100
+    style Review fill:#FFECB3,stroke:#E65100
+    style Commit fill:#FFECB3,stroke:#E65100
+    style PR fill:#FFECB3,stroke:#E65100
+```
+
+### 3. Ralph Autonomous Development
+
+```mermaid
+flowchart TD
+    Start([Start: Feature Request]) --> Ralph["/prp-ralph<br/>🤖 Autonomous Agent"]
+
+    Ralph --> Phase1["Phase 1: Research & Planning<br/>🔍 Analyze codebase<br/>📝 Generate comprehensive PRD"]
+    Phase1 --> Checkpoint1{User Approval?}
+    Checkpoint1 -->|No| Refine1[Refine PRD]
+    Refine1 --> Phase1
+
+    Checkpoint1 -->|Yes| Phase2["Phase 2: Design<br/>🎯 Create implementation plan<br/>✅ Define validation gates"]
+    Phase2 --> Checkpoint2{User Approval?}
+    Checkpoint2 -->|No| Refine2[Refine Plan]
+    Refine2 --> Phase2
+
+    Checkpoint2 -->|Yes| Phase3["Phase 3: Implementation<br/>💻 Write code<br/>🧪 Run tests<br/>🔄 Validation loop"]
+
+    Phase3 --> Validate{All Validations<br/>Pass?}
+    Validate -->|No| AutoFix["🔧 Auto-fix Issues<br/>Re-run validations"]
+    AutoFix --> Validate
+
+    Validate -->|Yes| Phase4["Phase 4: Quality Assurance<br/>📊 Code review<br/>🔍 Security check<br/>📈 Performance review"]
+
+    Phase4 --> QualityCheck{Quality Gates<br/>Pass?}
+    QualityCheck -->|No| Improve[Improve Code]
+    Improve --> Phase4
+
+    QualityCheck -->|Yes| Phase5["Phase 5: Delivery<br/>📦 Create commit<br/>🚀 Create PR with docs"]
+    Phase5 --> End([End: Ready for Review])
+
+    Ralph -.->|Can cancel anytime| Cancel["/prp-ralph-cancel"]
+
+    style Start fill:#E1F5FE,stroke:#01579B
+    style End fill:#C8E6C9,stroke:#1B5E20
+    style Ralph fill:#9C27B0,stroke:#4A148C,color:#fff
+    style Phase1 fill:#CE93D8,stroke:#6A1B9A
+    style Phase2 fill:#CE93D8,stroke:#6A1B9A
+    style Phase3 fill:#CE93D8,stroke:#6A1B9A
+    style Phase4 fill:#CE93D8,stroke:#6A1B9A
+    style Phase5 fill:#CE93D8,stroke:#6A1B9A
+    style Cancel fill:#EF5350,stroke:#B71C1C,color:#fff
+```
+
+### 4. Bug Investigation & Fix Workflow
+
+```mermaid
+flowchart TD
+    Start([Bug Report]) --> Investigate["/prp-issue-investigate<br/>Deep Investigation"]
+
+    Investigate --> Analysis["🔍 Analysis Steps:<br/>• Multi-angle analysis<br/>• Pattern recognition<br/>• Related issues<br/>• Root cause identification"]
+
+    Analysis --> Report["📄 Investigation Report<br/>PRPs/investigations/*.md"]
+    Report --> Review{Clear Root<br/>Cause?}
+
+    Review -->|No| MoreInvest[Deeper Investigation]
+    MoreInvest --> Investigate
+
+    Review -->|Yes| Fix["/prp-issue-fix<br/>Systematic Fix"]
+
+    Fix --> Implementation["💻 Fix Implementation:<br/>• Code changes<br/>• Test coverage<br/>• Regression prevention"]
+
+    Implementation --> Validate{Tests Pass?}
+    Validate -->|No| Debug["/prp-debug<br/>Interactive Debug"]
+    Debug --> Fix
+
+    Validate -->|Yes| Verify["✅ Verification:<br/>• Original issue fixed<br/>• No regressions<br/>• Edge cases covered"]
+
+    Verify --> VerifyCheck{Verified?}
+    VerifyCheck -->|No| Fix
+    VerifyCheck -->|Yes| Commit["/prp-commit<br/>Commit Fix"]
+
+    Commit --> PR["/prp-pr<br/>Create Fix PR"]
+    PR --> End([End: Fix Complete])
+
+    style Start fill:#FFCDD2,stroke:#B71C1C
+    style End fill:#C8E6C9,stroke:#1B5E20
+    style Investigate fill:#FFCCBC,stroke:#E64A19
+    style Fix fill:#FFCCBC,stroke:#E64A19
+    style Debug fill:#FFE0B2,stroke:#EF6C00
+```
+
+### 5. PRP Command Ecosystem
+
+```mermaid
+graph TB
+    subgraph "Planning Commands"
+        PRD["/prp-prd<br/>Generate PRD"]
+        Plan["/prp-plan<br/>Create Plan"]
+        Install["/install<br/>Setup PRP System"]
+    end
+
+    subgraph "Implementation Commands"
+        Implement["/prp-implement<br/>Execute PRP"]
+        Debug["/prp-debug<br/>Interactive Debug"]
+    end
+
+    subgraph "Issue Management"
+        Investigate["/prp-issue-investigate<br/>Investigate Issue"]
+        Fix["/prp-issue-fix<br/>Fix Issue"]
+    end
+
+    subgraph "Quality Commands"
+        Review["/prp-review<br/>Code Review"]
+        Commit["/prp-commit<br/>Smart Commit"]
+        PR["/prp-pr<br/>Create PR"]
+    end
+
+    subgraph "AI Agents"
+        Ralph["/prp-ralph<br/>🤖 Autonomous Agent"]
+        RalphCancel["/prp-ralph-cancel<br/>Cancel Ralph"]
+    end
+
+    subgraph "Specialized Agents"
+        Analyst["codebase-analyst<br/>Pattern Analysis"]
+        Researcher["library-researcher<br/>Library Research"]
+    end
+
+    PRD --> Plan
+    Plan --> Implement
+    Implement --> Review
+    Review --> Commit
+    Commit --> PR
+
+    Investigate --> Fix
+    Fix --> Commit
+
+    Debug -.->|Assists| Implement
+    Debug -.->|Assists| Fix
+
+    Ralph -->|Orchestrates| PRD
+    Ralph -->|Orchestrates| Plan
+    Ralph -->|Orchestrates| Implement
+    Ralph -->|Orchestrates| Review
+    Ralph -->|Orchestrates| Commit
+    Ralph -->|Orchestrates| PR
+    RalphCancel -.->|Controls| Ralph
+
+    Analyst -.->|Supports| PRD
+    Analyst -.->|Supports| Plan
+    Analyst -.->|Supports| Investigate
+
+    Researcher -.->|Supports| PRD
+    Researcher -.->|Supports| Plan
+
+    Install -.->|Initializes| PRD
+    Install -.->|Initializes| Plan
+
+    style Ralph fill:#9C27B0,stroke:#4A148C,color:#fff
+    style RalphCancel fill:#EF5350,stroke:#B71C1C,color:#fff
+    style Analyst fill:#4CAF50,stroke:#1B5E20,color:#fff
+    style Researcher fill:#2196F3,stroke:#0D47A1,color:#fff
+```
+
 ## Quick Reference
 
 ### Complete Feature Development Workflow
