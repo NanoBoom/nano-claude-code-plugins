@@ -1,5 +1,5 @@
 ---
-name: "prp-agents:library-researcher"
+name: "library-researcher"
 description: "Use proactivley to research external libraries and fetch relevant documentation for implementation"
 model: "sonnet"
 ---

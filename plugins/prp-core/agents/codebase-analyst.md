@@ -1,5 +1,5 @@
 ---
-name: "prp-agents:codebase-analyst"
+name: "codebase-analyst"
 description: "Use proactively to find codebase patterns, coding style and team standards. Specialized agent for deep codebase pattern analysis and convention discovery"
 model: "sonnet"
 ---
