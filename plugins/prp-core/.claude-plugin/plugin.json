@@ -7,6 +7,10 @@
     "email": "cinuor@gmail.com"
   },
   "repository": "https://github.com/NanoBoom/nano-claude-code-plugins.git",
+  "agents": "./agents/",
+  "commands": "./commands/",
+  "skills": "./skills/",
+  "hooks": "./hooks/hooks.json",
   "keywords": [
     "prp",
     "planning",

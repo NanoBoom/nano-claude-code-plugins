@@ -236,15 +236,19 @@ If a deviation from expected patterns is documented in the implementation report
 
 ### 4.1 Run Validation Suite
 
-Detect project type from config files and run corresponding commands:
+```bash
+# Type checking (adapt to project)
+npm run type-check || bun run type-check || npx tsc --noEmit
 
-| Project Type | Type Check | Lint | Test | Build |
-|----------|------------|------|------|-------|
-| Bun | `bun run type-check` | `bun run lint` | `bun test` | `bun run build` |
-| Node.js | `npm run type-check` | `npm run lint` | `npm test` | `npm run build` |
-| Python | `mypy .` | `ruff check .` | `pytest` | - |
-| Go | `go vet ./...` | `golangci-lint run` | `go test ./...` | `go build ./...` |
-| Rust | `cargo check` | `cargo clippy` | `cargo test` | `cargo build` |
+# Linting
+npm run lint || bun run lint
+
+# Tests
+npm test || bun test
+
+# Build
+npm run build || bun run build
+```
 
 **Capture for each:**
 - Pass/fail status
@@ -265,7 +269,13 @@ Based on what changed:
 
 ### 4.3 Regression Check
 
-Run project's Test command (see table above).
+```bash
+# Full test suite
+npm test || bun test
+
+# Specific tests for changed functionality
+npm test -- {relevant-test-pattern}
+```
 
 **PHASE_4_CHECKPOINT:**
 - [ ] Type check executed

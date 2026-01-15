@@ -14,9 +14,21 @@ Transform "$ARGUMENTS" into a battle-tested implementation plan through systemat
 </objective>
 
 <context>
-Project type: !`ls bun.lockb package.json pyproject.toml go.mod Cargo.toml pom.xml build.gradle Makefile 2>/dev/null | head -1`
-Project structure: !`ls -la`
 CLAUDE.md rules: @CLAUDE.md
+
+**Directory Discovery** (run these to understand project structure):
+- List root contents: `ls -la`
+- Find main source directories: `ls -la */ 2>/dev/null | head -50`
+- Identify project type from config files (package.json, pyproject.toml, Cargo.toml, go.mod, etc.)
+
+**IMPORTANT**: Do NOT assume `src/` exists. Common alternatives include:
+- `app/` (Next.js, Rails, Laravel)
+- `lib/` (Ruby gems, Elixir)
+- `packages/` (monorepos)
+- `cmd/`, `internal/`, `pkg/` (Go)
+- Root-level source files (Python, scripts)
+
+Discover the actual structure before proceeding.
 </context>
 
 <process>
@@ -434,7 +446,7 @@ Execute in order. Each task is atomic and independently verifiable.
 - **MIRROR**: `src/core/database/schema.ts:XX-YY` - follow existing table pattern
 - **IMPORTS**: `import { pgTable, text, timestamp } from "drizzle-orm/pg-core"`
 - **GOTCHA**: {known issue to avoid, e.g., "use uuid for id, not serial"}
-- **VALIDATE**: {Run project's Type Check command} - types must compile
+- **VALIDATE**: `npx tsc --noEmit` - types must compile
 
 ### Task 2: CREATE `src/features/new/models.ts`
 
@@ -444,7 +456,7 @@ Execute in order. Each task is atomic and independently verifiable.
 - **IMPORTS**: `import { things } from "@/core/database/schema"`
 - **TYPES**: `type Thing = typeof things.$inferSelect`
 - **GOTCHA**: Use `$inferSelect` for read types, `$inferInsert` for write
-- **VALIDATE**: {Run project's Type Check command}
+- **VALIDATE**: `npx tsc --noEmit`
 
 ### Task 3: CREATE `src/features/new/schemas.ts`
 
@@ -453,7 +465,7 @@ Execute in order. Each task is atomic and independently verifiable.
 - **MIRROR**: `src/features/projects/schemas.ts:1-30`
 - **IMPORTS**: `import { z } from "zod/v4"` (note: zod/v4 not zod)
 - **GOTCHA**: z.record requires two args in v4
-- **VALIDATE**: {Run project's Type Check command}
+- **VALIDATE**: `npx tsc --noEmit`
 
 ### Task 4: CREATE `src/features/new/errors.ts`
 
@@ -461,7 +473,7 @@ Execute in order. Each task is atomic and independently verifiable.
 - **IMPLEMENT**: ThingNotFoundError, ThingAccessDeniedError
 - **MIRROR**: `src/features/projects/errors.ts:1-40`
 - **PATTERN**: Extend base Error, include code and statusCode
-- **VALIDATE**: {Run project's Type Check command}
+- **VALIDATE**: `npx tsc --noEmit`
 
 ### Task 5: CREATE `src/features/new/repository.ts`
 
@@ -470,7 +482,7 @@ Execute in order. Each task is atomic and independently verifiable.
 - **MIRROR**: `src/features/projects/repository.ts:1-60`
 - **IMPORTS**: `import { db } from "@/core/database/client"`
 - **GOTCHA**: Use `results[0]` pattern, not `.first()` - check noUncheckedIndexedAccess
-- **VALIDATE**: {Run project's Type Check command}
+- **VALIDATE**: `npx tsc --noEmit`
 
 ### Task 6: CREATE `src/features/new/service.ts`
 
@@ -479,23 +491,23 @@ Execute in order. Each task is atomic and independently verifiable.
 - **MIRROR**: `src/features/projects/service.ts:1-80`
 - **PATTERN**: Use repository, add logging, throw custom errors
 - **IMPORTS**: `import { getLogger } from "@/core/logging"`
-- **VALIDATE**: {Run project's Type Check + Lint commands}
+- **VALIDATE**: `{type-check-cmd} && {lint-cmd}`
 
-### Task 7: CREATE `src/features/new/index.ts`
+### Task 7: CREATE `{source-dir}/features/new/index.ts`
 
 - **ACTION**: CREATE public API exports
 - **IMPLEMENT**: Export types, schemas, errors, service functions
-- **MIRROR**: `src/features/projects/index.ts:1-20`
+- **MIRROR**: `{source-dir}/features/{example}/index.ts:1-20`
 - **PATTERN**: Named exports only, hide repository (internal)
-- **VALIDATE**: {Run project's Type Check command}
+- **VALIDATE**: `{type-check-cmd}`
 
-### Task 8: CREATE `src/features/new/tests/service.test.ts`
+### Task 8: CREATE `{source-dir}/features/new/tests/service.test.ts`
 
 - **ACTION**: CREATE unit tests for service
 - **IMPLEMENT**: Test each service function, happy path + error cases
-- **MIRROR**: `src/features/projects/tests/service.test.ts:1-100`
-- **PATTERN**: Use project's test framework, mock repository
-- **VALIDATE**: {Run project's Test command} src/features/new/tests/
+- **MIRROR**: `{source-dir}/features/{example}/tests/service.test.ts:1-100`
+- **PATTERN**: Use project's test framework (jest, vitest, bun:test, pytest, etc.)
+- **VALIDATE**: `{test-cmd} {path-to-tests}`
 
 ---
 
@@ -522,35 +534,34 @@ Execute in order. Each task is atomic and independently verifiable.
 
 ## Validation Commands
 
-**Detect project type from config files and run corresponding commands:**
-
-| Project Type | Type Check | Lint | Test | Build |
-|----------|------------|------|------|-------|
-| Bun | `bun run type-check` | `bun run lint` | `bun test` | `bun run build` |
-| Node.js | `npm run type-check` | `npm run lint` | `npm test` | `npm run build` |
-| Python | `mypy .` | `ruff check .` | `pytest` | - |
-| Go | `go vet ./...` | `golangci-lint run` | `go test ./...` | `go build ./...` |
-| Rust | `cargo check` | `cargo clippy` | `cargo test` | `cargo build` |
-| Maven | `mvn compile -q` | - | `mvn test -q` | `mvn package -q` |
-| Gradle | `gradle compileJava -q` | - | `gradle test` | `gradle build` |
+**IMPORTANT**: Replace these placeholders with actual commands from the project's package.json/config.
 
 ### Level 1: STATIC_ANALYSIS
 
-Run project's Type Check + Lint commands (see table above).
+```bash
+{runner} run lint && {runner} run type-check
+# Examples: npm run lint, pnpm lint, ruff check . && mypy ., cargo clippy
+```
 
-**EXPECT**: Exit 0, no errors
+**EXPECT**: Exit 0, no errors or warnings
 
 ### Level 2: UNIT_TESTS
 
-Run project's Test command (see table above).
+```bash
+{runner} test {path/to/feature/tests}
+# Examples: npm test, pytest tests/, cargo test, go test ./...
+```
 
-**EXPECT**: All tests pass
+**EXPECT**: All tests pass, coverage >= 80%
 
-### Level 3: BUILD
+### Level 3: FULL_SUITE
 
-Run project's Build command (see table above).
+```bash
+{runner} test && {runner} run build
+# Examples: npm test && npm run build, cargo test && cargo build
+```
 
-**EXPECT**: Build succeeds
+**EXPECT**: All tests pass, build succeeds
 
 ### Level 4: DATABASE_VALIDATION (if schema changes)
 
@@ -589,9 +600,9 @@ Use Browser MCP to verify:
 
 - [ ] All tasks completed in dependency order
 - [ ] Each task validated immediately after completion
-- [ ] Level 1: Type Check + Lint passes (per project type)
-- [ ] Level 2: Tests pass (per project type)
-- [ ] Level 3: Build succeeds (per project type)
+- [ ] Level 1: Static analysis (lint + type-check) passes
+- [ ] Level 2: Unit tests pass
+- [ ] Level 3: Full test suite + build succeeds
 - [ ] Level 4: Database validation passes (if applicable)
 - [ ] Level 5: Browser validation passes (if applicable)
 - [ ] All acceptance criteria met

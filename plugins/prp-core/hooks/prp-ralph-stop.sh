@@ -78,7 +78,7 @@ NEXT_ITERATION=$((ITERATION + 1))
 
 # Update iteration in state file
 TEMP_FILE="${STATE_FILE}.tmp.$$"
-sed "s/^iteration: .*/iteration: $NEXT_ITERATION/" "$STATE_FILE" >"$TEMP_FILE"
+sed "s/^iteration: .*/iteration: $NEXT_ITERATION/" "$STATE_FILE" > "$TEMP_FILE"
 mv "$TEMP_FILE" "$STATE_FILE"
 
 # Build the prompt to feed back
