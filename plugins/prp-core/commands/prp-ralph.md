@@ -62,13 +62,14 @@ If input is a `.prd.md` file:
 1. Read the PRD
 2. Parse Implementation Phases table
 3. Find first phase with `Status: pending` where dependencies are `complete`
-4. Report which phase will be executed
-5. Note: The loop will create and execute a plan for this phase
+4. Store the phase number and name for tracking
+5. Report which phase will be executed
+6. Note: The loop will create and execute a plan for this phase
 
 **PHASE_1_CHECKPOINT:**
 - [ ] Input parsed (file path + max iterations)
 - [ ] File exists and is valid type
-- [ ] If PRD: next phase identified
+- [ ] If PRD: next phase identified and stored
 
 ---
 
@@ -91,6 +92,8 @@ iteration: 1
 max_iterations: {N}
 plan_path: "{file_path}"
 input_type: "{plan|prd}"
+prd_phase_number: "{phase#}"  # Only if input_type is prd
+prd_phase_name: "{phase name}"  # Only if input_type is prd
 started_at: "{ISO timestamp}"
 ---
 
@@ -283,7 +286,40 @@ ALL of these must be true:
 
 ### 4.2 If ALL Pass - Complete the Loop
 
-1. **Generate Implementation Report**
+1. **Update PRD Status (if applicable)**
+
+   If this Ralph run was initiated from a PRD file (`input_type: prd` in state file):
+
+   a. **Read state file metadata**
+      - Extract `plan_path` (the PRD file path)
+      - Extract `prd_phase_number` (which phase was executed)
+      - Extract `prd_phase_name` (for verification)
+
+   b. **Read the PRD file**
+      - Locate the Implementation Phases table
+      - Find the row matching `prd_phase_number`
+
+   c. **Update the phase row**
+      - Change `Status` column from `pending` to `complete`
+      - Update `PRP Plan` column with relative link to the plan file
+      - Preserve all other columns
+
+   d. **Write back to PRD**
+      - Save the updated PRD file
+      - Verify the change was applied
+
+   **Example transformation:**
+   ```markdown
+   <!-- Before -->
+   | 1 | Setup Infrastructure | Create base config | pending | - | - | - |
+
+   <!-- After -->
+   | 1 | Setup Infrastructure | Create base config | complete | - | - | [plan](.claude/PRPs/plans/completed/feature-setup.plan.md) |
+   ```
+
+   **Note**: This allows the next `/prp-ralph {prd-file}` invocation to automatically select the next pending phase.
+
+2. **Generate Implementation Report**
 
    Create `.claude/PRPs/reports/{plan-name}-report.md`:
 
@@ -318,7 +354,7 @@ ALL of these must be true:
    {Any changes made}
    ```
 
-2. **Archive the Ralph Run**
+3. **Archive the Ralph Run**
 
    ```bash
    # Create archive directory
@@ -338,7 +374,7 @@ ALL of these must be true:
    cp .claude/PRPs/reports/{plan-name}-report.md "$ARCHIVE_DIR/learnings.md"
    ```
 
-3. **Update CLAUDE.md with Permanent Patterns (if applicable)**
+4. **Update CLAUDE.md with Permanent Patterns (if applicable)**
 
    If any patterns from "Codebase Patterns" section are significant enough to be permanent project knowledge:
 
@@ -352,20 +388,20 @@ ALL of these must be true:
    - {Pattern that should be permanent}
    ```
 
-4. **Archive Plan to Completed**
+5. **Archive Plan to Completed**
 
    ```bash
    mkdir -p .claude/PRPs/plans/completed
    mv {plan_path} .claude/PRPs/plans/completed/
    ```
 
-5. **Clean Up State**
+6. **Clean Up State**
 
    ```bash
    rm .claude/prp-ralph.state.md
    ```
 
-6. **Output Completion Promise**
+7. **Output Completion Promise**
 
    ```
    <promise>COMPLETE</promise>
