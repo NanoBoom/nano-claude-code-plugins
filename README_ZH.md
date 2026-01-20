@@ -41,10 +41,12 @@ PRP（产品需求提示词）是一份完整的实施文档，包含：
 - 代码质量和审查自动化
 - 智能提交的 Git 集成
 
-**命令 (12个):**
+**命令 (14个):**
 
 | 命令 | 描述 |
 |------|------|
+| `/prp-create` | 快速创建功能 PRP，适用于简单需求 |
+| `/prp-execute` | 执行功能 PRP 直到完全完成 |
 | `/prp-prd` | 生成带深度分析的完整产品需求文档 |
 | `/prp-plan` | 创建带验证检查点的详细实现计划 |
 | `/prp-implement` | 执行 PRP，带系统化验证和质量检查 |
@@ -349,7 +351,21 @@ graph TB
 
 ## 快速参考
 
-### 完整功能开发工作流
+### 快速功能开发（简单需求）
+
+```bash
+# 1. 创建带代码库分析的功能 PRP
+/prp-create "为用户列表 API 添加分页功能"
+
+# 2. 执行 PRP 并进行验证
+/prp-execute .claude/PRPs/features/add-pagination.md
+
+# 3. 提交并创建 PR
+/prp-commit
+/prp-pr "feat: add pagination to user list"
+```
+
+### 完整功能开发（复杂功能）
 
 ```bash
 # 1. 创建带深度代码库分析的 PRD
@@ -509,7 +525,8 @@ plugins/
 
 ### v1.2.0 (2025-01-12)
 - 整合为单一全面的 prp-core 插件
-- 添加涵盖完整开发生命周期的 12 个命令
+- 添加涵盖完整开发生命周期的 14 个命令
+- 新增快捷命令：`/prp-create` 和 `/prp-execute` 用于简单需求
 - 添加用于代码库和库研究的 2 个专业智能体
 - 移除 prp-main 和 prp-agents（合并到 prp-core）
 - 更新文档和示例

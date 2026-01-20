@@ -41,10 +41,12 @@ Complete PRP workflow system providing comprehensive commands for planning, impl
 - Code quality and review automation
 - Git integration with smart commits
 
-**Commands (12):**
+**Commands (14):**
 
 | Command | Description |
 |---------|-------------|
+| `/prp-create` | Quick feature PRP creation for simple requirements |
+| `/prp-execute` | Execute a feature PRP until fully complete |
 | `/prp-prd` | Generate comprehensive Product Requirement Documents with deep analysis |
 | `/prp-plan` | Create detailed implementation plans with validation gates |
 | `/prp-implement` | Execute PRPs with systematic validation and quality checks |
@@ -349,7 +351,21 @@ graph TB
 
 ## Quick Reference
 
-### Complete Feature Development Workflow
+### Quick Feature Development (Simple Requirements)
+
+```bash
+# 1. Create feature PRP with codebase analysis
+/prp-create "Add pagination to user list API"
+
+# 2. Execute the PRP with validation
+/prp-execute .claude/PRPs/features/add-pagination.md
+
+# 3. Commit and create PR
+/prp-commit
+/prp-pr "feat: add pagination to user list"
+```
+
+### Complete Feature Development (Complex Features)
 
 ```bash
 # 1. Create PRD with deep codebase analysis

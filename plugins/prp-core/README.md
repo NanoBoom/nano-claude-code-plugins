@@ -8,7 +8,14 @@ This plugin provides a comprehensive workflow for creating, executing, and shipp
 
 ## Commands
 
-### Core Workflow
+### Quick Workflow (Simple Features)
+
+| Command | Description |
+|---------|-------------|
+| `/prp-create` | Quick feature PRP creation with codebase analysis |
+| `/prp-execute` | Execute a feature PRP until fully complete |
+
+### Core Workflow (Complex Features)
 
 | Command | Description |
 |---------|-------------|
@@ -32,6 +39,18 @@ This plugin provides a comprehensive workflow for creating, executing, and shipp
 | `/prp-review` | Comprehensive PR code review |
 
 ## Workflow
+
+### Simple Features: Quick Create & Execute
+
+```
+/prp-create "add pagination to user list"
+    ↓
+Creates feature PRP with codebase analysis
+    ↓
+/prp-execute .claude/PRPs/features/add-pagination.md
+    ↓
+Executes PRP with validation loops
+```
 
 ### Large Features: PRD → Plan → Implement
 
