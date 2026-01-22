@@ -17,6 +17,7 @@ This skill provides the knowledge needed to correctly execute Ralph loop iterati
 Check for the state file: `.claude/prp-ralph.state.md`
 
 If this file exists, you are in an active Ralph loop. Read it first to understand:
+
 - Current iteration number
 - Maximum iterations allowed
 - Path to the plan being executed
@@ -78,27 +79,32 @@ started_at: "2024-01-12T10:00:00Z"
 ### Each Iteration Must Follow This Sequence
 
 #### Step 1: Read Context
+
 1. Read the state file to understand current iteration and history
 2. Read the plan file (from `plan_path`) to understand all tasks
 3. Check the "Codebase Patterns" section for learnings from previous iterations
 4. Review git status to see current state of changes
 
 #### Step 2: Assess Current State
+
 1. What tasks in the plan are already complete?
 2. What validations are currently passing/failing?
 3. What did the previous iteration accomplish?
 4. What's blocking completion?
 
 #### Step 3: Implement Next Piece
+
 1. Pick the next logical task (respect dependencies)
 2. Implement it fully
 3. Keep changes focused and minimal
 4. Follow existing code patterns
 
 #### Step 4: Run ALL Validations
+
 Run every validation command. Do not skip any.
 
 **TypeScript/JavaScript:**
+
 ```bash
 bun run type-check || npm run type-check || npx tsc --noEmit
 bun run lint || npm run lint
@@ -107,6 +113,7 @@ bun run build || npm run build
 ```
 
 **Python:**
+
 ```bash
 uv run ruff check --fix
 uv run mypy .
@@ -114,14 +121,17 @@ uv run pytest
 ```
 
 **General:**
+
 ```bash
 git status  # Check for uncommitted changes
 ```
 
 #### Step 5: Update Progress
+
 Append to the state file's progress log (see Section 6).
 
 #### Step 6: Decide Continue or Complete
+
 - If ALL validations pass AND all tasks done → Output completion signal
 - If ANY validation failing OR tasks remain → End response normally
 
@@ -193,6 +203,7 @@ NEVER output the completion signal if:
 ### What Happens After Completion
 
 When you output `<promise>COMPLETE</promise>`:
+
 1. The stop hook detects it
 2. State file is cleaned up
 3. Loop exits successfully
@@ -201,6 +212,7 @@ When you output `<promise>COMPLETE</promise>`:
 ### What Happens If You Don't Complete
 
 If you end your response without the completion signal:
+
 1. The stop hook detects incomplete state
 2. Hook blocks exit and feeds continuation prompt
 3. Next iteration begins with fresh context
@@ -267,12 +279,14 @@ Only add patterns that are **general and reusable**, not iteration-specific deta
 If you discover patterns that should be permanent project knowledge, update the project's CLAUDE.md:
 
 **Good additions:**
+
 - API patterns specific to this codebase
 - Testing approaches that work well
 - Configuration requirements
 - Dependencies between modules
 
 **Bad additions:**
+
 - Temporary debugging notes
 - Iteration-specific implementation details
 - Information already in the plan
@@ -300,6 +314,7 @@ When a Ralph loop completes successfully, the learnings should be:
 3. **Integrated** - Key learnings added to CLAUDE.md or AGENTS.md
 
 Archive format:
+
 ```
 .claude/PRPs/ralph-archives/
 └── YYYY-MM-DD-feature-name/
@@ -313,26 +328,32 @@ Archive format:
 ## 8. Common Mistakes to Avoid
 
 ### Mistake 1: Outputting Completion Too Early
+
 **Wrong:** "Tests are probably passing, <promise>COMPLETE</promise>"
 **Right:** Run tests, verify they pass, THEN output completion
 
 ### Mistake 2: Not Reading Previous Progress
+
 **Wrong:** Start implementing without checking what's done
 **Right:** Read state file first, understand current state
 
 ### Mistake 3: Ignoring Codebase Patterns
+
 **Wrong:** Invent new patterns for common operations
 **Right:** Check patterns section, follow existing conventions
 
 ### Mistake 4: Skipping Validations
+
 **Wrong:** "I'm confident this works, no need to run tests"
 **Right:** ALWAYS run ALL validations, every iteration
 
 ### Mistake 5: Not Logging Learnings
+
 **Wrong:** Fix a tricky issue without documenting it
 **Right:** Log the gotcha so future iterations don't repeat it
 
 ### Mistake 6: Too Much in One Iteration
+
 **Wrong:** Try to complete 5 tasks in one iteration
 **Right:** Focus on one task, do it well, validate, commit
 
@@ -345,6 +366,7 @@ Archive format:
 User invokes: `/prp-ralph [plan.md] --max-iterations N`
 
 The command:
+
 1. Creates the state file
 2. Sets initial iteration to 1
 3. Provides initial execution prompt
@@ -354,6 +376,7 @@ The command:
 User invokes: `/prp-ralph-cancel`
 
 This:
+
 1. Removes the state file
 2. Stops the loop
 3. Preserves git history
@@ -367,16 +390,19 @@ This skill is **not user-invoked**. It provides the knowledge Claude needs durin
 ## 10. Quick Reference
 
 ### State File Path
+
 ```
 .claude/prp-ralph.state.md
 ```
 
 ### Completion Signal
+
 ```
 <promise>COMPLETE</promise>
 ```
 
 ### Iteration Checklist
+
 - [ ] Read state file and plan
 - [ ] Check codebase patterns section
 - [ ] Implement next task
@@ -389,6 +415,7 @@ This skill is **not user-invoked**. It provides the knowledge Claude needs durin
 - [ ] Decide: complete or continue
 
 ### Validation Commands (Common)
+
 ```bash
 # TypeScript/JavaScript
 npm run type-check && npm run lint && npm test && npm run build
@@ -398,6 +425,7 @@ uv run ruff check && uv run mypy . && uv run pytest
 ```
 
 ### Progress Log Template
+
 ```markdown
 ## Iteration N - YYYY-MM-DDTHH:MM:SSZ
 
