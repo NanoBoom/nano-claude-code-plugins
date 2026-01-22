@@ -41,7 +41,7 @@ Complete PRP workflow system providing comprehensive commands for planning, impl
 - Code quality and review automation
 - Git integration with smart commits
 
-**Commands (14):**
+**Commands (15):**
 
 | Command | Description |
 |---------|-------------|
@@ -54,18 +54,27 @@ Complete PRP workflow system providing comprehensive commands for planning, impl
 | `/prp-issue-investigate` | Deep investigation of issues with systematic analysis |
 | `/prp-issue-fix` | Systematic issue fixing with validation loops |
 | `/prp-review` | Comprehensive code review with best practices validation |
+| `/prp-review-agents` | Multi-agent PR review with specialized analysis (comments, tests, errors, types, code quality, docs, simplification) |
 | `/prp-commit` | Create atomic git commits with proper messages |
 | `/prp-pr` | Create pull requests with comprehensive descriptions |
 | `/prp-ralph` | Launch autonomous development agent for end-to-end features |
 | `/prp-ralph-cancel` | Cancel the running Ralph agent |
 | `/install` | Install and configure PRP system |
 
-**Agents (2):**
+**Agents (10):**
 
 | Agent | Description |
 |-------|-------------|
 | `codebase-analyst` | Deep codebase pattern analysis, architecture discovery, and convention detection |
-| `library-researcher` | External library documentation research, API discovery, and best practices identification |
+| `codebase-explorer` | Comprehensive codebase exploration - finds WHERE code lives AND shows HOW it's implemented |
+| `code-reviewer` | Reviews code for project guideline compliance, bugs, and quality issues with high-confidence filtering |
+| `code-simplifier` | Simplifies code for clarity while preserving functionality - reduces complexity and applies project standards |
+| `comment-analyzer` | Analyzes code comments for accuracy, completeness, and long-term value - protects against comment rot |
+| `docs-impact-agent` | Updates documentation affected by code changes - fixes stale docs and adds selective new entries |
+| `pr-test-analyzer` | Analyzes PR test coverage for quality and completeness - focuses on behavioral coverage |
+| `silent-failure-hunter` | Hunts for silent failures and inadequate error handling - zero tolerance for swallowed errors |
+| `type-design-analyzer` | Analyzes type design for encapsulation, invariant expression, and enforcement quality |
+| `web-researcher` | Searches web for modern docs, recent APIs, and current best practices beyond training data |
 
 [Learn more →](./plugins/prp-core/README.md)
 
