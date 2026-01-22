@@ -319,7 +319,7 @@ graph TB
 
     subgraph "Specialized Agents"
         Analyst["codebase-analyst<br/>Pattern Analysis"]
-        Researcher["library-researcher<br/>Library Research"]
+        Researcher["web-researcher<br/>Web Research"]
     end
 
     PRD --> Plan
