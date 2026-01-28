@@ -41,7 +41,7 @@ PRP（产品需求提示词）是一份完整的实施文档，包含：
 - 代码质量和审查自动化
 - 智能提交的 Git 集成
 
-**命令 (15个):**
+**命令 (16个):**
 
 | 命令 | 描述 |
 |------|------|
@@ -59,6 +59,7 @@ PRP（产品需求提示词）是一份完整的实施文档，包含：
 | `/prp-pr` | 创建带完整描述的拉取请求 |
 | `/prp-ralph` | 启动端到端功能开发的自主开发智能体 |
 | `/prp-ralph-cancel` | 取消正在运行的 Ralph 智能体 |
+| `/rule-update` | 分析代码库并生成/更新 `.claude/rules/` 目录下的规则文档，自动更新 CLAUDE.md 索引 |
 | `/install` | 安装和配置 PRP 系统 |
 
 **智能体 (10个):**
@@ -433,6 +434,24 @@ graph TB
 /prp-debug "TypeError: Cannot read property 'id' of undefined in user profile"
 ```
 
+### 规则文档管理
+
+```bash
+# 分析代码库并生成所有规则文档
+/rule-update
+
+# 只更新特定模块的规则
+/rule-update architecture
+/rule-update error-handling
+/rule-update testing
+
+# 规则文档会自动：
+# - 提取代码库中的实际模式和约定
+# - 生成带 file:line 引用的规则文档
+# - 更新 CLAUDE.md 中的规则索引
+# - 指导 Claude Code 在开发时遵循项目规范
+```
+
 ## 插件开发
 
 ### 创建新插件
@@ -531,6 +550,14 @@ plugins/
 本插件市场及其插件基于 MIT 许可证发布。
 
 ## 更新日志
+
+### v1.3.0 (2025-01-28)
+- 新增 `/rule-update` 命令，用于自动化规则文档生成
+- 使用 codebase-explorer 和 codebase-analyst 智能体进行自动代码库分析
+- 智能生成带 file:line 引用的规则文档
+- 自动更新 CLAUDE.md 中的规则索引，便于规则发现
+- 支持 12 个规则模块（架构、编码规范、错误处理、测试、API、数据库、认证、状态管理、性能、Git 工作流、部署、文档）
+- 项目类型感知的模块选择（前端、后端、全栈、CLI、库）
 
 ### v1.2.0 (2025-01-12)
 - 整合为单一全面的 prp-core 插件

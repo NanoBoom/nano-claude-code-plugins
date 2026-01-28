@@ -41,7 +41,7 @@ Complete PRP workflow system providing comprehensive commands for planning, impl
 - Code quality and review automation
 - Git integration with smart commits
 
-**Commands (15):**
+**Commands (16):**
 
 | Command | Description |
 |---------|-------------|
@@ -59,6 +59,7 @@ Complete PRP workflow system providing comprehensive commands for planning, impl
 | `/prp-pr` | Create pull requests with comprehensive descriptions |
 | `/prp-ralph` | Launch autonomous development agent for end-to-end features |
 | `/prp-ralph-cancel` | Cancel the running Ralph agent |
+| `/rule-update` | Analyze codebase and generate/update rule documents in `.claude/rules/` with automatic CLAUDE.md indexing |
 | `/install` | Install and configure PRP system |
 
 **Agents (10):**
@@ -433,6 +434,24 @@ graph TB
 /prp-debug "TypeError: Cannot read property 'id' of undefined in user profile"
 ```
 
+### Rule Documentation Management
+
+```bash
+# Analyze codebase and generate all rule documents
+/rule-update
+
+# Update only specific module rules
+/rule-update architecture
+/rule-update error-handling
+/rule-update testing
+
+# Rule documents will automatically:
+# - Extract actual patterns and conventions from codebase
+# - Generate rule documents with file:line references
+# - Update CLAUDE.md rule index
+# - Guide Claude Code to follow project standards during development
+```
+
 ## Plugin Development
 
 ### Creating a New Plugin
@@ -531,6 +550,14 @@ We welcome contributions! Please follow these guidelines:
 This marketplace and its plugins are released under the MIT License.
 
 ## Changelog
+
+### v1.3.0 (2025-01-28)
+- Added `/rule-update` command for automated rule documentation generation
+- Automatic codebase analysis using codebase-explorer and codebase-analyst agents
+- Smart rule document generation with file:line references
+- Automatic CLAUDE.md index updates for rule discovery
+- Support for 12 rule modules (architecture, coding-standards, error-handling, testing, api, database, auth, state-management, performance, git-workflow, deployment, documentation)
+- Project-type-aware module selection (frontend, backend, fullstack, CLI, library)
 
 ### v1.2.0 (2025-01-12)
 - Consolidated into single comprehensive prp-core plugin
