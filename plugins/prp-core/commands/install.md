@@ -1,3 +1,7 @@
+---
+description: Install PRP templates, configure Context7 MCP server, and set up project documentation template
+---
+
 # Install PRP Templates and Configure MCP
 
 ## Task 1: Install PRP Templates

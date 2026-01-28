@@ -14,6 +14,7 @@ argument-hint: [module-name]
 Analyze the project codebase, extract key architecture patterns, design conventions, and implementation details to generate or update rule documentation in `.claude/rules/`. These documents guide Claude Code during development to ensure new code adheres to project standards.
 
 **Core Principles**:
+
 - **Codebase is Source of Truth** - Reference actual code, never fabricate examples
 - **Natural Language Description** - Describe patterns with rules, don't copy code
 - **Precise References** - All patterns include file:line references
@@ -68,6 +69,7 @@ mkdir -p .claude/rules
 ```
 
 **PHASE_0_CHECKPOINT:**
+
 - [ ] Parameters parsed
 - [ ] Update scope determined (full or single module)
 - [ ] If full update: applicable modules determined
@@ -104,6 +106,7 @@ ls -la src/ app/ lib/ pkg/ internal/ cmd/ 2>/dev/null | head -20
 ```
 
 **Common directory structures**:
+
 - TypeScript/JS: `src/`, `app/`, `lib/`, `components/`, `pages/`
 - Python: `src/`, `lib/`, root-level modules
 - Go: `cmd/`, `internal/`, `pkg/`
@@ -112,6 +115,7 @@ ls -la src/ app/ lib/ pkg/ internal/ cmd/ 2>/dev/null | head -20
 ### 1.3 Identify Key Technologies
 
 **Framework and library detection** (from package.json/requirements.txt, etc.):
+
 - Frontend frameworks: React, Vue, Angular, Svelte
 - Backend frameworks: Express, Fastify, Django, Flask, Gin
 - Databases: PostgreSQL, MySQL, MongoDB, Redis
@@ -119,6 +123,7 @@ ls -la src/ app/ lib/ pkg/ internal/ cmd/ 2>/dev/null | head -20
 - Test frameworks: Jest, Vitest, Pytest, Go test
 
 **PHASE_1_CHECKPOINT:**
+
 - [ ] Project type identified
 - [ ] Source code directories located
 - [ ] Tech stack cataloged
@@ -235,6 +240,7 @@ Trace complete error handling flows with file:line references.
 ```
 
 **PHASE_2_CHECKPOINT:**
+
 - [ ] Agent analysis completed
 - [ ] Findings organized into tables
 - [ ] All patterns have file:line references
@@ -247,10 +253,12 @@ Trace complete error handling flows with file:line references.
 ### 3.1 Determine Documents to Generate
 
 **If full update**:
+
 - Based on project type and tech stack, determine required modules
 - Example: Frontend projects need `state-management.md`, backend projects need `api.md`
 
 **If single module update**:
+
 - Generate only the specified module's documentation
 
 ### 3.2 Rule Documentation Template
@@ -330,6 +338,7 @@ When writing {module-type} code, ensure:
 **For each module**:
 
 1. **Read existing document** (if exists)
+
    ```bash
    # Check if file exists
    ls -la .claude/rules/{module-name}.md 2>/dev/null
@@ -346,6 +355,7 @@ When writing {module-type} code, ensure:
    - Describe rules in natural language
 
 4. **Write file**:
+
    ```
    Use Write tool to create new document
    or Edit tool to update existing document
@@ -354,13 +364,16 @@ When writing {module-type} code, ensure:
 ### 3.4 Special Module Handling
 
 **architecture.md**:
+
 ```markdown
 # Architecture Rules
 
 ## Directory Structure
 
 ```
+
 {actual-directory-tree}
+
 ```
 
 ## Module Divisions
@@ -372,17 +385,22 @@ When writing {module-type} code, ensure:
 ## Dependencies
 
 ```
+
 {dependency-graph}
+
 ```
 
 ## Data Flow
 
 ```
+
 {data-flow-diagram}
+
 ```
 ```
 
 **coding-standards.md**:
+
 ```markdown
 # Coding Standards
 
@@ -414,6 +432,7 @@ Reference import pattern in `{file}:{lines}`:
 ```
 
 **error-handling.md**:
+
 ```markdown
 # Error Handling Rules
 
@@ -444,13 +463,16 @@ See example in `{file}:{lines}`
 ```
 
 **testing.md**:
+
 ```markdown
 # Testing Rules
 
 ## Test File Organization
 
 ```
+
 {test-directory-structure}
+
 ```
 
 ## Test Patterns
@@ -474,6 +496,7 @@ Reference `{test-file}:{lines}`:
 ```
 
 **PHASE_3_CHECKPOINT:**
+
 - [ ] All required module documents generated
 - [ ] Documents follow unified template
 - [ ] All code references include file:line
@@ -552,6 +575,7 @@ Sampled references:
 ```
 
 **PHASE_4_CHECKPOINT:**
+
 - [ ] All documents pass completeness check
 - [ ] Reference validity verification passed
 - [ ] Validation report generated
@@ -620,15 +644,18 @@ Reference rule documents in commands or conversations:
 ### 5.4 Update or Add Index
 
 **If CLAUDE.md already has "Rule Documentation Index" section**:
+
 - Use Edit tool to update that section
 - Only update actually generated modules
 - Preserve other content unchanged
 
 **If CLAUDE.md doesn't have "Rule Documentation Index" section**:
+
 - Use Edit tool to append index section at end of file
 - Add blank line before appending for separation
 
 **Index content customization**:
+
 - Only include modules generated/updated this time
 - Adjust categorization based on project type (frontend projects don't show database, backend projects don't show state-management)
 - Use actual file paths
@@ -653,6 +680,7 @@ Reference rule documents in commands or conversations:
 | documentation | Writing project docs, API docs, usage guides |
 
 **PHASE_5_CHECKPOINT:**
+
 - [ ] CLAUDE.md checked
 - [ ] Rule index generated
 - [ ] Index content updated in CLAUDE.md
@@ -721,14 +749,17 @@ Reference rule documents in commands or conversations:
 ### Key Findings
 
 **Architecture patterns**:
+
 - {key-pattern-1}
 - {key-pattern-2}
 
 **Coding conventions**:
+
 - {key-convention-1}
 - {key-convention-2}
 
 **Testing strategies**:
+
 - {key-strategy-1}
 - {key-strategy-2}
 
@@ -741,6 +772,7 @@ Reference rule documents in commands or conversations:
 3. **Use in commands**: Reference rule documents in command `<context>` sections
 
 **Example**:
+
 ```markdown
 <context>
 Project rules: @CLAUDE.md
@@ -750,6 +782,7 @@ Coding standards: @.claude/rules/coding-standards.md
 ```
 
 **View rules**:
+
 ```bash
 # View specific rule
 cat .claude/rules/architecture.md
@@ -759,6 +792,7 @@ ls .claude/rules/
 ```
 
 **Edit rules**:
+
 - Manually edit documents to add project-specific rules
 - Re-run `/rule-update` or `/rule-update {module}` to update
 
@@ -769,7 +803,6 @@ ls .claude/rules/
 3. 📝 Add project-specific rules and conventions
 4. 🚀 Reference these rules when developing new features
 5. 🔄 Periodically run `/rule-update` to keep rule documents current
-```
 
 ---
 
@@ -780,6 +813,7 @@ ls .claude/rules/
 **Symptoms**: No package.json, pyproject.toml, Cargo.toml, go.mod, or other config files found
 
 **Recovery steps**:
+
 1. Verify current directory: `pwd`
 2. List files to confirm: `ls -la`
 3. If in wrong directory: `cd` to project root and retry
@@ -793,6 +827,7 @@ ls .claude/rules/
 **Symptoms**: Error occurred during agent analysis process
 
 **Recovery steps**:
+
 1. Check error message: `{error-message}`
 2. Verify codebase accessible: `ls -R | wc -l` to confirm sufficient files
 3. Check for permission issues: `ls -la`
@@ -806,6 +841,7 @@ ls .claude/rules/
 **Symptoms**: Unable to write `.claude/rules/{module}.md`
 
 **Recovery steps**:
+
 1. Check directory permissions: `ls -la .claude/rules/`
 2. If directory doesn't exist: `mkdir -p .claude/rules`
 3. Check disk space: `df -h .`
