@@ -1,6 +1,6 @@
 ---
 description: Analyze codebase and create/update rule documentation in .claude/rules directory
-argument-hint: [module-name]
+argument-hint: <module-name | update description>
 ---
 
 # Rule Documentation Update
@@ -13,12 +13,21 @@ argument-hint: [module-name]
 
 Analyze the project codebase, extract key architecture patterns, design conventions, and implementation details to generate or update rule documentation in `.claude/rules/`. These documents guide Claude Code during development to ensure new code adheres to project standards.
 
+**🎯 CRITICAL: Keep documents MINIMAL and FOCUSED**
+
+Rule documents should be **≤ 200 lines** and contain **only project-specific patterns** that appear multiple times in the codebase. Remove all generic advice, obvious conventions, and verbose explanations.
+
 **Core Principles**:
 
 - **Codebase is Source of Truth** - Reference actual code, never fabricate examples
 - **Natural Language Description** - Describe patterns with rules, don't copy code
 - **Precise References** - All patterns include file:line references
 - **Incremental Updates** - Modify existing documents, don't overwrite
+- **Radical Simplicity** - Keep documents minimal, only core patterns that matter
+  - Remove redundant sections, verbose explanations, and obvious advice
+  - Focus on project-specific patterns, not generic best practices
+  - If a pattern appears only once, it's not a pattern - don't document it
+  - Prefer concise over verbose, prefer 5 bullet points over 20
 
 ---
 
@@ -145,14 +154,22 @@ Use Task tool with `subagent_type="prp-core:codebase-explorer"`:
 ```
 Explore the entire codebase structure and patterns for rule documentation generation:
 
+CRITICAL: Focus on REPEATED patterns only. Ignore one-off code.
+
 DISCOVER:
 1. Directory structure and file organization - Map the project's physical layout
-2. Naming conventions - Extract actual naming patterns for files, functions, classes, variables
+2. Naming conventions - Extract actual naming patterns (must appear 3+ times)
 3. Code organization patterns - Identify modularity, layering, separation of concerns
-4. Common code patterns and abstractions - Find repeatedly used design patterns
+4. Common code patterns and abstractions - Find repeatedly used design patterns (2+ occurrences)
 5. Test file organization and patterns - Test structure, naming, assertion styles
 6. Configuration files and environment management - Config patterns, environment variable usage
 7. Dependency management and import patterns - Import ordering, dependency injection
+
+FILTERING RULES:
+- Only report patterns that appear 2+ times in the codebase
+- Skip standard conventions (e.g., camelCase in JS, snake_case in Python)
+- Skip obvious patterns that apply to any project
+- Prioritize project-specific, non-obvious patterns
 
 Return ACTUAL code examples with precise file:line references.
 Categorize findings by module (architecture, coding-standards, testing, etc.).
@@ -165,15 +182,23 @@ Use Task tool with `subagent_type="prp-core:codebase-analyst"`:
 ```
 Analyze codebase implementation details for rule documentation generation:
 
+CRITICAL: Focus on REPEATED patterns only. Ignore one-off implementations.
+
 ANALYZE:
-1. Error handling patterns - Trace how errors are created, thrown, caught, logged
-2. Logging patterns - Logger initialization, usage locations, message formats
-3. Data validation patterns - Schema definitions, validation timing, error handling
-4. Database access patterns - Repository pattern, query building, transaction management
-5. API routing patterns - Route definitions, middleware chains, request/response handling
-6. Authentication/authorization patterns - Auth middleware, permission checks, session management
-7. State management patterns - State storage, updates, subscriptions (if frontend)
-8. Performance optimization patterns - Caching strategies, lazy loading, resource optimization
+1. Error handling patterns - Trace how errors are created, thrown, caught, logged (2+ examples)
+2. Logging patterns - Logger initialization, usage locations, message formats (2+ examples)
+3. Data validation patterns - Schema definitions, validation timing, error handling (2+ examples)
+4. Database access patterns - Repository pattern, query building, transaction management (2+ examples)
+5. API routing patterns - Route definitions, middleware chains, request/response handling (2+ examples)
+6. Authentication/authorization patterns - Auth middleware, permission checks, session management (2+ examples)
+7. State management patterns - State storage, updates, subscriptions (if frontend) (2+ examples)
+8. Performance optimization patterns - Caching strategies, lazy loading, resource optimization (2+ examples)
+
+FILTERING RULES:
+- Only report patterns with 2+ concrete examples
+- Skip generic implementations that match framework defaults
+- Skip obvious patterns that apply to any project
+- Prioritize project-specific, non-obvious patterns
 
 Trace data flows and provide precise file:line references.
 Categorize findings by module (error-handling, api, database, auth, etc.).
@@ -261,77 +286,55 @@ Trace complete error handling flows with file:line references.
 
 - Generate only the specified module's documentation
 
-### 3.2 Rule Documentation Template
+### 3.2 Rule Documentation Template (Minimal)
 
-Each rule document follows this structure:
+**CRITICAL**: Keep documents SHORT and FOCUSED. Remove any section that doesn't add unique value.
+
+Each rule document follows this **minimal** structure:
 
 ```markdown
 # {Module Name} Rules
 
-> Last updated: {date}
 > Auto-generated from codebase analysis
 
-## Overview
+## Core Patterns
 
-{1-2 paragraphs describing this module's purpose and importance}
+### {pattern-name}
 
-## Core Principles
+**Reference**: `{file}:{lines}`
 
-1. **Principle 1** - {description}
-2. **Principle 2** - {description}
-3. **Principle 3** - {description}
-
-## Code Patterns
-
-### Pattern 1: {pattern-name}
-
-**When to use**: {when-to-use}
-
-**Reference implementation**: See `{file}:{lines}`
-
-**Key rules**:
+**Rules**:
 - {rule-1}
 - {rule-2}
 
-### Pattern 2: {pattern-name}
+### {pattern-name}
 
-**When to use**: {when-to-use}
+**Reference**: `{file}:{lines}`
 
-**Reference implementation**: See `{file}:{lines}`
-
-**Key rules**:
+**Rules**:
 - {rule-1}
 - {rule-2}
 
 ## Naming Conventions
 
-| Type | Convention | Example | Reference |
-|------|------------|---------|-----------|
-| {type} | {convention} | {example} | `{file}:{line}` |
-
-## Common Pitfalls
-
-### Pitfall 1: {pitfall-name}
-
-**Problem**: {what-goes-wrong}
-
-**Correct approach**: {correct-approach}
-
-**Reference**: `{file}:{lines}`
-
-## Checklist
-
-When writing {module-type} code, ensure:
-
-- [ ] {checklist-item-1}
-- [ ] {checklist-item-2}
-- [ ] {checklist-item-3}
-
-## Related Documentation
-
-- See `{related-file-1}` for {what}
-- See `{related-file-2}` for {what}
+| Type | Convention | Reference |
+|------|------------|-----------|
+| {type} | {convention} | `{file}:{line}` |
 ```
+
+**What to EXCLUDE** (unless truly unique to this project):
+- ❌ Generic "Overview" paragraphs that state the obvious
+- ❌ "Core Principles" that are just common sense
+- ❌ "Common Pitfalls" section (merge into pattern rules if critical)
+- ❌ Generic checklists that apply to any project
+- ❌ "Related Documentation" links (use references inline instead)
+- ❌ Verbose "When to use" explanations (pattern name should be self-evident)
+
+**What to INCLUDE** (only if project-specific):
+- ✅ Actual code patterns found in THIS codebase (with file:line)
+- ✅ Project-specific naming conventions (not generic camelCase advice)
+- ✅ Non-obvious rules that differ from standard practices
+- ✅ Critical constraints or requirements unique to this project
 
 ### 3.3 Generate Document Content
 
@@ -348,11 +351,14 @@ When writing {module-type} code, ensure:
    - If file doesn't exist: Create new document
    - If file exists: Update document (preserve user customizations, update code references)
 
-3. **Fill template**:
+3. **Fill template with MINIMAL content**:
    - Use Phase 2 analysis results
-   - Extract actual code patterns
+   - **Filter patterns**: Only include patterns that appear 2+ times in codebase
+   - **Prioritize**: Select 2-4 most important patterns (not all patterns found)
    - Add file:line references
    - Describe rules in natural language
+   - **Remove**: Generic advice, obvious conventions, one-off code
+   - **Target**: 100-200 lines total per document
 
 4. **Write file**:
 
@@ -361,9 +367,15 @@ When writing {module-type} code, ensure:
    or Edit tool to update existing document
    ```
 
-### 3.4 Special Module Handling
+**Content filtering rules**:
+- If a naming convention is standard (e.g., camelCase for JS), don't document it
+- If a pattern appears only once, it's not a pattern - skip it
+- If advice applies to any project (e.g., "write tests"), remove it
+- If you can't find 2+ real examples with file:line, don't include the pattern
 
-**architecture.md**:
+### 3.4 Special Module Handling (Minimal Templates)
+
+**architecture.md** (focus on structure, not philosophy):
 
 ```markdown
 # Architecture Rules
@@ -371,136 +383,94 @@ When writing {module-type} code, ensure:
 ## Directory Structure
 
 ```
-
-{actual-directory-tree}
-
+{actual-directory-tree - only 2-3 levels deep}
 ```
 
-## Module Divisions
+## Module Responsibilities
 
 | Module | Responsibility | Location |
 |--------|----------------|----------|
-| {module} | {responsibility} | `{path}` |
+| {module} | {one-line description} | `{path}` |
 
-## Dependencies
+## Key Dependencies
 
+{Only non-obvious dependencies, e.g., "auth depends on database session store"}
 ```
 
-{dependency-graph}
-
-```
-
-## Data Flow
-
-```
-
-{data-flow-diagram}
-
-```
-```
-
-**coding-standards.md**:
+**coding-standards.md** (only project-specific conventions):
 
 ```markdown
 # Coding Standards
 
-## Naming Conventions
+## File Naming
 
-### File Naming
-- Convention: {convention}
-- Example: `{example-file}`
+{convention} - See `{file}:{line}`
 
-### Function Naming
-- Convention: {convention}
-- Example: See `{file}:{line}`
+## Function Naming
 
-### Variable Naming
-- Convention: {convention}
-- Example: See `{file}:{line}`
+{convention} - See `{file}:{line}`
 
-## Code Style
+## Import Order
 
-### Indentation and Formatting
-- Use {spaces/tabs}
-- Config file: `{.prettierrc/.eslintrc/etc}`
-
-### Import Order
-Reference import pattern in `{file}:{lines}`:
+Reference `{file}:{lines}`:
 1. {import-group-1}
 2. {import-group-2}
-3. {import-group-3}
 ```
 
-**error-handling.md**:
+**error-handling.md** (focus on actual patterns):
 
 ```markdown
 # Error Handling Rules
 
-## Error Class Definitions
+## Error Classes
 
-Reference pattern in `{errors-file}:{lines}`:
-- Extend base error class
-- Include `code` and `statusCode` properties
-- Provide clear error messages
+Reference `{errors-file}:{lines}`:
+- {pattern-description}
 
-## Error Throwing
+## Error Flow
 
-**When to throw**:
-- {scenario-1}
-- {scenario-2}
-
-**How to throw**:
-See example in `{file}:{lines}`
-
-## Error Catching
-
-**Where to catch**:
-- {layer-1}: {what-to-catch}
-- {layer-2}: {what-to-catch}
-
-**How to handle**:
-See example in `{file}:{lines}`
+**Throw at**: {layer} - See `{file}:{lines}`
+**Catch at**: {layer} - See `{file}:{lines}`
+**Log at**: {layer} - See `{file}:{lines}`
 ```
 
-**testing.md**:
+**testing.md** (only test organization and patterns):
 
 ```markdown
 # Testing Rules
 
-## Test File Organization
+## Test Structure
 
 ```
-
-{test-directory-structure}
-
+{test-directory-structure - only relevant paths}
 ```
 
 ## Test Patterns
 
-### Unit Tests
-Reference `{test-file}:{lines}`:
-- Uses {test-framework}
-- Follows {pattern} pattern
-- Assertion style: {assertion-style}
+**Unit tests**: See `{test-file}:{lines}`
+- {key-pattern-1}
+- {key-pattern-2}
 
-### Integration Tests
-Reference `{test-file}:{lines}`:
-- Test scope: {scope}
-- Data setup: {setup-pattern}
-- Cleanup strategy: {teardown-pattern}
-
-## Test Coverage
-
-- Target: {coverage-target}
-- Command: `{test-command}`
+**Integration tests**: See `{test-file}:{lines}`
+- {key-pattern-1}
+- {key-pattern-2}
 ```
+
+**General principle for all modules**:
+- Maximum 200 lines per document
+- 2-4 patterns maximum
+- No generic advice that applies to any project
+- Every statement must reference actual code
 
 **PHASE_3_CHECKPOINT:**
 
 - [ ] All required module documents generated
-- [ ] Documents follow unified template
+- [ ] Documents follow minimal template (≤ 200 lines each)
 - [ ] All code references include file:line
 - [ ] Rules described in natural language
+- [ ] Only repeated patterns included (2+ occurrences)
+- [ ] No generic advice or obvious conventions
+- [ ] 2-4 patterns per document (not exhaustive)
 - [ ] Existing documents updated (if applicable)
 
 ---
@@ -511,12 +481,20 @@ Reference `{test-file}:{lines}`:
 
 **Check each generated document**:
 
-- [ ] Contains "Overview" section
-- [ ] Contains "Core Principles" (at least 3)
-- [ ] Contains "Code Patterns" (at least 2)
+- [ ] Contains "Core Patterns" section with 2-4 patterns
 - [ ] All code references have file:line
 - [ ] No fabricated code examples
 - [ ] Rules described in natural language
+- [ ] Document is ≤ 200 lines
+- [ ] No generic advice (e.g., "use meaningful names", "write tests")
+- [ ] Every pattern appears multiple times in codebase (not one-off code)
+
+**Red flags** (if found, simplify the document):
+- ❌ Document exceeds 200 lines
+- ❌ Contains "Overview" or "Core Principles" sections with generic content
+- ❌ Has "Common Pitfalls" or "Checklist" sections
+- ❌ Includes obvious advice that applies to any project
+- ❌ Pattern appears only once in codebase
 
 ### 4.2 Verify Reference Validity
 
@@ -553,12 +531,12 @@ grep -oP '`[^`]+:\d+(-\d+)?`' .claude/rules/*.md | \
 
 ### Generated Documents
 
-| Document | Status | Pattern Count | Reference Count |
-|----------|--------|---------------|-----------------|
-| `architecture.md` | ✅ Created | 5 | 12 |
-| `coding-standards.md` | ✅ Created | 8 | 20 |
-| `error-handling.md` | 🔄 Updated | 4 | 8 |
-| `testing.md` | ✅ Created | 6 | 15 |
+| Document | Status | Lines | Pattern Count | Reference Count |
+|----------|--------|-------|---------------|-----------------|
+| `architecture.md` | ✅ Created | 35 | 3 | 8 |
+| `coding-standards.md` | ✅ Created | 28 | 4 | 12 |
+| `error-handling.md` | 🔄 Updated | 42 | 3 | 6 |
+| `testing.md` | ✅ Created | 38 | 4 | 10 |
 
 ### Reference Validation
 
@@ -567,11 +545,18 @@ Sampled references:
 - ✅ `src/core/errors/base.ts:10` - Valid
 - ✅ `src/features/projects/tests/service.test.ts:25` - Valid
 
+### Simplicity Check
+
+- ✅ All documents ≤ 200 lines
+- ✅ No generic "Overview" or "Principles" sections
+- ✅ All patterns have 2+ examples
+- ✅ No obvious advice included
+
 ### Quality Scores
 
 - Completeness: {score}/10
 - Accuracy: {score}/10
-- Usability: {score}/10
+- Simplicity: {score}/10 (10 = minimal, focused; 1 = verbose, generic)
 ```
 
 **PHASE_4_CHECKPOINT:**
@@ -587,11 +572,21 @@ Sampled references:
 ### 5.1 Check CLAUDE.md Existence
 
 ```bash
-# Check for CLAUDE.md in project root
-ls -la CLAUDE.md 2>/dev/null || ls -la PRPs/CLAUDE.md 2>/dev/null
+# Check for CLAUDE.md in multiple locations
+if [ -f "CLAUDE.md" ]; then
+  CLAUDE_PATH="CLAUDE.md"
+elif [ -f "PRPs/CLAUDE.md" ]; then
+  CLAUDE_PATH="PRPs/CLAUDE.md"
+else
+  CLAUDE_PATH=""
+fi
 ```
 
-**If doesn't exist**: Skip this phase, remind user in Phase 6 output to create manually.
+**Priority order**:
+1. Project root: `CLAUDE.md`
+2. PRPs directory: `PRPs/CLAUDE.md`
+
+**If doesn't exist**: Skip Phase 5.2-5.5, note in Phase 6 output that user should create CLAUDE.md manually.
 
 ### 5.2 Read Existing CLAUDE.md
 
@@ -610,33 +605,33 @@ This project uses modular rule documentation to guide development. Reference the
 
 | Rule Module | When to Use | Document Path |
 |-------------|-------------|---------------|
-| Architecture | Designing new features, refactoring system structure | @.claude/rules/architecture.md |
-| Coding Standards | Writing any code | @.claude/rules/coding-standards.md |
-| Error Handling | Implementing error handling logic | @.claude/rules/error-handling.md |
-| Testing | Writing test code | @.claude/rules/testing.md |
+| Architecture | Designing new features, refactoring system structure | .claude/rules/architecture.md |
+| Coding Standards | Writing any code | .claude/rules/coding-standards.md |
+| Error Handling | Implementing error handling logic | .claude/rules/error-handling.md |
+| Testing | Writing test code | .claude/rules/testing.md |
 
 ### Technical Rules
 
 | Rule Module | When to Use | Document Path |
 |-------------|-------------|---------------|
-| API Design | Designing or implementing API endpoints | @.claude/rules/api.md |
-| Database | Designing schemas, writing queries | @.claude/rules/database.md |
-| Authentication | Implementing auth, permission checks | @.claude/rules/auth.md |
-| State Management | Managing frontend state | @.claude/rules/state-management.md |
+| API Design | Designing or implementing API endpoints | .claude/rules/api.md |
+| Database | Designing schemas, writing queries | .claude/rules/database.md |
+| Authentication | Implementing auth, permission checks | .claude/rules/auth.md |
+| State Management | Managing frontend state | .claude/rules/state-management.md |
 
 ### Process Rules
 
 | Rule Module | When to Use | Document Path |
 |-------------|-------------|---------------|
-| Performance | Optimizing performance, implementing caching | @.claude/rules/performance.md |
-| Git Workflow | Creating branches, committing code | @.claude/rules/git-workflow.md |
-| Deployment | Configuring CI/CD, deploying | @.claude/rules/deployment.md |
-| Documentation | Writing project documentation | @.claude/rules/documentation.md |
+| Performance | Optimizing performance, implementing caching | .claude/rules/performance.md |
+| Git Workflow | Creating branches, committing code | .claude/rules/git-workflow.md |
+| Deployment | Configuring CI/CD, deploying | .claude/rules/deployment.md |
+| Documentation | Writing project documentation | .claude/rules/documentation.md |
 
 ### Usage
 
 Reference rule documents in commands or conversations:
-- Use `@.claude/rules/{module}.md` to reference specific rules
+- Use `.claude/rules/{module}.md` to reference specific rules
 - Claude Code will automatically load relevant rules as context
 - Rule documents guide code generation and decision-making
 ```
@@ -645,20 +640,30 @@ Reference rule documents in commands or conversations:
 
 **If CLAUDE.md already has "Rule Documentation Index" section**:
 
-- Use Edit tool to update that section
-- Only update actually generated modules
-- Preserve other content unchanged
+- Use Edit tool to replace the entire "Rule Documentation Index" section
+- Include ALL existing rule modules (not just newly generated ones)
+- Strategy:
+  1. List all existing `.claude/rules/*.md` files
+  2. Merge with newly generated modules
+  3. Generate complete index covering all modules
+  4. Replace old index section with new complete index
+- Preserve all other content in CLAUDE.md unchanged
 
 **If CLAUDE.md doesn't have "Rule Documentation Index" section**:
 
 - Use Edit tool to append index section at end of file
-- Add blank line before appending for separation
+- Add two blank lines before appending for clear separation
+- Include all generated modules in this update
 
 **Index content customization**:
 
-- Only include modules generated/updated this time
-- Adjust categorization based on project type (frontend projects don't show database, backend projects don't show state-management)
-- Use actual file paths
+- Include ALL rule modules that exist in `.claude/rules/` directory
+- Adjust categorization based on project type:
+  - Frontend projects: exclude database, include state-management
+  - Backend projects: exclude state-management, include database, api
+  - Fullstack projects: include all applicable modules
+- Use actual file paths relative to project root
+- Sort modules by category (Core → Technical → Process)
 
 ### 5.5 Generate Module Usage Guide
 
@@ -679,13 +684,36 @@ Reference rule documents in commands or conversations:
 | deployment | Configuring CI/CD, writing deployment scripts, releasing versions |
 | documentation | Writing project docs, API docs, usage guides |
 
+### 5.6 Verify CLAUDE.md Update
+
+**After updating CLAUDE.md, verify the changes**:
+
+```bash
+# Read the updated section to confirm
+grep -A 20 "## Rule Documentation Index" $CLAUDE_PATH
+```
+
+**Verification checklist**:
+- [ ] "Rule Documentation Index" section exists
+- [ ] All modules in `.claude/rules/` are listed
+- [ ] Table format is correct (no broken markdown)
+- [ ] File paths are accurate
+- [ ] "When to Use" descriptions are present
+- [ ] Usage instructions are included
+
+**If verification fails**: Re-run Phase 5.4 with corrected content.
+
 **PHASE_5_CHECKPOINT:**
 
-- [ ] CLAUDE.md checked
-- [ ] Rule index generated
-- [ ] Index content updated in CLAUDE.md
-- [ ] Only includes actually generated modules
+- [ ] CLAUDE.md location identified (root or PRPs/ directory)
+- [ ] Existing CLAUDE.md content read and analyzed
+- [ ] Complete rule index generated (includes ALL existing + new modules)
+- [ ] Index section updated/added in CLAUDE.md using Edit tool
+- [ ] All rule modules in `.claude/rules/` are included in index
+- [ ] Module categorization matches project type
 - [ ] Usage guide clear and explicit
+- [ ] CLAUDE.md file verified after update
+- [ ] Verification confirms index is complete and correct
 
 ---
 
@@ -716,17 +744,28 @@ ls -lh .claude/rules/
 | `.claude/rules/error-handling.md` | Updated | {size} | {count} |
 | `.claude/rules/testing.md` | Created | {size} | {count} |
 
-### CLAUDE.md Index Update
+### ✅ CLAUDE.md Index Update
 
-**Status**: {Updated / Added / Skipped (file doesn't exist)}
+**Location**: `{CLAUDE.md path}`
+**Status**: {✅ Updated / ✅ Added / ⚠️ Skipped (file doesn't exist)}
 
-**Update content**:
-- Added index for {N} rule modules
-- Includes usage guide and document paths
-- Uses `@.claude/rules/{module}.md` reference format
+**Update details**:
+- {Updated existing / Added new} "Rule Documentation Index" section
+- Indexed {N} rule modules (includes all existing + newly generated)
+- Categorized as: {Core Rules: X, Technical Rules: Y, Process Rules: Z}
+- Added usage guide with "When to Use" descriptions
+- All rule document paths use `.claude/rules/{module}.md` format
+
+**Index location in CLAUDE.md**: Line {start-line} to {end-line}
+
+**If CLAUDE.md was updated**:
+✅ CLAUDE.md has been synchronized with the latest rule documentation.
+You can now reference these rules in your development workflow.
 
 **If CLAUDE.md doesn't exist**:
-⚠️ CLAUDE.md file not found. Recommend creating this file and adding the following content:
+⚠️ CLAUDE.md file not found in project root or PRPs/ directory.
+
+**Recommended action**: Create CLAUDE.md and add the following content:
 
 ```markdown
 ## Rule Documentation Index
@@ -739,11 +778,18 @@ This project uses modular rule documentation to guide development. Reference the
 |-------------|-------------|---------------|
 {generated core rules list}
 
+### Technical Rules
+
+| Rule Module | When to Use | Document Path |
+|-------------|-------------|---------------|
+{generated technical rules list}
+
 ### Usage
 
 Reference rule documents in commands or conversations:
-- Use `@.claude/rules/{module}.md` to reference specific rules
+- Use `.claude/rules/{module}.md` to reference specific rules
 - Claude Code will automatically load relevant rules as context
+- Rule documents guide code generation and decision-making
 ```
 
 ### Key Findings
@@ -768,16 +814,16 @@ Reference rule documents in commands or conversations:
 **Reference rules during development**:
 
 1. **Automatic loading**: Claude Code will automatically reference these rules for relevant tasks
-2. **Manual reference**: Use `@.claude/rules/{module}.md` in conversations to reference specific rules
+2. **Manual reference**: Use `.claude/rules/{module}.md` in conversations to reference specific rules
 3. **Use in commands**: Reference rule documents in command `<context>` sections
 
 **Example**:
 
 ```markdown
 <context>
-Project rules: @CLAUDE.md
-Architecture rules: @.claude/rules/architecture.md
-Coding standards: @.claude/rules/coding-standards.md
+Project rules: CLAUDE.md
+Architecture rules: .claude/rules/architecture.md
+Coding standards: .claude/rules/coding-standards.md
 </context>
 ```
 
