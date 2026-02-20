@@ -1,6 +1,6 @@
 {
   "name": "prp-core",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "Complete PRP (Product Requirement Prompt) workflow system with planning, implementation, debugging, issue management, and code review capabilities",
   "author": {
     "name": "NanoBoom",
