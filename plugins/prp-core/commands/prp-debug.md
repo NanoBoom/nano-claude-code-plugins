@@ -40,6 +40,7 @@ Find the **actual root cause** - the specific code, config, or logic that, if ch
 **Restate the symptom in one sentence. What is actually failing?**
 
 **PHASE_1_CHECKPOINT:**
+
 - [ ] Input type classified
 - [ ] Mode determined (quick/deep)
 - [ ] Symptom restated clearly
@@ -62,6 +63,7 @@ Based on the symptom, generate 2-4 hypotheses. For each:
 Start with the most probable hypothesis.
 
 **PHASE_2_CHECKPOINT:**
+
 - [ ] 2-4 hypotheses generated
 - [ ] Ranked by likelihood
 - [ ] Leading hypothesis selected
@@ -103,6 +105,7 @@ WHY 5: Why does [intermediate cause D] happen?
 | Test you executed that proves behavior | Explaining how technology works in general |
 
 **Rules:**
+
 - Stop when you hit code you can change
 - Every "because" MUST have evidence
 - If evidence refutes a hypothesis, pivot to the next one
@@ -110,24 +113,44 @@ WHY 5: Why does [intermediate cause D] happen?
 
 ### Investigation Techniques
 
+**For tracing complex code paths**, use `prp-core:codebase-analyst` to understand how the suspected code works before diving into the 5 Whys:
+
+Use Task tool with `subagent_type="prp-core:codebase-analyst"`:
+
+```
+Analyze the implementation around: [suspected area / error location]
+
+TRACE:
+1. How data flows through the affected code path
+2. Entry points that lead to the failure
+3. State changes and side effects along the way
+4. Contracts between components in the chain
+
+Document what exists with precise file:line references. No suggestions.
+```
+
 **For code issues:**
+
 - Grep for error messages, function names
 - Read full context around suspicious code
 - Check git blame for when/why code was written
 - **Run the suspicious code** with edge case inputs
 
 **For runtime issues:**
+
 - Check environment/config differences
 - Look for initialization order dependencies
 - Search for race conditions
 
 **For "it worked before" issues:**
+
 ```bash
 git log --oneline -20
 git diff HEAD~10 [suspicious files]
 ```
 
 **PHASE_3_CHECKPOINT:**
+
 - [ ] 5 Whys executed (or 2-3 for quick mode)
 - [ ] Each step has concrete evidence
 - [ ] Root cause identified with file:line reference
@@ -154,6 +177,7 @@ git blame [affected file] | grep -A2 -B2 [line number]
 ```
 
 **Document:**
+
 - When was the problematic code introduced?
 - What commit/PR added it?
 - Has it changed recently or been stable?
@@ -168,6 +192,7 @@ For deep mode, document why other hypotheses were rejected:
 | {H3} | {evidence that disproved it} |
 
 **PHASE_4_CHECKPOINT:**
+
 - [ ] All three tests pass
 - [ ] Git history documented (deep mode)
 - [ ] Alternative hypotheses ruled out (deep mode)
@@ -247,6 +272,7 @@ WHY: {First level cause}
 1. {Test to run}
 2. {Expected outcome}
 3. {How to reproduce original issue}
+
 ```
 
 **PHASE_5_CHECKPOINT:**

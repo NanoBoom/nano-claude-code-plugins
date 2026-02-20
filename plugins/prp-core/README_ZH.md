@@ -12,32 +12,38 @@
 
 | 命令 | 描述 |
 |---------|-------------|
-| `/prp-create` | 快速创建带代码库分析的功能 PRP |
-| `/prp-execute` | 执行功能 PRP 直到完全完成 |
+| `/prp-core:prp-create` | 快速创建带代码库分析的功能 PRP |
+| `/prp-core:prp-execute` | 执行功能 PRP 直到完全完成 |
 
 ### 核心工作流（复杂功能）
 
 | 命令 | 描述 |
 |---------|-------------|
-| `/prp-prd` | 带实现阶段的交互式 PRD 生成器 |
-| `/prp-plan` | 创建实现计划（从 PRD 或自由输入） |
-| `/prp-implement` | 带验证循环执行计划 |
+| `/prp-core:prp-prd` | 带实现阶段的交互式 PRD 生成器 |
+| `/prp-core:prp-plan` | 创建实现计划（从 PRD 或自由输入） |
+| `/prp-core:prp-implement` | 带验证循环执行计划 |
 
 ### 问题工作流
 
 | 命令 | 描述 |
 |---------|-------------|
-| `/prp-issue-investigate` | 分析 GitHub 问题，创建实现计划 |
-| `/prp-issue-fix` | 从调查产物执行修复 |
+| `/prp-core:prp-issue-investigate` | 分析 GitHub 问题，创建实现计划 |
+| `/prp-core:prp-issue-fix` | 从调查产物执行修复 |
 
 ### Git 与审查
 
 | 命令 | 描述 |
 |---------|-------------|
-| `/prp-commit` | 带自然语言文件定位的智能提交 |
-| `/prp-pr` | 带模板支持创建 PR |
-| `/prp-review` | 全面的 PR 代码审查 |
-| `/prp-review-agents` | 多智能体 PR 审查（注释、测试、错误、类型、代码、文档、简化） |
+| `/prp-core:prp-commit` | 带自然语言文件定位的智能提交 |
+| `/prp-core:prp-pr` | 带模板支持创建 PR |
+| `/prp-core:prp-review` | 全面的 PR 代码审查 |
+| `/prp-core:prp-review-agents` | 多智能体 PR 审查（注释、测试、错误、类型、代码、文档、简化） |
+
+### 研究与分析
+
+| 命令 | 描述 |
+|---------|-------------|
+| `/prp-core:prp-codebase-question` | 使用并行智能体研究代码库问题 - 记录存在的内容 |
 
 ## 智能体
 
@@ -65,11 +71,11 @@
 
 ### 使用智能体
 
-智能体由 `/prp-review-agents` 自动调用，或通过 Task 工具手动调用：
+智能体由 `/prp-core:prp-review-agents` 自动调用，或通过 Task 工具手动调用：
 
 ```
-/prp-review-agents 123              # PR #123 的完整审查
-/prp-review-agents 123 tests errors # 仅特定方面
+/prp-core:prp-review-agents 123              # PR #123 的完整审查
+/prp-core:prp-review-agents 123 tests errors # 仅特定方面
 ```
 
 ## 工作流
@@ -77,11 +83,11 @@
 ### 简单功能：快速创建与执行
 
 ```
-/prp-create "为用户列表添加分页"
+/prp-core:prp-create "为用户列表添加分页"
     ↓
 创建带代码库分析的功能 PRP
     ↓
-/prp-execute .claude/PRPs/features/add-pagination.md
+/prp-core:prp-execute .claude/PRPs/features/add-pagination.md
     ↓
 带验证循环执行 PRP
 ```
@@ -89,35 +95,51 @@
 ### 大型功能：PRD → 计划 → 实现
 
 ```
-/prp-prd "用户认证系统"
+/prp-core:prp-prd "用户认证系统"
     ↓
 创建带实现阶段表的 PRD
     ↓
-/prp-plan .claude/PRPs/prds/user-auth.prd.md
+/prp-core:prp-plan .claude/PRPs/prds/user-auth.prd.md
     ↓
 自动选择下一个待处理阶段，创建计划
     ↓
-/prp-implement .claude/PRPs/plans/user-auth-phase-1.plan.md
+/prp-core:prp-implement .claude/PRPs/plans/user-auth-phase-1.plan.md
     ↓
 执行计划，更新 PRD 进度，归档计划
     ↓
-重复 /prp-plan 进行下一阶段
+重复 /prp-core:prp-plan 进行下一阶段
 ```
 
 ### 中型功能：直接到计划
 
 ```
-/prp-plan "为 API 添加分页"
+/prp-core:prp-plan "为 API 添加分页"
     ↓
-/prp-implement .claude/PRPs/plans/add-pagination.plan.md
+/prp-core:prp-implement .claude/PRPs/plans/add-pagination.plan.md
 ```
 
 ### Bug 修复：问题工作流
 
 ```
-/prp-issue-investigate 123
+/prp-core:prp-issue-investigate 123
     ↓
-/prp-issue-fix 123
+/prp-core:prp-issue-fix 123
+```
+
+### 研究：代码库问题
+
+```
+/prp-core:prp-codebase-question "认证是如何工作的"
+    ↓
+生成并行智能体来研究问题
+    ↓
+在 .claude/PRPs/research/ 创建研究文档
+
+# 带外部研究
+/prp-core:prp-codebase-question "React 最佳实践是什么" --web
+
+# 追加到之前的研究
+/prp-core:prp-codebase-question --follow-up "存在哪些错误处理模式"
 ```
 
 ## 安装
@@ -179,7 +201,8 @@ claude
 ├── reports/           # 实现报告
 ├── issues/            # 问题调查产物
 │   └── completed/     # 已归档的完成调查
-└── reviews/           # PR 审查报告
+├── reviews/           # PR 审查报告
+└── research/          # 代码库研究文档
 ```
 
 ## PRD 阶段

@@ -428,7 +428,7 @@ PR_NUMBER=$(gh pr view --json number -q '.number')
 
 ### 8.1 Run Code Review
 
-Use Task tool with subagent_type="code-reviewer":
+Use Task tool with subagent_type="prp-core:code-reviewer":
 
 ```
 Review the changes in this PR for issue #{number}.

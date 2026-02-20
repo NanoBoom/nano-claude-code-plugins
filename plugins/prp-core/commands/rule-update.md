@@ -147,7 +147,7 @@ ls -la src/ app/ lib/ pkg/ internal/ cmd/ 2>/dev/null | head -20
 
 Launch two agents in parallel using Task tool:
 
-**Task 1: Invoke codebase-explorer agent**
+**Task 1: Invoke prp-core:codebase-explorer agent**
 
 Use Task tool with `subagent_type="prp-core:codebase-explorer"`:
 
@@ -175,7 +175,7 @@ Return ACTUAL code examples with precise file:line references.
 Categorize findings by module (architecture, coding-standards, testing, etc.).
 ```
 
-**Task 2: Invoke codebase-analyst agent**
+**Task 2: Invoke prp-core:codebase-analyst agent**
 
 Use Task tool with `subagent_type="prp-core:codebase-analyst"`:
 
@@ -210,18 +210,18 @@ Based on module type, invoke the appropriate agent using Task tool:
 
 | Module | Agent | Task Description |
 |--------|-------|------------------|
-| `architecture` | codebase-explorer | Explore directory structure, module divisions, dependencies, entry points |
-| `coding-standards` | codebase-explorer | Explore naming conventions, code style, formatting rules, import patterns |
-| `error-handling` | codebase-analyst | Analyze error class definitions, error handling flows, error propagation |
-| `testing` | codebase-explorer | Explore test file structure, test patterns, assertion styles, coverage |
-| `api` | codebase-analyst | Analyze API route definitions, request handling, response formats, middleware |
-| `database` | codebase-analyst | Analyze database schema, query patterns, migration strategies, ORM usage |
-| `auth` | codebase-analyst | Analyze auth middleware, permission checks, session management, token handling |
-| `state-management` | codebase-analyst | Analyze state management library usage, data flow, state update patterns |
-| `performance` | codebase-analyst | Analyze caching strategies, optimization patterns, resource loading |
+| `architecture` | prp-core:codebase-explorer | Explore directory structure, module divisions, dependencies, entry points |
+| `coding-standards` | prp-core:codebase-explorer | Explore naming conventions, code style, formatting rules, import patterns |
+| `error-handling` | prp-core:codebase-analyst | Analyze error class definitions, error handling flows, error propagation |
+| `testing` | prp-core:codebase-explorer | Explore test file structure, test patterns, assertion styles, coverage |
+| `api` | prp-core:codebase-analyst | Analyze API route definitions, request handling, response formats, middleware |
+| `database` | prp-core:codebase-analyst | Analyze database schema, query patterns, migration strategies, ORM usage |
+| `auth` | prp-core:codebase-analyst | Analyze auth middleware, permission checks, session management, token handling |
+| `state-management` | prp-core:codebase-analyst | Analyze state management library usage, data flow, state update patterns |
+| `performance` | prp-core:codebase-analyst | Analyze caching strategies, optimization patterns, resource loading |
 | `git-workflow` | Read | Read .git/config, .github/workflows, branching strategy docs |
 | `deployment` | Read | Read CI/CD configs, Dockerfile, deployment scripts |
-| `documentation` | codebase-explorer | Analyze existing documentation structure, style, organization |
+| `documentation` | prp-core:codebase-explorer | Analyze existing documentation structure, style, organization |
 
 **Agent invocation example** (for error-handling module):
 
