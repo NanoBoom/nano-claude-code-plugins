@@ -56,20 +56,40 @@ test -f "{file_path}" && echo "EXISTS" || echo "NOT_FOUND"
 
 **If NOT_FOUND**: Stop with error message.
 
-### 1.4 If PRD File - Select Next Phase
+### 1.4 If PRD File - Select Next Phase and Generate Plan
 
 If input is a `.prd.md` file:
 1. Read the PRD
 2. Parse Implementation Phases table
 3. Find first phase with `Status: pending` where dependencies are `complete`
-4. Store the phase number and name for tracking
-5. Report which phase will be executed
-6. Note: The loop will create and execute a plan for this phase
+4. If no eligible phase found, STOP:
+   ```
+   All phases in this PRD are either complete or blocked by dependencies.
+   No pending phase available to execute.
+   ```
+5. Store the phase number and name for tracking
+6. Report which phase will be executed
+
+### 1.5 Generate Phase-Scoped Plan (PRD input only)
+
+**CRITICAL**: This step ensures Ralph only executes ONE phase per invocation.
+
+1. Extract the selected phase's description, scope, and acceptance criteria from the PRD
+2. Use `/prp-plan` to generate a plan scoped ONLY to this phase:
+   - Pass the phase description as input
+   - Include the PRD file path as context reference
+   - The generated plan file will be at `.claude/PRPs/plans/{prd-name}-phase-{N}.plan.md`
+3. Set `plan_path` to the newly generated plan file path
+4. Store the original PRD path separately as `prd_path`
+
+**SCOPE GUARD**: The generated plan MUST only contain tasks for the selected phase. If the PRD phase references work from other phases, those should be treated as pre-existing context, NOT as tasks to implement.
 
 **PHASE_1_CHECKPOINT:**
 - [ ] Input parsed (file path + max iterations)
 - [ ] File exists and is valid type
 - [ ] If PRD: next phase identified and stored
+- [ ] If PRD: phase-scoped plan generated via `/prp-plan`
+- [ ] If PRD: plan contains ONLY tasks for the selected phase
 
 ---
 
@@ -90,8 +110,9 @@ Write state file with this structure:
 ---
 iteration: 1
 max_iterations: {N}
-plan_path: "{file_path}"
+plan_path: "{plan_file_path}"
 input_type: "{plan|prd}"
+prd_path: "{prd_file_path}"  # Only if input_type is prd
 prd_phase_number: "{phase#}"  # Only if input_type is prd
 prd_phase_name: "{phase name}"  # Only if input_type is prd
 started_at: "{ISO timestamp}"
@@ -105,12 +126,16 @@ started_at: "{ISO timestamp}"
 ## Current Task
 Execute PRP plan and iterate until all validations pass.
 
-## Plan Reference
-{file_path}
+## Execution Scope
+- **Plan file**: {plan_file_path}
+- **Input type**: {plan|prd}
+- **PRD phase**: {phase# - phase name} (only if PRD input)
+
+**SCOPE RULE**: Only implement tasks listed in the plan file above. Do NOT read the PRD to find additional work. The plan is the single source of truth for this Ralph run.
 
 ## Instructions
-1. Read the plan file
-2. Implement all incomplete tasks
+1. Read the plan file (NOT the PRD)
+2. Implement all incomplete tasks FROM THE PLAN ONLY
 3. Run ALL validation commands from the plan
 4. If any validation fails: fix and re-validate
 5. Update plan file: mark completed tasks, add notes
@@ -127,7 +152,9 @@ Execute PRP plan and iterate until all validations pass.
 ```markdown
 ## PRP Ralph Loop Activated
 
-**Plan**: {file_path}
+**Plan**: {plan_file_path}
+**Input type**: {plan|prd}
+**PRD Phase**: {phase# - phase name} (only if PRD input)
 **Iteration**: 1
 **Max iterations**: {N}
 
@@ -141,7 +168,8 @@ To cancel: `/prp-ralph-cancel`
 ---
 
 CRITICAL REQUIREMENTS:
-- Work through ALL tasks in the plan
+- Work through ALL tasks in the plan file ONLY
+- Do NOT read the PRD to find additional tasks - the plan is the scope boundary
 - Run ALL validation commands
 - Fix failures before proceeding
 - Only output <promise>COMPLETE</promise> when ALL validations pass
@@ -164,17 +192,21 @@ Starting iteration 1...
 ### 3.1 Read Context First
 
 Before implementing anything:
-1. Read the state file - check "Codebase Patterns" section
-2. Read the plan file - understand all tasks
+1. Read the state file - check "Codebase Patterns" and "Execution Scope" sections
+2. Read the **plan file** (from `plan_path` in state) - understand all tasks
 3. Check git status - what's already changed?
 4. Review progress log - what did previous iterations do?
 
+**SCOPE ENFORCEMENT**: Only read the plan file for task identification. Do NOT read the PRD file to discover additional work. The plan file is the single source of truth for what needs to be implemented in this Ralph run.
+
 ### 3.2 Identify Work
 
-From the plan, identify:
+From the **plan file only**, identify:
 - Tasks not yet completed
 - Validation commands to run
 - Acceptance criteria to meet
+
+**BOUNDARY CHECK**: If you find yourself wanting to implement something not in the plan, STOP. That work belongs to a different phase and a future Ralph invocation.
 
 ### 3.3 Implement
 
@@ -264,6 +296,7 @@ Only add patterns that are **general and reusable**, not iteration-specific.
 
 **PHASE_3_CHECKPOINT:**
 - [ ] Context read (patterns, previous progress)
+- [ ] Scope verified: only working on tasks from plan file
 - [ ] All tasks attempted
 - [ ] All validations run
 - [ ] Plan file updated
@@ -277,12 +310,12 @@ Only add patterns that are **general and reusable**, not iteration-specific.
 ### 4.1 Verify All Validations Pass
 
 ALL of these must be true:
-- [ ] All tasks in plan completed
+- [ ] All tasks **in the plan file** completed (not the PRD)
 - [ ] Type check passes
 - [ ] Lint passes (0 errors)
 - [ ] Tests pass
 - [ ] Build succeeds
-- [ ] All acceptance criteria met
+- [ ] All acceptance criteria from the plan met
 
 ### 4.2 If ALL Pass - Complete the Loop
 
@@ -291,11 +324,12 @@ ALL of these must be true:
    If this Ralph run was initiated from a PRD file (`input_type: prd` in state file):
 
    a. **Read state file metadata**
-      - Extract `plan_path` (the PRD file path)
+      - Extract `prd_path` (the original PRD file path)
+      - Extract `plan_path` (the phase-scoped plan file)
       - Extract `prd_phase_number` (which phase was executed)
       - Extract `prd_phase_name` (for verification)
 
-   b. **Read the PRD file**
+   b. **Read the PRD file** (using `prd_path`)
       - Locate the Implementation Phases table
       - Find the row matching `prd_phase_number`
 
