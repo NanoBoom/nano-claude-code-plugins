@@ -1,5 +1,5 @@
 ---
-description: Analyze codebase and create/update rule documentation in .claude/rules directory
+description: Analyze codebase and create/update rule documentation in docs/rules directory
 argument-hint: <module-name | update description>
 ---
 
@@ -11,7 +11,7 @@ argument-hint: <module-name | update description>
 
 ## Command Objective
 
-Analyze the project codebase, extract key architecture patterns, design conventions, and implementation details to generate or update rule documentation in `.claude/rules/`. These documents guide Claude Code during development to ensure new code adheres to project standards.
+Analyze the project codebase, extract key architecture patterns, design conventions, and implementation details to generate or update rule documentation in `docs/rules/`. These documents guide Claude Code during development to ensure new code adheres to project standards.
 
 **🎯 CRITICAL: Keep documents MINIMAL and FOCUSED**
 
@@ -74,7 +74,7 @@ Rule documents should be **≤ 200 lines** and contain **only project-specific p
 ### 0.3 Create Directory Structure
 
 ```bash
-mkdir -p .claude/rules
+mkdir -p docs/rules
 ```
 
 **PHASE_0_CHECKPOINT:**
@@ -344,7 +344,7 @@ Each rule document follows this **minimal** structure:
 
    ```bash
    # Check if file exists
-   ls -la .claude/rules/{module-name}.md 2>/dev/null
+   ls -la docs/rules/{module-name}.md 2>/dev/null
    ```
 
 2. **Determine operation type**:
@@ -502,7 +502,7 @@ Reference `{errors-file}:{lines}`:
 
 ```bash
 # Extract and validate all file:line references
-grep -oP '`[^`]+:\d+(-\d+)?`' .claude/rules/*.md | \
+grep -oP '`[^`]+:\d+(-\d+)?`' docs/rules/*.md | \
   sed 's/`//g' | \
   shuf | head -5 | \
   while IFS=: read -r file line_range; do
@@ -605,33 +605,33 @@ This project uses modular rule documentation to guide development. Reference the
 
 | Rule Module | When to Use | Document Path |
 |-------------|-------------|---------------|
-| Architecture | Designing new features, refactoring system structure | .claude/rules/architecture.md |
-| Coding Standards | Writing any code | .claude/rules/coding-standards.md |
-| Error Handling | Implementing error handling logic | .claude/rules/error-handling.md |
-| Testing | Writing test code | .claude/rules/testing.md |
+| Architecture | Designing new features, refactoring system structure | docs/rules/architecture.md |
+| Coding Standards | Writing any code | docs/rules/coding-standards.md |
+| Error Handling | Implementing error handling logic | docs/rules/error-handling.md |
+| Testing | Writing test code | docs/rules/testing.md |
 
 ### Technical Rules
 
 | Rule Module | When to Use | Document Path |
 |-------------|-------------|---------------|
-| API Design | Designing or implementing API endpoints | .claude/rules/api.md |
-| Database | Designing schemas, writing queries | .claude/rules/database.md |
-| Authentication | Implementing auth, permission checks | .claude/rules/auth.md |
-| State Management | Managing frontend state | .claude/rules/state-management.md |
+| API Design | Designing or implementing API endpoints | docs/rules/api.md |
+| Database | Designing schemas, writing queries | docs/rules/database.md |
+| Authentication | Implementing auth, permission checks | docs/rules/auth.md |
+| State Management | Managing frontend state | docs/rules/state-management.md |
 
 ### Process Rules
 
 | Rule Module | When to Use | Document Path |
 |-------------|-------------|---------------|
-| Performance | Optimizing performance, implementing caching | .claude/rules/performance.md |
-| Git Workflow | Creating branches, committing code | .claude/rules/git-workflow.md |
-| Deployment | Configuring CI/CD, deploying | .claude/rules/deployment.md |
-| Documentation | Writing project documentation | .claude/rules/documentation.md |
+| Performance | Optimizing performance, implementing caching | docs/rules/performance.md |
+| Git Workflow | Creating branches, committing code | docs/rules/git-workflow.md |
+| Deployment | Configuring CI/CD, deploying | docs/rules/deployment.md |
+| Documentation | Writing project documentation | docs/rules/documentation.md |
 
 ### Usage
 
 Reference rule documents in commands or conversations:
-- Use `.claude/rules/{module}.md` to reference specific rules
+- Use `docs/rules/{module}.md` to reference specific rules
 - Claude Code will automatically load relevant rules as context
 - Rule documents guide code generation and decision-making
 ```
@@ -643,7 +643,7 @@ Reference rule documents in commands or conversations:
 - Use Edit tool to replace the entire "Rule Documentation Index" section
 - Include ALL existing rule modules (not just newly generated ones)
 - Strategy:
-  1. List all existing `.claude/rules/*.md` files
+  1. List all existing `docs/rules/*.md` files
   2. Merge with newly generated modules
   3. Generate complete index covering all modules
   4. Replace old index section with new complete index
@@ -657,7 +657,7 @@ Reference rule documents in commands or conversations:
 
 **Index content customization**:
 
-- Include ALL rule modules that exist in `.claude/rules/` directory
+- Include ALL rule modules that exist in `docs/rules/` directory
 - Adjust categorization based on project type:
   - Frontend projects: exclude database, include state-management
   - Backend projects: exclude state-management, include database, api
@@ -695,7 +695,7 @@ grep -A 20 "## Rule Documentation Index" $CLAUDE_PATH
 
 **Verification checklist**:
 - [ ] "Rule Documentation Index" section exists
-- [ ] All modules in `.claude/rules/` are listed
+- [ ] All modules in `docs/rules/` are listed
 - [ ] Table format is correct (no broken markdown)
 - [ ] File paths are accurate
 - [ ] "When to Use" descriptions are present
@@ -709,7 +709,7 @@ grep -A 20 "## Rule Documentation Index" $CLAUDE_PATH
 - [ ] Existing CLAUDE.md content read and analyzed
 - [ ] Complete rule index generated (includes ALL existing + new modules)
 - [ ] Index section updated/added in CLAUDE.md using Edit tool
-- [ ] All rule modules in `.claude/rules/` are included in index
+- [ ] All rule modules in `docs/rules/` are included in index
 - [ ] Module categorization matches project type
 - [ ] Usage guide clear and explicit
 - [ ] CLAUDE.md file verified after update
@@ -722,7 +722,7 @@ grep -A 20 "## Rule Documentation Index" $CLAUDE_PATH
 ### 6.1 List Generated Documents
 
 ```bash
-ls -lh .claude/rules/
+ls -lh docs/rules/
 ```
 
 ### 6.2 Report to User
@@ -739,10 +739,10 @@ ls -lh .claude/rules/
 
 | Document | Operation | Size | Pattern Count |
 |----------|-----------|------|---------------|
-| `.claude/rules/architecture.md` | Created | {size} | {count} |
-| `.claude/rules/coding-standards.md` | Created | {size} | {count} |
-| `.claude/rules/error-handling.md` | Updated | {size} | {count} |
-| `.claude/rules/testing.md` | Created | {size} | {count} |
+| `docs/rules/architecture.md` | Created | {size} | {count} |
+| `docs/rules/coding-standards.md` | Created | {size} | {count} |
+| `docs/rules/error-handling.md` | Updated | {size} | {count} |
+| `docs/rules/testing.md` | Created | {size} | {count} |
 
 ### ✅ CLAUDE.md Index Update
 
@@ -754,7 +754,7 @@ ls -lh .claude/rules/
 - Indexed {N} rule modules (includes all existing + newly generated)
 - Categorized as: {Core Rules: X, Technical Rules: Y, Process Rules: Z}
 - Added usage guide with "When to Use" descriptions
-- All rule document paths use `.claude/rules/{module}.md` format
+- All rule document paths use `docs/rules/{module}.md` format
 
 **Index location in CLAUDE.md**: Line {start-line} to {end-line}
 
@@ -787,7 +787,7 @@ This project uses modular rule documentation to guide development. Reference the
 ### Usage
 
 Reference rule documents in commands or conversations:
-- Use `.claude/rules/{module}.md` to reference specific rules
+- Use `docs/rules/{module}.md` to reference specific rules
 - Claude Code will automatically load relevant rules as context
 - Rule documents guide code generation and decision-making
 ```
@@ -814,7 +814,7 @@ Reference rule documents in commands or conversations:
 **Reference rules during development**:
 
 1. **Automatic loading**: Claude Code will automatically reference these rules for relevant tasks
-2. **Manual reference**: Use `.claude/rules/{module}.md` in conversations to reference specific rules
+2. **Manual reference**: Use `docs/rules/{module}.md` in conversations to reference specific rules
 3. **Use in commands**: Reference rule documents in command `<context>` sections
 
 **Example**:
@@ -822,8 +822,8 @@ Reference rule documents in commands or conversations:
 ```markdown
 <context>
 Project rules: CLAUDE.md
-Architecture rules: .claude/rules/architecture.md
-Coding standards: .claude/rules/coding-standards.md
+Architecture rules: docs/rules/architecture.md
+Coding standards: docs/rules/coding-standards.md
 </context>
 ```
 
@@ -831,10 +831,10 @@ Coding standards: .claude/rules/coding-standards.md
 
 ```bash
 # View specific rule
-cat .claude/rules/architecture.md
+cat docs/rules/architecture.md
 
 # View all rules
-ls .claude/rules/
+ls docs/rules/
 ```
 
 **Edit rules**:
@@ -884,18 +884,18 @@ ls .claude/rules/
 
 ### File Write Failed
 
-**Symptoms**: Unable to write `.claude/rules/{module}.md`
+**Symptoms**: Unable to write `docs/rules/{module}.md`
 
 **Recovery steps**:
 
-1. Check directory permissions: `ls -la .claude/rules/`
-2. If directory doesn't exist: `mkdir -p .claude/rules`
+1. Check directory permissions: `ls -la docs/rules/`
+2. If directory doesn't exist: `mkdir -p docs/rules`
 3. Check disk space: `df -h .`
-4. Check if file is in use: `lsof .claude/rules/{module}.md`
-5. Fix permissions: `chmod 755 .claude/rules`
+4. Check if file is in use: `lsof docs/rules/{module}.md`
+5. Fix permissions: `chmod 755 docs/rules`
 6. Retry command
 
-**Prevention**: Ensure `.claude/rules/` directory exists and is writable
+**Prevention**: Ensure `docs/rules/` directory exists and is writable
 
 ---
 

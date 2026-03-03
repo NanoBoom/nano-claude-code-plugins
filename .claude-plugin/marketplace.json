@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "nano-claude-code-plugins",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "A collection of productivity and development workflow plugins for Claude Code, featuring advanced AI-driven development methodologies",
   "owner": {
     "name": "NanoBoom",
@@ -14,7 +14,7 @@
       "description": "Complete PRP workflow system with planning, implementation, debugging, issue management, and code review commands for systematic AI-driven development",
       "source": "./plugins/prp-core",
       "category": "development",
-      "version": "1.2.1",
+      "version": "1.2.2",
       "license": "MIT",
       "strict": true,
       "homepage": "https://github.com/NanoBoom/nano-claude-code-plugins/tree/main/plugins/prp-core",
