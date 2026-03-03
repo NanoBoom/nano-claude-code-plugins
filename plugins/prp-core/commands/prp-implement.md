@@ -1,6 +1,6 @@
 ---
 description: Execute an implementation plan with rigorous validation loops
-argument-hint: <path/to/plan.md>
+argument-hint: <path/to/plan.md> [--base <branch>]
 ---
 
 # Implement Plan
@@ -37,9 +37,31 @@ Check for these files to determine the project's toolchain:
 
 **Store the detected runner** - use it for all subsequent commands.
 
-### 0.2 Identify Validation Scripts
+### 0.2 Detect Base Branch
+
+Determine the base branch for branching and syncing:
+
+1. **Check arguments**: If `$ARGUMENTS` contains `--base <branch>`, extract that value and remove the flag from the plan path argument
+2. **Auto-detect from remote**:
+
+   ```bash
+   git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@'
+   ```
+
+3. **Fallback if detection fails**:
+
+   ```bash
+   git remote show origin 2>/dev/null | grep 'HEAD branch' | awk '{print $NF}'
+   ```
+
+4. **Last resort**: `main`
+
+**Store as `{base-branch}`** — use this value for ALL branch comparisons, rebasing, and syncing. Never hardcode `main` or `master`.
+
+### 0.3 Identify Validation Scripts
 
 Check `package.json` (or equivalent) for available scripts:
+
 - Type checking: `type-check`, `typecheck`, `tsc`
 - Linting: `lint`, `lint:fix`
 - Testing: `test`, `test:unit`, `test:integration`
@@ -98,23 +120,23 @@ git worktree list
 
 ### 2.2 Branch Decision
 
-| Current State     | Action                                               |
-| ----------------- | ---------------------------------------------------- |
-| In worktree       | Use it (log: "Using worktree")                       |
-| On main, clean    | Create branch: `git checkout -b feature/{plan-slug}` |
-| On main, dirty    | STOP: "Stash or commit changes first"                |
-| On feature branch | Use it (log: "Using existing branch")                |
+| Current State              | Action                                               |
+| -------------------------- | ---------------------------------------------------- |
+| In worktree                | Use it (log: "Using worktree")                       |
+| On {base-branch}, clean    | Create branch: `git checkout -b feature/{plan-slug}` |
+| On {base-branch}, dirty    | STOP: "Stash or commit changes first"                |
+| On feature branch          | Use it (log: "Using existing branch")                |
 
 ### 2.3 Sync with Remote
 
 ```bash
 git fetch origin
-git pull --rebase origin main 2>/dev/null || true
+git pull --rebase origin {base-branch} 2>/dev/null || true
 ```
 
 **PHASE_2_CHECKPOINT:**
 
-- [ ] On correct branch (not main with uncommitted work)
+- [ ] On correct branch (not {base-branch} with uncommitted work)
 - [ ] Working directory ready
 - [ ] Up to date with remote
 
@@ -141,6 +163,7 @@ git pull --rebase origin main 2>/dev/null || true
 **After EVERY file change, run the type-check command from the plan's Validation Commands section.**
 
 Common patterns:
+
 - `{runner} run type-check` (JS/TS projects)
 - `mypy .` (Python)
 - `cargo check` (Rust)
@@ -185,6 +208,7 @@ If you must deviate from the plan:
 **Run the type-check and lint commands from the plan's Validation Commands section.**
 
 Common patterns:
+
 - JS/TS: `{runner} run type-check && {runner} run lint`
 - Python: `ruff check . && mypy .`
 - Rust: `cargo check && cargo clippy`
@@ -211,6 +235,7 @@ If lint errors:
 **Write tests**, then run the test command from the plan.
 
 Common patterns:
+
 - JS/TS: `{runner} test` or `{runner} run test`
 - Python: `pytest` or `uv run pytest`
 - Rust: `cargo test`
@@ -229,6 +254,7 @@ Common patterns:
 **Run the build command from the plan's Validation Commands section.**
 
 Common patterns:
+
 - JS/TS: `{runner} run build`
 - Python: N/A (interpreted) or `uv build`
 - Rust: `cargo build --release`
@@ -241,6 +267,7 @@ Common patterns:
 **If the plan involves API/server changes, use the integration test commands from the plan.**
 
 Example pattern:
+
 ```bash
 # Start server in background (command varies by project)
 {runner} run dev &
@@ -372,6 +399,7 @@ Compare the original investigation's assessment with what actually happened:
 ### 5.3 Update Source PRD (if applicable)
 
 **Check if plan was generated from a PRD:**
+
 - Look in the plan file for `Source PRD:` reference
 - Or check if plan filename matches a phase pattern
 
