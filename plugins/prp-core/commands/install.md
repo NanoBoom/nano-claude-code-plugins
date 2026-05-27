@@ -1,5 +1,5 @@
 ---
-description: Install PRP templates, configure Context7 MCP server, and set up project documentation template
+description: Install PRP templates, configure Codegraph MCP server, and set up project documentation template
 ---
 
 # Install PRP Templates and Configure MCP
@@ -34,41 +34,49 @@ After installing the PRP templates, configure the MCP (Model Context Protocol) s
 1. Check if `.mcp.json` exists in project root
 2. If file exists:
    - Read the current `.mcp.json` file
-   - Check if `context7` server already exists in `mcpServers`
-   - If `context7` exists: Skip this task (inform user that context7 is already configured)
-   - If `context7` doesn't exist: Proceed to Step 2
+   - Check if `codegraph` server already exists in `mcpServers`
+   - If `codegraph` exists: Skip this task (inform user that codegraph is already configured)
+   - If `codegraph` doesn't exist: Proceed to Step 2
 3. If file doesn't exist: Proceed to Step 2
 
-### Step 2: Add context7 configuration
+### Step 2: Initialize codegraph
 
-The context7 configuration to add:
+1. Check if `.codegraph` directory exists in the current project directory
+2. If it exists: Skip initialization (inform user that codegraph is already initialized)
+3. If it doesn't exist: Run the initialization command:
+
+   ```bash
+   codegraph init -i
+   ```
+
+### Step 3: Add codegraph configuration
+
+The codegraph configuration to add:
 
 ```json
 {
-  "context7": {
-    "type": "http",
-    "url": "https://mcp.context7.com/mcp",
-    "headers": {
-      "CONTEXT7_API_KEY": "YOUR_API_KEY"
-    }
+  "codegraph": {
+    "type": "stdio",
+    "command": "codegraph",
+    "args": ["serve", "--mcp"]
   }
 }
 ```
 
 **Actions:**
 
-- If `.mcp.json` exists: Merge context7 into existing `mcpServers` object
-- If `.mcp.json` doesn't exist: Create new file with context7 configuration
+- If `.mcp.json` exists: Merge codegraph into existing `mcpServers` object
+- If `.mcp.json` doesn't exist: Create new file with codegraph configuration
 - Ensure proper JSON formatting and indentation after modification
 
-### Step 3: Verify configuration
+### Step 4: Verify configuration
 
 1. **Validate JSON**: Parse the modified/created `.mcp.json` to ensure valid syntax
-2. **Confirm context7 addition**: Verify that context7 server is present in the configuration
+2. **Confirm codegraph addition**: Verify that codegraph server is present in the configuration
 3. **Display result**:
-   - If added: "✅ Context7 MCP server added to configuration"
-   - If skipped: "ℹ️ Context7 server already configured, skipping"
-   - Remind user: "⚠️ Replace `YOUR_API_KEY` with your actual Context7 API key"
+   - If added: "✅ Codegraph MCP server added to configuration"
+   - If skipped: "ℹ️ Codegraph server already configured, skipping"
+   - Remind user: "⚠️ Ensure the `codegraph` command is installed and available in your PATH"
    - Note: "🔄 Restart your development environment to activate changes"
 
 ## Task 3: Add Project Documentation Template
