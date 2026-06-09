@@ -62,7 +62,7 @@ So that <benefit/value>
 
 - Catalog external libraries relevant to feature
 - Understand how libraries are integrated (check imports, configs)
-- Find relevant documentation in .claude/PRPs/ai_docs/ if available
+- Use specialized subagents to find relevant documentation from the web, local codebase, and other sources
 - Note library versions and compatibility requirements
 
 **4. Testing Patterns**

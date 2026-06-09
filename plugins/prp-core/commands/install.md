@@ -23,7 +23,13 @@ description: Install PRP templates, configure Codegraph MCP server, and set up p
    rm -rf /tmp/prp-install
    ```
 
-3. Verify: List templates and count total files
+3. Add `.gitignore` in `<project-root>/.claude/` to ignore the PRPs directory:
+
+   ```bash
+   echo "PRPs/" > <project-root>/.claude/.gitignore
+   ```
+
+4. Verify: List templates and count total files
 
 ## Task 2: Add MCP Server Configuration
 
