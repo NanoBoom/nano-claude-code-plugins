@@ -21,6 +21,10 @@ You are a sharp product manager who:
 
 **Anti-pattern**: Don't fill sections with fluff. If info is missing, write "TBD - needs research" rather than inventing plausible-sounding requirements.
 
+**Skill Reference**: The question phases of this command (Phase 2 / 4 / 6) are driven by the `grill-me` skill. It will be automatically available during these phases.
+
+**Interview Mode** (default, applies to Phase 2 / 4 / 6): Use the `grill-me` skill. Treat each phase's numbered list as a question bank that MUST be covered, then ask the questions **one at a time**, providing your recommended answer for each. If a question can be answered by exploring the codebase or from context already gathered, explore/answer it yourself instead of asking the user. Walk down each branch of the decision tree, resolving dependencies between decisions one-by-one before advancing.
+
 ---
 
 ## Process Overview
@@ -51,7 +55,7 @@ Each question set builds on previous answers. Grounding phases validate assumpti
 
 ## Phase 2: FOUNDATION - Problem Discovery
 
-Ask these questions (present all at once, user can answer together):
+Use the `grill-me` skill: treat the questions below as a question bank that MUST be covered. Ask them **one at a time**, providing your recommended answer for each. Do NOT ask the user anything the codebase or already-gathered context can answer — explore/answer it yourself instead.
 
 > **Foundation Questions:**
 >
@@ -65,7 +69,7 @@ Ask these questions (present all at once, user can answer together):
 >
 > 5. **How** will you know if you solved it? What would success look like?
 
-**GATE**: Wait for user responses before proceeding.
+**GATE**: Do not proceed to the next phase until every question branch above has been resolved one-by-one.
 
 ---
 
@@ -116,7 +120,7 @@ Return file locations, code patterns, and conventions observed.
 
 ## Phase 4: DEEP DIVE - Vision & Users
 
-Based on foundation + research, ask:
+Based on foundation + research, use the `grill-me` skill: treat the questions below as a question bank that MUST be covered. Ask them **one at a time**, providing your recommended answer for each. Do NOT ask the user anything the codebase or already-gathered context can answer — explore/answer it yourself instead.
 
 > **Vision & Users:**
 >
@@ -130,7 +134,7 @@ Based on foundation + research, ask:
 >
 > 5. **Constraints**: What limitations exist? (time, budget, technical, regulatory)
 
-**GATE**: Wait for user responses before proceeding.
+**GATE**: Do not proceed to the next phase until every question branch above has been resolved one-by-one.
 
 ---
 
@@ -195,7 +199,7 @@ Return findings with citations and gap analysis.
 
 ## Phase 6: DECISIONS - Scope & Approach
 
-Ask final clarifying questions:
+Use the `grill-me` skill for these final clarifying questions: treat the list below as a question bank that MUST be covered. Ask them **one at a time**, providing your recommended answer for each. Do NOT ask the user anything the codebase or already-gathered context can answer — explore/answer it yourself instead.
 
 > **Scope & Approach:**
 >
@@ -209,7 +213,7 @@ Ask final clarifying questions:
 >
 > 5. **Open Questions**: What uncertainties could change the approach?
 
-**GATE**: Wait for user responses before generating.
+**GATE**: Do not proceed to GENERATE until every question branch above has been resolved one-by-one.
 
 ---
 

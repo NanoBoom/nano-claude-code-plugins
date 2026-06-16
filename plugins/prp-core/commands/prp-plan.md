@@ -17,6 +17,8 @@ Transform "$ARGUMENTS" into a battle-tested implementation plan through systemat
 - `prp-core:web-researcher` — strategic web research with citations and gap analysis
 
 Launch codebase agents in parallel first, then research agent second.
+
+**Skill Reference**: Requirement clarification (Phase 1) and architecture decisions (Phase 5) are driven by the `grill-me` skill — ask one question at a time, give your recommended answer for each, and explore the codebase instead of asking when the answer is discoverable there. The skill is a *skill*, not an agent; it is distinct from the three `prp-core:*` agents above. It will be automatically available during those phases.
 </objective>
 
 <context>
@@ -121,7 +123,7 @@ So that <benefit/value>
 - [ ] Complexity assessment has rationale
 - [ ] Affected systems identified
 
-**GATE**: If requirements are AMBIGUOUS → STOP and ASK user for clarification before proceeding.
+**GATE (default grilling)**: Use the `grill-me` skill to clarify the items EXTRACTed above (core problem, user value, feature type, complexity, affected systems) one at a time, providing your recommended answer for each. Anything the codebase can answer is deferred to the Phase 2 exploration — do NOT ask the user those; ask only the intent/value questions the codebase cannot answer. Resolve every requirement branch before advancing to Phase 2.
 
 ---
 
@@ -326,6 +328,10 @@ Document what exists with precise file:line references. No suggestions.
 - PERFORMANCE: Will this scale? Database queries optimized?
 - SECURITY: Attack vectors? Data exposure risks? Auth/authz?
 - MAINTAINABILITY: Will future devs understand this code?
+
+**GRILL before deciding:**
+
+Before writing APPROACH_CHOSEN, use the `grill-me` skill to walk the decision tree across the dimensions above (ARCHITECTURE_FIT / EXECUTION_ORDER / FAILURE_MODES / PERFORMANCE / SECURITY / MAINTAINABILITY). Grill the user on each trade-off one at a time, providing your recommended answer for each; anything answerable from the Phase 2 / Phase 5 codebase analysis is answered from that analysis, not asked. Order is **analyze → grill → DECIDE**: the analysis findings are the raw material for the questions, not replaced by them. Once each branch has converged, fill in APPROACH_CHOSEN / ALTERNATIVES_REJECTED / NOT_BUILDING below.
 
 **DECIDE and document:**
 
