@@ -20,6 +20,7 @@ description: Install PRP templates, configure Codegraph MCP server, and set up p
    echo "PRPs/*" > .git/info/sparse-checkout
    git pull origin main
    cp -r PRPs <project-root>/.claude/
+   rm -f <project-root>/.claude/CLAUDE.md
    rm -rf /tmp/prp-install
    ```
 
