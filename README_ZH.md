@@ -2,70 +2,60 @@
 
 [English Documentation](./README.md)
 
-为 Claude Code 打造的生产力和开发工作流插件市场，采用 PRP（产品需求提示词）方法论实现 AI 驱动的软件开发。
-
-> **致谢**: 本项目基于 [Wirasm](https://github.com/Wirasm) 的 [PRPs-agentic-eng](https://github.com/Wirasm/PRPs-agentic-eng) 项目。我们将原始工作重新组织并改编为模块化的插件市场格式。PRP 方法论和核心概念的所有功劳归原作者所有。
+为 Claude Code 打造的插件市场，把成本和委派纪律置于显式管控之下。
 
 ## 概述
 
-本插件市场通过 **PRP 方法论** 扩展 Claude Code 的能力 - 其中 **PRP = PRD + 精选代码库知识 + 智能体/执行手册**。PRP 方法通过提供完整的上下文、分步实施计划和可执行的验证检查点，使 AI 智能体能够一次性交付生产级代码。
-
-### 什么是 PRP？
-
-PRP（产品需求提示词）是一份完整的实施文档，包含：
-
-1. **上下文** - 代码库中所有必要的模式、文档和示例
-2. **计划** - 带有验证检查点的分步任务
-3. **验证** - 用于确认正确性的可执行命令
-
-### 核心原则
-
-- **上下文为王** - 包含实施成功所需的所有信息
-- **验证循环** - 提供 AI 可以运行和修复的可执行测试
-- **信息密集** - 使用代码库中的关键词和模式
-- **渐进成功** - 从简单开始，验证，然后增强
+Claude Code 的默认行为在设计上是宽松的：子智能体不指定模型就会静默继承主会话模型——通常是最贵的档位；工作流可以一直扇出，直到账单送到面前。这里的插件用声明式预算、显式路由，以及真正强制执行（而非仅仅建议）二者的 hook 来取代这些默认行为。
 
 ## 可用插件
 
-### prp-core
+### boom
 
 **版本:** 1.0.0 | **作者:** NanoBoom | **分类:** 开发
 
-完整的 PRP 工作流系统，提供规划、实现、调试、问题管理和代码审查的全面命令。
+成本优先的委派管控。Claude Code 派发的子智能体会默默继承主会话模型——通常是最贵的档位。本插件用预算、路由表和一个强制执行两者的 hook 取代该默认行为。
 
 **特性:**
-- 完整的开发生命周期 (PRD → 计划 → 实现 → 审查 → PR)
-- Ralph 自主开发智能体
-- 交互式调试能力
-- 问题调查和系统化修复
-- 代码质量和审查自动化
-- 智能提交的 Git 集成
+- L0-L4 任务分级，限制总启动数、并发数和活跃工作流数
+- 角色到模型的路由：探索用 Haiku，规划/QA/审查用 Sonnet，实现用 Opus
+- Fable 关键工作者门禁：每个任务最多一次关键启动，且绝不放入工作流
+- `PreToolUse` hook 拒绝任何未显式指定模型的 `Agent`、`Workflow`、`SendMessage` 派发
+- 受限的工作者智能体，模型、effort、轮次上限和工具边界均已固定
 
-**命令 (12个):**
+**命令 (2个):**
 
 | 命令 | 描述 |
 |------|------|
-| `/prp-prd` | 生成带深度分析的完整产品需求文档 |
-| `/prp-plan` | 创建带验证检查点的详细实现计划 |
-| `/prp-implement` | 执行 PRP，带系统化验证和质量检查 |
-| `/prp-debug` | 带逐步分析的交互式调试 |
-| `/prp-issue-investigate` | 带系统化分析的深度问题调查 |
-| `/prp-issue-fix` | 带验证循环的系统化问题修复 |
-| `/prp-review` | 带最佳实践验证的全面代码审查 |
-| `/prp-commit` | 创建带合适消息的原子 git 提交 |
-| `/prp-pr` | 创建带完整描述的拉取请求 |
-| `/prp-ralph` | 启动端到端功能开发的自主开发智能体 |
-| `/prp-ralph-cancel` | 取消正在运行的 Ralph 智能体 |
-| `/install` | 安装和配置 PRP 系统 |
+| `/boom:setup` | 将工程策略安装为 `~/.claude/CLAUDE.md`，已存在时先备份 |
+| `/boom:detect-models` | 从子智能体的会话记录中，显示当前项目里每个被委派的子智能体实际使用的模型 |
 
-**智能体 (2个):**
+**技能 (2个):**
 
-| 智能体 | 描述 |
-|--------|------|
-| `codebase-analyst` | 深度代码库模式分析、架构发现和约定检测 |
-| `library-researcher` | 外部库文档研究、API 发现和最佳实践识别 |
+| 技能 | 描述 |
+|------|------|
+| `dispatch-policy` | L0-L4 预算、计数规则、角色到模型的路由、Fable 门禁 |
+| `workflow-authoring` | 成本受控的工作流参考：每个 `agent()` 必须指定模型 |
 
-[了解更多 →](./plugins/prp-core/README.md)
+**智能体 (9个):**
+
+| 智能体 | 模型 | 描述 |
+|--------|------|------|
+| `coordinator` | opus/high | 无写入工具的委派主管，负责最终验收 |
+| `explore` | haiku/low | 针对单个狭窄问题的只读探索 |
+| `planner` | sonnet/high | 基于已验证证据的受限计划 |
+| `implementer` | opus/high | 单个受限的生产或测试改动 |
+| `qa` | sonnet/high | 独立的构建、测试和运行时验证 |
+| `reviewer` | sonnet/high | 对抗式只读正确性审查 |
+| `reviewer-fable` | fable/low | Sonnet 判断力不足时的只读审查 |
+| `critical-implementer` | fable/high | 单个指名的关键改动 |
+| `critical-reviewer` | fable/high | 单个指名的关键审计 |
+
+**Hooks (1个):** `Agent|Workflow|SendMessage` 上的 `PreToolUse`——模型必须显式且落在角色允许集内，否则拒绝。
+
+移植自 [@ds](https://docs.dsdev.cn/blog/claude-code-agent-workflow-prompts/) 的个人 `~/.claude` 派发配置。
+
+[了解更多 →](./plugins/boom/README.md)
 
 ---
 
@@ -80,27 +70,34 @@ PRP（产品需求提示词）是一份完整的实施文档，包含：
 # 浏览可用插件
 /plugin
 
-# 安装 prp-core
-/plugin install prp-core@nano-claude-code-plugins
+# 安装 boom
+/plugin install boom@nano-claude-code-plugins
 ```
 
 ### 本地开发
 
+不安装，仅为当次会话加载插件：
+
 ```bash
-# 克隆仓库
 git clone https://github.com/NanoBoom/nano-claude-code-plugins.git
 cd nano-claude-code-plugins
+claude --plugin-dir plugins/boom
+```
 
-# 启动 Claude Code
+或把工作副本注册为市场：
+
+```bash
 claude
-
-# 添加本地市场（使用绝对路径）
 /plugin marketplace add /absolute/path/to/nano-claude-code-plugins
+/plugin install boom@nano-claude-code-plugins
+# 重启 Claude Code 以加载组件
+```
 
-# 安装插件
-/plugin install prp-core@nano-claude-code-plugins
+插件加载失败在正常输出里是静默的——manifest 里一个字段非法就会丢掉整个插件，agent 和 hook 一并失效。请显式检查：
 
-# 重启 Claude Code 以加载命令
+```bash
+claude -p "hi" --plugin-dir plugins/your-plugin --debug-file /tmp/dbg.log
+grep -i "your-plugin" /tmp/dbg.log | grep -iE "\[WARN\]|\[ERROR\]"
 ```
 
 ### 团队安装
@@ -115,7 +112,7 @@ claude
     }
   },
   "enabledPlugins": [
-    "prp-core@nano-claude-code-plugins"
+    "boom@nano-claude-code-plugins"
   ]
 }
 ```
@@ -124,64 +121,48 @@ claude
 
 ## 快速参考
 
-### 完整功能开发工作流
+### 在声明的预算下委派
 
-```bash
-# 1. 创建带深度代码库分析的 PRD
-/prp-prd "添加 JWT 用户认证"
+启用 `boom` 后，工作者角色用带命名空间的类型寻址，且每次派发都必须指定模型：
 
-# 2. 创建实现计划
-/prp-plan PRPs/features/add-user-authentication.prd.md
-
-# 3. 带验证的功能实现
-/prp-implement PRPs/features/add-user-authentication.plan.md
-
-# 4. 审查更改
-/prp-review src/auth/
-
-# 5. 带智能消息生成的提交
-/prp-commit
-
-# 6. 创建拉取请求
-/prp-pr "feat: add JWT authentication"
+```
+Agent(subagent_type: "boom:explore",      model: "haiku")   # 狭窄探索
+Agent(subagent_type: "boom:planner",      model: "sonnet")  # 受限计划
+Agent(subagent_type: "boom:implementer",  model: "opus")    # 单个受限改动
+Agent(subagent_type: "boom:reviewer",     model: "sonnet")  # 对抗式审查
 ```
 
-### Ralph 自主开发
+省略 model，hook 会直接拒绝：
 
-```bash
-# Ralph 自动处理整个工作流
-/prp-ralph "添加带会话管理的 JWT 用户认证"
-
-# Ralph 会：
-# - 生成完整的 PRD
-# - 创建详细的实现计划
-# - 实现功能
-# - 运行验证检查
-# - 创建提交和 PR
+```
+<error>Agent 'boom:implementer' must specify an explicit model. Model inheritance is prohibited.</error>
 ```
 
-### Bug 调查和修复工作流
+### 以 coordinator 身份运行会话
+
+`coordinator` 角色负责委派和集成，但不持有任何写入工具：
 
 ```bash
-# 1. 系统化调查问题
-/prp-issue-investigate "用户密码重置后无法登录"
-
-# 2. 带验证的问题修复
-/prp-issue-fix PRPs/investigations/login-after-reset.md
-
-# 3. 提交修复
-/prp-commit
-
-# 4. 创建 PR
-/prp-pr "fix: resolve login issue after password reset"
+claude --agent boom:coordinator
 ```
 
-### 交互式调试
+若想同时固定它的模型、effort 和并发上限，传入随插件提供的会话设置文件：
 
 ```bash
-# 带逐步分析的调试
-/prp-debug "TypeError: Cannot read property 'id' of undefined in user profile"
+claude --settings plugins/boom/reference/coordinator.settings.json
 ```
+
+### 核实实际运行的模型
+
+hook 在派发前阻止模型继承。若想事后核实，读取当前项目的子智能体会话记录即可：
+
+```bash
+/boom:detect-models
+```
+
+它会为每个子智能体输出一行：实际使用的模型、轮次数，以及任务提示的开头。`fork` 总是继承父模型，因此那里出现不一致属于预期。
+
+L0-L4 任务分级、完整路由表以及 hook 拒绝哪些派发，见[插件 README](./plugins/boom/README.md)。
 
 ## 插件开发
 
@@ -209,6 +190,13 @@ claude
 
 3. **根据需要添加命令、智能体或技能**
 
+   不要在 `plugin.json` 里声明组件路径。默认的 `commands/`、`agents/`、`skills/` 和 `hooks/hooks.json` 会自动发现，而声明它们正是 manifest 出错的主要来源：
+
+   - `"agents": ["./agents/"]` 会被拒绝（`agents.0: Invalid input`）——该字段接受的是**文件**路径，这一点和接受目录的 `commands` 不同。manifest 非法会静默丢弃整个插件。
+   - `"hooks": "./hooks/hooks.json"` 会被判为重复；该 manifest 字段只用于**额外的** hook 文件。
+   - `hooks.json` 里 `command` 要写成字符串（`"node \"${CLAUDE_PLUGIN_ROOT}/hooks/x.js\""`）。部分文档展示的 exec 数组形式会被 Claude Code 2.1.263 拒绝。
+   - agent 文件里的 `permissionMode` 对插件 agent 无效，且每次会话都会告警。请改用 `tools:` 限制工具。
+
 4. **更新 marketplace.json 以包含你的插件**
 
 ### 插件结构
@@ -227,6 +215,7 @@ plugins/
     │       └── SKILL.md
     ├── hooks/                 # 事件处理器
     │   └── hooks.json
+    ├── scripts/               # 命令调用的 shell 脚本
     ├── .mcp.json             # MCP 服务器配置
     └── README.md             # 插件文档
 ```
@@ -281,6 +270,12 @@ plugins/
 本插件市场及其插件基于 MIT 许可证发布。
 
 ## 更新日志
+
+### v2.0.0 (2026-09-07)
+- **破坏性变更：** 移除 `prp-core` 插件及其 12 个命令和 2 个智能体。它的 manifest 声明了 `"agents": ["./agents/"]`，该写法校验失败，导致插件在 Claude Code 2.1.263 上根本无法加载。如需找回，可从 git 历史恢复。
+- 新增 `boom` 插件：L0-L4 委派预算、角色到模型的路由、Fable 关键工作者门禁、9 个受限工作者智能体、2 个技能、一个报告各子智能体实际所用模型的 `/boom:detect-models` 命令，以及一个拒绝模型继承的 `PreToolUse` hook
+- 围绕委派成本管控重写市场文档
+- 补充会静默丢弃插件的 manifest 陷阱说明
 
 ### v1.2.0 (2025-01-12)
 - 整合为单一全面的 prp-core 插件

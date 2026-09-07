@@ -1,8 +1,8 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "nano-claude-code-plugins",
-  "version": "1.1.0",
-  "description": "A collection of productivity and development workflow plugins for Claude Code, featuring advanced AI-driven development methodologies",
+  "version": "2.0.0",
+  "description": "Plugins for Claude Code that put cost and delegation discipline under explicit control",
   "owner": {
     "name": "NanoBoom",
     "email": "cinuor@gmail.com",
@@ -10,39 +10,35 @@
   },
   "plugins": [
     {
-      "name": "prp-core",
-      "description": "Complete PRP workflow system with planning, implementation, debugging, issue management, and code review commands for systematic AI-driven development",
-      "source": "./plugins/prp-core",
+      "name": "boom",
+      "description": "Cost-first delegation control: L0-L4 task budgets, role-to-model routing, a Fable critical-worker gate, bounded worker agents, and a PreToolUse hook that denies model inheritance on Agent, Workflow, and SendMessage dispatches",
+      "source": "./plugins/boom",
       "category": "development",
       "version": "1.0.0",
       "license": "MIT",
       "strict": true,
-      "homepage": "https://github.com/NanoBoom/nano-claude-code-plugins/tree/main/plugins/prp-core",
+      "homepage": "https://github.com/NanoBoom/nano-claude-code-plugins/tree/main/plugins/boom",
       "author": {
         "name": "NanoBoom",
         "email": "cinuor@gmail.com"
       },
       "keywords": [
-        "development",
-        "workflow",
-        "automation",
-        "planning",
-        "debugging",
-        "issue-management",
-        "code-review"
+        "token-budget",
+        "cost-control",
+        "dispatch",
+        "model-routing",
+        "subagents"
       ],
       "tags": [
-        "prp",
+        "token-budget",
+        "cost-control",
+        "dispatch",
+        "model-routing",
+        "subagents",
         "workflow",
-        "automation",
-        "planning",
-        "implementation",
-        "debugging",
-        "issue-management",
-        "code-review",
-        "git",
-        "testing",
-        "pull-request"
+        "hooks",
+        "agents",
+        "skills"
       ]
     }
   ]
