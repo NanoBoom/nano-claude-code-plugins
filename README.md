@@ -2,82 +2,60 @@
 
 [中文文档](./README_ZH.md)
 
-A marketplace of productivity and development workflow plugins for Claude Code, featuring the PRP (Product Requirements Prompt) methodology for AI-driven software development.
-
-> **Attribution**: This project is based on [PRPs-agentic-eng](https://github.com/Wirasm/PRPs-agentic-eng) by [Wirasm](https://github.com/Wirasm). We have reorganized and adapted the original work into a modular plugin marketplace format. All credit for the PRP methodology and core concepts goes to the original author.
+A marketplace of plugins for Claude Code that put cost and delegation discipline under explicit control.
 
 ## Overview
 
-This marketplace provides a high-quality plugin that extends Claude Code's capabilities through the **PRP methodology** - where **PRP = PRD + curated codebase intelligence + agent/runbook**. The PRP approach enables AI agents to ship production-ready code on the first pass by providing comprehensive context, step-by-step implementation plans, and executable validation gates.
+Claude Code's defaults are permissive by design: a subagent that omits its model silently inherits the main-session model, usually the most expensive tier, and a workflow can fan out until the bill arrives. The plugins here replace those defaults with declared budgets, explicit routing, and hooks that enforce both rather than merely suggesting them.
 
-### What is PRP?
+## Available Plugins
 
-A PRP (Product Requirements Prompt) is a comprehensive implementation document that contains:
-
-1. **Context** - All necessary patterns, documentation, and examples from your codebase
-2. **Plan** - Step-by-step tasks with validation gates
-3. **Validation** - Executable commands to verify correctness
-
-### Core Principles
-
-- **Context is King** - Include ALL necessary information for implementation success
-- **Validation Loops** - Provide executable tests the AI can run and fix
-- **Information Dense** - Use keywords and patterns from your codebase
-- **Progressive Success** - Start simple, validate, enhance
-
-## Available Plugin
-
-### prp-core
+### boom
 
 **Version:** 1.0.0 | **Author:** NanoBoom | **Category:** Development
 
-Complete PRP workflow system providing comprehensive commands for planning, implementation, debugging, issue management, and code review.
+Cost-first delegation control. Claude Code will spawn subagents that silently inherit the main-session model — usually the most expensive tier. This plugin replaces that default with a budget, a routing table, and a hook that enforces both.
 
 **Features:**
-- Complete development lifecycle (PRD → Plan → Implementation → Review → PR)
-- Autonomous development with Ralph agent
-- Interactive debugging capabilities
-- Issue investigation and systematic fixing
-- Code quality and review automation
-- Git integration with smart commits
+- L0-L4 task levels capping total worker starts, concurrency, and active workflows
+- Role-to-model routing: discovery on Haiku, planning/QA/review on Sonnet, implementation on Opus
+- Fable critical-worker gate: at most one critical start per task, never inside a workflow
+- `PreToolUse` hook that denies any `Agent`, `Workflow`, or `SendMessage` dispatch omitting its model
+- Bounded worker agents with pinned model, effort, turn cap, and tool boundary
 
-**Commands (16):**
+**Commands (2):**
 
 | Command | Description |
 |---------|-------------|
-| `/prp-create` | Quick feature PRP creation for simple requirements |
-| `/prp-execute` | Execute a feature PRP until fully complete |
-| `/prp-prd` | Generate comprehensive Product Requirement Documents with deep analysis |
-| `/prp-plan` | Create detailed implementation plans with validation gates |
-| `/prp-implement` | Execute PRPs with systematic validation and quality checks |
-| `/prp-debug` | Interactive debugging with step-by-step analysis |
-| `/prp-issue-investigate` | Deep investigation of issues with systematic analysis |
-| `/prp-issue-fix` | Systematic issue fixing with validation loops |
-| `/prp-review` | Comprehensive code review with best practices validation |
-| `/prp-review-agents` | Multi-agent PR review with specialized analysis (comments, tests, errors, types, code quality, docs, simplification) |
-| `/prp-commit` | Create atomic git commits with proper messages |
-| `/prp-pr` | Create pull requests with comprehensive descriptions |
-| `/prp-ralph` | Launch autonomous development agent for end-to-end features |
-| `/prp-ralph-cancel` | Cancel the running Ralph agent |
-| `/rule-update` | Analyze codebase and generate/update rule documents in `.claude/rules/` with automatic CLAUDE.md indexing |
-| `/install` | Install and configure PRP system |
+| `/boom:setup` | Install the engineering policy as `~/.claude/CLAUDE.md`, backing up any existing file first |
+| `/boom:detect-models` | Show which model each delegated subagent actually used in this project, from its transcript |
 
-**Agents (10):**
+**Skills (2):**
 
-| Agent | Description |
+| Skill | Description |
 |-------|-------------|
-| `codebase-analyst` | Deep codebase pattern analysis, architecture discovery, and convention detection |
-| `codebase-explorer` | Comprehensive codebase exploration - finds WHERE code lives AND shows HOW it's implemented |
-| `code-reviewer` | Reviews code for project guideline compliance, bugs, and quality issues with high-confidence filtering |
-| `code-simplifier` | Simplifies code for clarity while preserving functionality - reduces complexity and applies project standards |
-| `comment-analyzer` | Analyzes code comments for accuracy, completeness, and long-term value - protects against comment rot |
-| `docs-impact-agent` | Updates documentation affected by code changes - fixes stale docs and adds selective new entries |
-| `pr-test-analyzer` | Analyzes PR test coverage for quality and completeness - focuses on behavioral coverage |
-| `silent-failure-hunter` | Hunts for silent failures and inadequate error handling - zero tolerance for swallowed errors |
-| `type-design-analyzer` | Analyzes type design for encapsulation, invariant expression, and enforcement quality |
-| `web-researcher` | Searches web for modern docs, recent APIs, and current best practices beyond training data |
+| `dispatch-policy` | L0-L4 budgets, counting rules, role-to-model routing, Fable gate |
+| `workflow-authoring` | Cost-controlled workflow reference: every `agent()` must name its model |
 
-[Learn more →](./plugins/prp-core/README.md)
+**Agents (9):**
+
+| Agent | Model | Description |
+|-------|-------|-------------|
+| `coordinator` | opus/high | Delegating lead with no write tools; owns final acceptance |
+| `explore` | haiku/low | Read-only discovery for one narrow question |
+| `planner` | sonnet/high | Bounded plan from verified evidence |
+| `implementer` | opus/high | One bounded production or test change |
+| `qa` | sonnet/high | Independent build, test, and runtime verification |
+| `reviewer` | sonnet/high | Adversarial read-only correctness review |
+| `reviewer-fable` | fable/low | Read-only review when Sonnet's judgment is not enough |
+| `critical-implementer` | fable/high | One named critical change |
+| `critical-reviewer` | fable/high | One named critical audit |
+
+**Hooks (1):** `PreToolUse` on `Agent|Workflow|SendMessage` — explicit model within each role's allowed set, or deny.
+
+Ported from [@ds's](https://docs.dsdev.cn/blog/claude-code-agent-workflow-prompts/) personal `~/.claude` dispatch configuration.
+
+[Learn more →](./plugins/boom/README.md)
 
 ---
 
@@ -92,27 +70,34 @@ Complete PRP workflow system providing comprehensive commands for planning, impl
 # Browse available plugins
 /plugin
 
-# Install prp-core
-/plugin install prp-core@nano-claude-code-plugins
+# Install boom
+/plugin install boom@nano-claude-code-plugins
 ```
 
 ### Local Development
 
+Load a plugin for one session without installing it:
+
 ```bash
-# Clone the repository
 git clone https://github.com/NanoBoom/nano-claude-code-plugins.git
 cd nano-claude-code-plugins
+claude --plugin-dir plugins/boom
+```
 
-# Start Claude Code
+Or register the working copy as a marketplace:
+
+```bash
 claude
-
-# Add local marketplace (use absolute path)
 /plugin marketplace add /absolute/path/to/nano-claude-code-plugins
+/plugin install boom@nano-claude-code-plugins
+# Restart Claude Code for components to load
+```
 
-# Install plugin
-/plugin install prp-core@nano-claude-code-plugins
+Plugin load failures are silent in normal output — one invalid manifest field drops the whole plugin, agents and hooks included. Check for them explicitly:
 
-# Restart Claude Code for commands to load
+```bash
+claude -p "hi" --plugin-dir plugins/your-plugin --debug-file /tmp/dbg.log
+grep -i "your-plugin" /tmp/dbg.log | grep -iE "\[WARN\]|\[ERROR\]"
 ```
 
 ### Team Installation
@@ -127,330 +112,57 @@ Add to your project's `.claude/settings.json`:
     }
   },
   "enabledPlugins": [
-    "prp-core@nano-claude-code-plugins"
+    "boom@nano-claude-code-plugins"
   ]
 }
 ```
 
 Team members who trust the repository will automatically have the plugin installed.
 
-## PRP Workflow Diagrams
-
-### 1. PRP Methodology Architecture
-
-```mermaid
-graph TB
-    subgraph "PRP = PRD + Intelligence + Agent"
-        PRD[Product Requirement Document]
-        Intelligence[Codebase Intelligence]
-        Agent[Agent/Runbook]
-
-        PRD --> |Provides| Context[Context & Requirements]
-        Intelligence --> |Provides| Patterns[Patterns & Examples]
-        Agent --> |Provides| Execution[Step-by-step Execution]
-
-        Context --> PRP[Complete PRP]
-        Patterns --> PRP
-        Execution --> PRP
-    end
-
-    subgraph "Core Principles"
-        PRP --> Principle1[Context is King]
-        PRP --> Principle2[Validation Loops]
-        PRP --> Principle3[Information Dense]
-        PRP --> Principle4[Progressive Success]
-    end
-
-    Principle1 --> Success[Production-Ready Code<br/>on First Pass]
-    Principle2 --> Success
-    Principle3 --> Success
-    Principle4 --> Success
-
-    style PRP fill:#4CAF50,stroke:#333,stroke-width:3px,color:#fff
-    style Success fill:#2196F3,stroke:#333,stroke-width:3px,color:#fff
-```
-
-### 2. Complete Feature Development Workflow
-
-```mermaid
-flowchart TD
-    Start([Start: Feature Request]) --> PRD["/prp-prd<br/>Generate PRD with<br/>Deep Analysis"]
-
-    PRD --> PRDOut["📄 PRD Document<br/>PRPs/features/*.prd.md"]
-    PRDOut --> Plan["/prp-plan<br/>Create Implementation Plan<br/>with Validation Gates"]
-
-    Plan --> PlanOut["📋 Plan Document<br/>PRPs/features/*.plan.md"]
-    PlanOut --> Implement["/prp-implement<br/>Execute with<br/>Systematic Validation"]
-
-    Implement --> Tests{Tests Pass?}
-    Tests -->|No| FixTests[Fix Issues]
-    FixTests --> Implement
-    Tests -->|Yes| Review["/prp-review<br/>Code Review with<br/>Best Practices"]
-
-    Review --> ReviewIssues{Issues Found?}
-    ReviewIssues -->|Yes| FixReview[Address Review Comments]
-    FixReview --> Review
-    ReviewIssues -->|No| Commit["/prp-commit<br/>Smart Commit with<br/>Proper Messages"]
-
-    Commit --> PR["/prp-pr<br/>Create Pull Request<br/>with Description"]
-    PR --> End([End: Feature Complete])
-
-    style Start fill:#E1F5FE,stroke:#01579B
-    style End fill:#C8E6C9,stroke:#1B5E20
-    style PRD fill:#FFF9C4,stroke:#F57F17
-    style Plan fill:#FFF9C4,stroke:#F57F17
-    style Implement fill:#FFECB3,stroke:#E65100
-    style Review fill:#FFECB3,stroke:#E65100
-    style Commit fill:#FFECB3,stroke:#E65100
-    style PR fill:#FFECB3,stroke:#E65100
-```
-
-### 3. Ralph Autonomous Development
-
-```mermaid
-flowchart TD
-    Start([Start: Feature Request]) --> Ralph["/prp-ralph<br/>🤖 Autonomous Agent"]
-
-    Ralph --> Phase1["Phase 1: Research & Planning<br/>🔍 Analyze codebase<br/>📝 Generate comprehensive PRD"]
-    Phase1 --> Checkpoint1{User Approval?}
-    Checkpoint1 -->|No| Refine1[Refine PRD]
-    Refine1 --> Phase1
-
-    Checkpoint1 -->|Yes| Phase2["Phase 2: Design<br/>🎯 Create implementation plan<br/>✅ Define validation gates"]
-    Phase2 --> Checkpoint2{User Approval?}
-    Checkpoint2 -->|No| Refine2[Refine Plan]
-    Refine2 --> Phase2
-
-    Checkpoint2 -->|Yes| Phase3["Phase 3: Implementation<br/>💻 Write code<br/>🧪 Run tests<br/>🔄 Validation loop"]
-
-    Phase3 --> Validate{All Validations<br/>Pass?}
-    Validate -->|No| AutoFix["🔧 Auto-fix Issues<br/>Re-run validations"]
-    AutoFix --> Validate
-
-    Validate -->|Yes| Phase4["Phase 4: Quality Assurance<br/>📊 Code review<br/>🔍 Security check<br/>📈 Performance review"]
-
-    Phase4 --> QualityCheck{Quality Gates<br/>Pass?}
-    QualityCheck -->|No| Improve[Improve Code]
-    Improve --> Phase4
-
-    QualityCheck -->|Yes| Phase5["Phase 5: Delivery<br/>📦 Create commit<br/>🚀 Create PR with docs"]
-    Phase5 --> End([End: Ready for Review])
-
-    Ralph -.->|Can cancel anytime| Cancel["/prp-ralph-cancel"]
-
-    style Start fill:#E1F5FE,stroke:#01579B
-    style End fill:#C8E6C9,stroke:#1B5E20
-    style Ralph fill:#9C27B0,stroke:#4A148C,color:#fff
-    style Phase1 fill:#CE93D8,stroke:#6A1B9A
-    style Phase2 fill:#CE93D8,stroke:#6A1B9A
-    style Phase3 fill:#CE93D8,stroke:#6A1B9A
-    style Phase4 fill:#CE93D8,stroke:#6A1B9A
-    style Phase5 fill:#CE93D8,stroke:#6A1B9A
-    style Cancel fill:#EF5350,stroke:#B71C1C,color:#fff
-```
-
-### 4. Bug Investigation & Fix Workflow
-
-```mermaid
-flowchart TD
-    Start([Bug Report]) --> Investigate["/prp-issue-investigate<br/>Deep Investigation"]
-
-    Investigate --> Analysis["🔍 Analysis Steps:<br/>• Multi-angle analysis<br/>• Pattern recognition<br/>• Related issues<br/>• Root cause identification"]
-
-    Analysis --> Report["📄 Investigation Report<br/>PRPs/investigations/*.md"]
-    Report --> Review{Clear Root<br/>Cause?}
-
-    Review -->|No| MoreInvest[Deeper Investigation]
-    MoreInvest --> Investigate
-
-    Review -->|Yes| Fix["/prp-issue-fix<br/>Systematic Fix"]
-
-    Fix --> Implementation["💻 Fix Implementation:<br/>• Code changes<br/>• Test coverage<br/>• Regression prevention"]
-
-    Implementation --> Validate{Tests Pass?}
-    Validate -->|No| Debug["/prp-debug<br/>Interactive Debug"]
-    Debug --> Fix
-
-    Validate -->|Yes| Verify["✅ Verification:<br/>• Original issue fixed<br/>• No regressions<br/>• Edge cases covered"]
-
-    Verify --> VerifyCheck{Verified?}
-    VerifyCheck -->|No| Fix
-    VerifyCheck -->|Yes| Commit["/prp-commit<br/>Commit Fix"]
-
-    Commit --> PR["/prp-pr<br/>Create Fix PR"]
-    PR --> End([End: Fix Complete])
-
-    style Start fill:#FFCDD2,stroke:#B71C1C
-    style End fill:#C8E6C9,stroke:#1B5E20
-    style Investigate fill:#FFCCBC,stroke:#E64A19
-    style Fix fill:#FFCCBC,stroke:#E64A19
-    style Debug fill:#FFE0B2,stroke:#EF6C00
-```
-
-### 5. PRP Command Ecosystem
-
-```mermaid
-graph TB
-    subgraph "Planning Commands"
-        PRD["/prp-prd<br/>Generate PRD"]
-        Plan["/prp-plan<br/>Create Plan"]
-        Install["/install<br/>Setup PRP System"]
-    end
-
-    subgraph "Implementation Commands"
-        Implement["/prp-implement<br/>Execute PRP"]
-        Debug["/prp-debug<br/>Interactive Debug"]
-    end
-
-    subgraph "Issue Management"
-        Investigate["/prp-issue-investigate<br/>Investigate Issue"]
-        Fix["/prp-issue-fix<br/>Fix Issue"]
-    end
-
-    subgraph "Quality Commands"
-        Review["/prp-review<br/>Code Review"]
-        Commit["/prp-commit<br/>Smart Commit"]
-        PR["/prp-pr<br/>Create PR"]
-    end
-
-    subgraph "AI Agents"
-        Ralph["/prp-ralph<br/>🤖 Autonomous Agent"]
-        RalphCancel["/prp-ralph-cancel<br/>Cancel Ralph"]
-    end
-
-    subgraph "Specialized Agents"
-        Analyst["codebase-analyst<br/>Pattern Analysis"]
-        Researcher["web-researcher<br/>Web Research"]
-    end
-
-    PRD --> Plan
-    Plan --> Implement
-    Implement --> Review
-    Review --> Commit
-    Commit --> PR
-
-    Investigate --> Fix
-    Fix --> Commit
-
-    Debug -.->|Assists| Implement
-    Debug -.->|Assists| Fix
-
-    Ralph -->|Orchestrates| PRD
-    Ralph -->|Orchestrates| Plan
-    Ralph -->|Orchestrates| Implement
-    Ralph -->|Orchestrates| Review
-    Ralph -->|Orchestrates| Commit
-    Ralph -->|Orchestrates| PR
-    RalphCancel -.->|Controls| Ralph
-
-    Analyst -.->|Supports| PRD
-    Analyst -.->|Supports| Plan
-    Analyst -.->|Supports| Investigate
-
-    Researcher -.->|Supports| PRD
-    Researcher -.->|Supports| Plan
-
-    Install -.->|Initializes| PRD
-    Install -.->|Initializes| Plan
-
-    style Ralph fill:#9C27B0,stroke:#4A148C,color:#fff
-    style RalphCancel fill:#EF5350,stroke:#B71C1C,color:#fff
-    style Analyst fill:#4CAF50,stroke:#1B5E20,color:#fff
-    style Researcher fill:#2196F3,stroke:#0D47A1,color:#fff
-```
-
 ## Quick Reference
 
-### Quick Feature Development (Simple Requirements)
+### Delegate under a declared budget
 
-```bash
-# 1. Create feature PRP with codebase analysis
-/prp-create "Add pagination to user list API"
+Once `boom` is enabled, worker roles are addressed by their scoped type and every dispatch must name its model:
 
-# 2. Execute the PRP with validation
-/prp-execute .claude/PRPs/features/add-pagination.md
-
-# 3. Commit and create PR
-/prp-commit
-/prp-pr "feat: add pagination to user list"
+```
+Agent(subagent_type: "boom:explore",      model: "haiku")   # narrow discovery
+Agent(subagent_type: "boom:planner",      model: "sonnet")  # bounded plan
+Agent(subagent_type: "boom:implementer",  model: "opus")    # one bounded change
+Agent(subagent_type: "boom:reviewer",     model: "sonnet")  # adversarial review
 ```
 
-### Complete Feature Development (Complex Features)
+Omit the model and the hook denies the call:
 
-```bash
-# 1. Create PRD with deep codebase analysis
-/prp-prd "Add user authentication with JWT"
-
-# 2. Create implementation plan
-/prp-plan PRPs/features/add-user-authentication.prd.md
-
-# 3. Implement the feature with validation
-/prp-implement PRPs/features/add-user-authentication.plan.md
-
-# 4. Review the changes
-/prp-review src/auth/
-
-# 5. Commit with smart message generation
-/prp-commit
-
-# 6. Create pull request
-/prp-pr "feat: add JWT authentication"
+```
+<error>Agent 'boom:implementer' must specify an explicit model. Model inheritance is prohibited.</error>
 ```
 
-### Autonomous Development with Ralph
+### Run a session as the coordinator
+
+The `coordinator` role delegates and integrates but holds no write tools:
 
 ```bash
-# Ralph handles the entire workflow automatically
-/prp-ralph "Add user authentication with JWT and session management"
-
-# Ralph will:
-# - Generate comprehensive PRD
-# - Create detailed implementation plan
-# - Implement the feature
-# - Run validation checks
-# - Create commit and PR
+claude --agent boom:coordinator
 ```
 
-### Bug Investigation & Fix Workflow
+To pin its model, effort, and concurrency caps at the same time, pass the bundled session settings:
 
 ```bash
-# 1. Investigate the issue systematically
-/prp-issue-investigate "Users can't login after password reset"
-
-# 2. Fix the issue with validation
-/prp-issue-fix PRPs/investigations/login-after-reset.md
-
-# 3. Commit the fix
-/prp-commit
-
-# 4. Create PR
-/prp-pr "fix: resolve login issue after password reset"
+claude --settings plugins/boom/reference/coordinator.settings.json
 ```
 
-### Interactive Debugging
+### Verify what actually ran
+
+The hook stops model inheritance before dispatch. To confirm after the fact, read the subagent transcripts of the current project:
 
 ```bash
-# Debug with step-by-step analysis
-/prp-debug "TypeError: Cannot read property 'id' of undefined in user profile"
+/boom:detect-models
 ```
 
-### Rule Documentation Management
+It prints one row per subagent with the model it used, the turn count, and the start of its task prompt. A `fork` always inherits the parent model, so a mismatch there is expected.
 
-```bash
-# Analyze codebase and generate all rule documents
-/rule-update
-
-# Update only specific module rules
-/rule-update architecture
-/rule-update error-handling
-/rule-update testing
-
-# Rule documents will automatically:
-# - Extract actual patterns and conventions from codebase
-# - Generate rule documents with file:line references
-# - Update CLAUDE.md rule index
-# - Guide Claude Code to follow project standards during development
-```
+See the [plugin README](./plugins/boom/README.md) for the L0-L4 task levels, the full routing table, and what the hook denies.
 
 ## Plugin Development
 
@@ -478,6 +190,13 @@ graph TB
 
 3. **Add commands, agents, or skills as needed**
 
+   Leave the component paths out of `plugin.json`. The default `commands/`, `agents/`, `skills/`, and `hooks/hooks.json` are discovered automatically, and declaring them is how manifests break:
+
+   - `"agents": ["./agents/"]` is rejected (`agents.0: Invalid input`) — that field takes *file* paths, unlike `commands`, which accepts a directory. An invalid manifest drops the entire plugin, silently.
+   - `"hooks": "./hooks/hooks.json"` is rejected as a duplicate; the manifest field is only for *additional* hook files.
+   - In `hooks.json`, write `command` as a string (`"node \"${CLAUDE_PLUGIN_ROOT}/hooks/x.js\""`). The exec-form array shown in some docs is rejected by Claude Code 2.1.263.
+   - `permissionMode` in an agent file is ignored for plugin agents and warns on every session. Restrict tools with `tools:` instead.
+
 4. **Update marketplace.json to include your plugin**
 
 ### Plugin Structure
@@ -496,6 +215,7 @@ plugins/
     │       └── SKILL.md
     ├── hooks/                 # Event handlers
     │   └── hooks.json
+    ├── scripts/               # Shell scripts invoked by commands
     ├── .mcp.json             # MCP server configuration
     └── README.md             # Plugin documentation
 ```
@@ -551,13 +271,11 @@ This marketplace and its plugins are released under the MIT License.
 
 ## Changelog
 
-### v1.3.0 (2025-01-28)
-- Added `/rule-update` command for automated rule documentation generation
-- Automatic codebase analysis using codebase-explorer and codebase-analyst agents
-- Smart rule document generation with file:line references
-- Automatic CLAUDE.md index updates for rule discovery
-- Support for 12 rule modules (architecture, coding-standards, error-handling, testing, api, database, auth, state-management, performance, git-workflow, deployment, documentation)
-- Project-type-aware module selection (frontend, backend, fullstack, CLI, library)
+### v2.0.0 (2026-09-07)
+- **Breaking:** removed the `prp-core` plugin and its 12 commands and 2 agents. Its manifest declared `"agents": ["./agents/"]`, which fails validation and made the plugin fail to load in Claude Code 2.1.263. Recover it from git history if needed.
+- Added the `boom` plugin: L0-L4 delegation budgets, role-to-model routing, a Fable critical-worker gate, 9 bounded worker agents, 2 skills, a `/boom:detect-models` command that reports the model each subagent actually used, and a `PreToolUse` hook that denies model inheritance
+- Rewrote the marketplace documentation around delegation cost control
+- Documented the plugin manifest pitfalls that silently drop a plugin
 
 ### v1.2.0 (2025-01-12)
 - Consolidated into single comprehensive prp-core plugin
