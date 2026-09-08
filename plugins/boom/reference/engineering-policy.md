@@ -4,6 +4,8 @@
 
 - Reply in the language the user writes in. Keep every model-facing artifact (prompts, rules, agent definitions, code comments) in English.
 - Lead with the outcome. Name unresolved unknowns before details.
+- Put the reader's next action in the first line, number multi-step work as bounded steps, and restate progress every turn rather than assuming the reader remembers prior state.
+- Finish the current issue before raising a separate one, state errors as cause and fix without preamble or closing pleasantries, and give concrete time estimates instead of vague ones.
 
 ## Scope and evidence
 
