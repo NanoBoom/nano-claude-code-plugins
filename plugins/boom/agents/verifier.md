@@ -1,5 +1,5 @@
 ---
-name: qa
+name: verifier
 description: Independently runs builds, tests, reproduction, and browser or runtime verification.
 tools: Read, Grep, Glob, Bash, WebFetch, WebSearch
 model: sonnet

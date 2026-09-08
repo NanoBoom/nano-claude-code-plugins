@@ -31,39 +31,50 @@ Counting rules:
 
 Always pass an explicit `subagent_type` and `model` alias to the Agent tool. Aliases resolve to the current generation; do not pin specific versions. Keep `CLAUDE_CODE_SUBAGENT_MODEL_FORCE` unset so per-call and definition-level models apply, and read the resolved model from the Agent tool result.
 
-The worker roles ship with this plugin, so their `subagent_type` is plugin-scoped: `boom:implementer`, not `implementer`.
+The worker roles ship with this plugin, so their `subagent_type` is plugin-scoped: `boom:coder`, not `coder`.
 
 Each role has a default model in its definition and an allowed set enforced by the hook. Overriding within the allowed set per call is normal; the default is where to start, not a ceiling.
 
 | Role (`subagent_type`) | Default | Allowed | Typical work |
 |---|---|---|---|
-| `boom:explore` | haiku | haiku, sonnet | Narrow discovery, evidence lists; sonnet when the search needs more context or turns |
+| `boom:codebase-explorer` | sonnet/high | haiku, sonnet, opus | Repository discovery: where a concern lives, precedents, validation surface; haiku for one narrow lookup, opus for cross-module architecture |
+| `boom:web-researcher` | haiku/low | haiku, sonnet | External discovery from primary sources; sonnet when the claim needs cross-checking or version judgment |
 | `boom:planner` | sonnet/high | sonnet, opus | Bounded plans; opus for cross-module architecture |
-| `boom:implementer` | opus/high | opus, sonnet | Production and test changes; sonnet for mechanical edits you can describe precisely |
-| `boom:qa` | sonnet/high | sonnet, opus | Builds, tests, browser checks, reproduction |
+| `boom:coder` | opus/high | opus, sonnet | Production and test changes; sonnet for mechanical edits you can describe precisely |
+| `boom:verifier` | sonnet/high | sonnet, opus | Builds, tests, browser checks, reproduction |
 | `boom:reviewer` | sonnet/high | sonnet, opus | Ordinary independent review; opus for permissions, data, concurrency, migration, public contracts |
-| `boom:reviewer-fable` | fable/low | fable | Read-only review when Sonnet's judgment is not enough; Anthropic reports Fable at low is competitive on cost per task with Sonnet or Opus at higher effort |
-| `boom:critical-implementer` | fable/high | fable | One named critical change |
+| `boom:seam-analyzer` | sonnet/high | sonnet, opus | `seams` scope of `/boom:review`: missing types at seams, counterpart drift, bypassed validators |
+| `boom:pr-test-analyzer` | sonnet/high | sonnet, opus | `tests` scope: changed behavior with no regression protection |
+| `boom:comment-analyzer` | sonnet/high | sonnet, opus | `comments` scope: changed prose that misstates behavior |
+| `boom:silent-failure-hunter` | sonnet/high | sonnet, opus | `errors` scope: failures that become indistinguishable from success |
+| `boom:docs-impact-agent` | sonnet/high | sonnet, opus | `docs` scope: documentation made false or missing by the change |
+| `boom:code-simplifier` | sonnet/high | sonnet, opus | `simplify` scope: premature machinery a smaller primitive replaces |
+| `boom:root-cause-analyzer` | sonnet/high | sonnet, opus | `/boom:debug`: reproduces a symptom, tests competing hypotheses, proves the causal chain and fix boundary; opus for unfamiliar domains or concurrency |
+| `boom:codebase-analyst` | sonnet/high | sonnet, opus | How a behavior works today, traced end to end; the `how` area of `/boom:codebase-question` |
+| `boom:mid-reviewer` | fable/low | fable | Read-only review when Sonnet's judgment is not enough; Anthropic reports Fable at low is competitive on cost per task with Sonnet or Opus at higher effort |
+| `boom:critical-coder` | fable/high | fable | One named critical change |
 | `boom:critical-reviewer` | fable/high | fable | One named critical audit |
 
 Escalation order, from the Claude Code model guidance: ask whether the worker did not try hard enough or did not know enough. Not trying hard enough (skipped a file, did not run tests, did not double-check) means raise effort or rerun with a sharper prompt on the same model. Not knowing enough (subtle bug, unfamiliar domain, architecture decision) means move to a stronger model. Judge cost per completed task, not per token; a cheaper worker that needs another round is not cheaper.
 
 Routing notes:
 
-- implementer at opus/high is a deliberate step below the Claude Code default effort. Raise to xhigh when rework or failed verification shows the task needs it.
+- coder at opus/high is a deliberate step below the Claude Code default effort. Raise to xhigh when rework or failed verification shows the task needs it.
 - Review prompts are adversarial: ask the reviewer to refute the change and prove it does not work. A second reviewer with fresh context beats re-asking the same one.
-- Built-in types such as `Explore`, `general-purpose`, and `Plan` also need an explicit haiku, sonnet, or opus alias. The built-in `Explore` is held to the same haiku-or-sonnet set as the role above.
+- The specialist review roles (`seam-analyzer` through `code-simplifier`) are read-only Sonnet starts like `reviewer`. `/boom:review` dispatches one per selected scope; each counts as a start, so the three default scopes are L2 and `all` is L3 or L4.
+- The research roles (`codebase-explorer`, `codebase-analyst`, `web-researcher`) are the discovery tier: `codebase-explorer` for anything inside the repository, `web-researcher` for anything outside it, `codebase-analyst` when the question is how a path actually executes. Route one narrow lookup to `codebase-explorer` on haiku rather than opening a research phase. `/boom:codebase-question` dispatches one per research area, so two or three areas are L2 and four or five are L3.
+- Built-in types such as `Explore`, `general-purpose`, and `Plan` also need an explicit haiku, sonnet, or opus alias. The built-in `Explore` is held to a haiku-or-sonnet set; prefer `boom:codebase-explorer`, which pins its own effort.
 - A fork ignores the model parameter and runs on the main-session model. Count it as a main-model start and use it only when the full conversation context is required.
 - Codex delegation, including codex-rescue, counts as a start and is used only when the user names Codex in the current conversation. The plugin's proactive-use guidance does not override this.
-- Preserve the configured main-session model. A dedicated coordinator session launched with its own `--settings` file may pin opus/high.
+- Preserve the configured main-session model. A dedicated coordinator session launched with its own `--settings` file may pin opus/high. `coordinator` is that session's lead, not a role in the table above: it holds the Agent tool, so the hook denies it as a `subagent_type` and inside workflow scripts rather than let a second delegating layer open under the current budget.
 - Do not use Agent Teams unless workers must talk to each other. Do not enable ultracode.
 
 ## Fable worker gate
 
 Two kinds of Fable worker exist and are budgeted differently.
 
-- `reviewer-fable` at low effort is an ordinary read-only start. It is allowed from L1 upward and counts against the level's total starts like any other worker. Use it when a Sonnet review is uncertain or the diff is high-stakes, and tell it to read before concluding because Fable at low searches less on its own.
-- `critical-implementer` and `critical-reviewer` at high effort are the critical slot: at most one start per user task, allowed from L2 upward (an implementation plus its review is L2, and the review may be the critical one), never more than one Fable worker of any kind running concurrently.
+- `mid-reviewer` at low effort is an ordinary read-only start. It is allowed from L1 upward and counts against the level's total starts like any other worker. Use it when a Sonnet review is uncertain or the diff is high-stakes, and tell it to read before concluding because Fable at low searches less on its own.
+- `critical-coder` and `critical-reviewer` at high effort are the critical slot: at most one start per user task, allowed from L2 upward (an implementation plus its review is L2, and the review may be the critical one), never more than one Fable worker of any kind running concurrently.
 - Use the critical slot only for a named issue involving security, permissions, privacy, concurrency, transactions, irreversible migration, high-impact release, a critical architecture boundary, or one evidence-backed normal-role attempt that failed.
 - Run critical roles serially after cheaper evidence is consolidated into a compact packet. Never place any Fable worker in parallel(), pipeline(), restart, resume, repair, or rerun.
 - Never use Fable workers for exploration, fan-out, routine implementation, builds, browser QA, formatting, or documentation.

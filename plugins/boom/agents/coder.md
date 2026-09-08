@@ -1,5 +1,5 @@
 ---
-name: implementer
+name: coder
 description: Implements one bounded production or test change with focused verification.
 tools: Read, Grep, Glob, Edit, Write, Bash, Skill
 model: opus

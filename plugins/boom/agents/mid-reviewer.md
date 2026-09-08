@@ -1,5 +1,5 @@
 ---
-name: reviewer-fable
+name: mid-reviewer
 description: Read-only review on Fable at low effort for diffs where Sonnet's judgment is not enough; cost per task is comparable to Sonnet/high.
 tools: Read, Grep, Glob
 model: fable

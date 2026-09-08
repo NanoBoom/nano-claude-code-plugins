@@ -1,8 +1,8 @@
 {
   "name": "boom",
   "displayName": "Boom",
-  "version": "1.0.0",
-  "description": "Cost-first delegation control for Claude Code: L0-L4 task budgets, role-to-model routing, a Fable critical-worker gate, bounded worker agents, and a PreToolUse hook that denies model inheritance on Agent, Workflow, and SendMessage dispatches",
+  "version": "1.1.0",
+  "description": "Cost-first delegation control for Claude Code: L0-L4 task budgets, role-to-model routing, a Fable critical-worker gate, bounded worker agents, specialist PR review agents with a /boom:review skill, parallel codebase research with a /boom:codebase-question skill, and a PreToolUse hook that denies model inheritance on Agent, Workflow, and SendMessage dispatches",
   "author": {
     "name": "NanoBoom",
     "email": "cinuor@gmail.com"
@@ -17,6 +17,8 @@
     "model-routing",
     "subagents",
     "workflow",
-    "hooks"
+    "hooks",
+    "code-review",
+    "codebase-research"
   ]
 }

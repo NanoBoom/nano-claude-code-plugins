@@ -12,7 +12,7 @@ Claude Code's defaults are permissive by design: a subagent that omits its model
 
 ### boom
 
-**Version:** 1.0.0 | **Author:** NanoBoom | **Category:** Development
+**Version:** 1.1.0 | **Author:** NanoBoom | **Category:** Development
 
 Cost-first delegation control. Claude Code will spawn subagents that silently inherit the main-session model — usually the most expensive tier. This plugin replaces that default with a budget, a routing table, and a hook that enforces both.
 
@@ -30,25 +30,39 @@ Cost-first delegation control. Claude Code will spawn subagents that silently in
 | `/boom:setup` | Install the engineering policy as `~/.claude/CLAUDE.md`, backing up any existing file first |
 | `/boom:detect-models` | Show which model each delegated subagent actually used in this project, from its transcript |
 
-**Skills (2):**
+**Skills (7):**
 
 | Skill | Description |
 |-------|-------------|
 | `dispatch-policy` | L0-L4 budgets, counting rules, role-to-model routing, Fable gate |
 | `workflow-authoring` | Cost-controlled workflow reference: every `agent()` must name its model |
+| `review` | `/boom:review <pr>`: PR review through the specialist agents, aggregated into one canonical GitHub comment |
+| `commit` | `/boom:commit`: stages only the intended work and writes an outcome-focused commit |
+| `debug` | `/boom:debug <issue>`: root-cause diagnosis published to the matching GitHub issue |
+| `pr` | `/boom:pr`: validates the committed diff, pushes, creates, and verifies the GitHub PR |
+| `codebase-question` | `/boom:codebase-question <question>`: parallel research agents and an evidence-backed research document |
 
-**Agents (9):**
+**Agents (18):**
 
 | Agent | Model | Description |
 |-------|-------|-------------|
-| `coordinator` | opus/high | Delegating lead with no write tools; owns final acceptance |
-| `explore` | haiku/low | Read-only discovery for one narrow question |
+| `coordinator` | opus/high | Delegating session lead with no write tools; owns final acceptance. Selected with `--agent`, never dispatched as a worker |
+| `codebase-explorer` | sonnet/high | Read-only repository discovery: where a concern lives, precedents, validation surface |
+| `codebase-analyst` | sonnet/high | Read-only behavior trace: how a path executes today, end to end |
+| `web-researcher` | haiku/low | Read-only external discovery from primary sources |
 | `planner` | sonnet/high | Bounded plan from verified evidence |
-| `implementer` | opus/high | One bounded production or test change |
-| `qa` | sonnet/high | Independent build, test, and runtime verification |
+| `coder` | opus/high | One bounded production or test change |
+| `verifier` | sonnet/high | Independent build, test, and runtime verification |
 | `reviewer` | sonnet/high | Adversarial read-only correctness review |
-| `reviewer-fable` | fable/low | Read-only review when Sonnet's judgment is not enough |
-| `critical-implementer` | fable/high | One named critical change |
+| `seam-analyzer` | sonnet/high | `seams` review scope: missing types at seams, counterpart drift |
+| `pr-test-analyzer` | sonnet/high | `tests` review scope: changed behavior without regression protection |
+| `comment-analyzer` | sonnet/high | `comments` review scope: changed prose that misstates behavior |
+| `silent-failure-hunter` | sonnet/high | `errors` review scope: failures indistinguishable from success |
+| `docs-impact-agent` | sonnet/high | `docs` review scope: documentation made false or missing |
+| `code-simplifier` | sonnet/high | `simplify` review scope: premature machinery |
+| `root-cause-analyzer` | sonnet/high | `/boom:debug` diagnosis: reproduction, causal chain, fix boundary |
+| `mid-reviewer` | fable/low | Read-only review when Sonnet's judgment is not enough |
+| `critical-coder` | fable/high | One named critical change |
 | `critical-reviewer` | fable/high | One named critical audit |
 
 **Hooks (1):** `PreToolUse` on `Agent|Workflow|SendMessage` — explicit model within each role's allowed set, or deny.
@@ -126,16 +140,16 @@ Team members who trust the repository will automatically have the plugin install
 Once `boom` is enabled, worker roles are addressed by their scoped type and every dispatch must name its model:
 
 ```
-Agent(subagent_type: "boom:explore",      model: "haiku")   # narrow discovery
-Agent(subagent_type: "boom:planner",      model: "sonnet")  # bounded plan
-Agent(subagent_type: "boom:implementer",  model: "opus")    # one bounded change
-Agent(subagent_type: "boom:reviewer",     model: "sonnet")  # adversarial review
+Agent(subagent_type: "boom:codebase-explorer", model: "haiku")   # narrow discovery
+Agent(subagent_type: "boom:planner",           model: "sonnet")  # bounded plan
+Agent(subagent_type: "boom:coder",             model: "opus")    # one bounded change
+Agent(subagent_type: "boom:reviewer",          model: "sonnet")  # adversarial review
 ```
 
 Omit the model and the hook denies the call:
 
 ```
-<error>Agent 'boom:implementer' must specify an explicit model. Model inheritance is prohibited.</error>
+<error>Agent 'boom:coder' must specify an explicit model. Model inheritance is prohibited.</error>
 ```
 
 ### Run a session as the coordinator

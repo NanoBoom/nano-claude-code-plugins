@@ -11,10 +11,10 @@
   "plugins": [
     {
       "name": "boom",
-      "description": "Cost-first delegation control: L0-L4 task budgets, role-to-model routing, a Fable critical-worker gate, bounded worker agents, and a PreToolUse hook that denies model inheritance on Agent, Workflow, and SendMessage dispatches",
+      "description": "Cost-first delegation control: L0-L4 task budgets, role-to-model routing, a Fable critical-worker gate, bounded worker agents, specialist PR review agents with a /boom:review skill, parallel codebase research with a /boom:codebase-question skill, and a PreToolUse hook that denies model inheritance on Agent, Workflow, and SendMessage dispatches",
       "source": "./plugins/boom",
       "category": "development",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "license": "MIT",
       "strict": true,
       "homepage": "https://github.com/NanoBoom/nano-claude-code-plugins/tree/main/plugins/boom",
@@ -27,7 +27,9 @@
         "cost-control",
         "dispatch",
         "model-routing",
-        "subagents"
+        "subagents",
+        "code-review",
+        "codebase-research"
       ],
       "tags": [
         "token-budget",
@@ -38,7 +40,9 @@
         "workflow",
         "hooks",
         "agents",
-        "skills"
+        "skills",
+        "code-review",
+        "codebase-research"
       ]
     }
   ]

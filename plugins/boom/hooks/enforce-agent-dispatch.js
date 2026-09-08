@@ -13,20 +13,47 @@ const path = require('path')
 const PLUGIN_PREFIX = 'boom:'
 
 // Role -> allowed model aliases. Mirrors the table in the dispatch-policy skill.
+// `explore` is not a boom role; the entry holds the built-in `Explore` agent to the same
+// cheap-discovery set that `codebase-explorer` uses at its lowest tier.
 const ROLE_MODELS = {
   explore: ['haiku', 'sonnet'],
   planner: ['sonnet', 'opus'],
-  implementer: ['opus', 'sonnet'],
-  qa: ['sonnet', 'opus'],
+  coder: ['opus', 'sonnet'],
+  verifier: ['sonnet', 'opus'],
   reviewer: ['sonnet', 'opus'],
-  'reviewer-fable': ['fable'],
-  'critical-implementer': ['fable'],
+  'seam-analyzer': ['sonnet', 'opus'],
+  'pr-test-analyzer': ['sonnet', 'opus'],
+  'comment-analyzer': ['sonnet', 'opus'],
+  'silent-failure-hunter': ['sonnet', 'opus'],
+  'docs-impact-agent': ['sonnet', 'opus'],
+  'code-simplifier': ['sonnet', 'opus'],
+  'root-cause-analyzer': ['sonnet', 'opus'],
+  'codebase-explorer': ['haiku', 'sonnet', 'opus'],
+  'codebase-analyst': ['sonnet', 'opus'],
+  'web-researcher': ['haiku', 'sonnet'],
+  'mid-reviewer': ['fable'],
+  'critical-coder': ['fable'],
   'critical-reviewer': ['fable'],
 }
 
 // Roles whose definition pins a non-fable model, so a workflow agent() may name the role
 // instead of a model.
-const WORKFLOW_ROLES = ['explore', 'planner', 'implementer', 'qa', 'reviewer']
+const WORKFLOW_ROLES = [
+  'planner',
+  'coder',
+  'verifier',
+  'reviewer',
+  'seam-analyzer',
+  'pr-test-analyzer',
+  'comment-analyzer',
+  'silent-failure-hunter',
+  'docs-impact-agent',
+  'code-simplifier',
+  'root-cause-analyzer',
+  'codebase-explorer',
+  'codebase-analyst',
+  'web-researcher',
+]
 const WORKFLOW_MODELS = ['haiku', 'sonnet', 'opus']
 
 function decide(decision, reason) {
@@ -55,8 +82,8 @@ function isBlank(value) {
   return typeof value !== 'string' || value.trim() === ''
 }
 
-// Strips this plugin's namespace so `boom:implementer` and `implementer` resolve
-// to the same policy. The built-in `Explore` folds into `explore`. Other namespaces
+// Strips this plugin's namespace so `boom:coder` and `coder` resolve
+// to the same policy. The built-in `Explore` folds into the `explore` entry. Other namespaces
 // (`codex:`, another plugin) are left intact so they stay unknown roles.
 function normalizeRole(agentType) {
   const trimmed = agentType.trim()
@@ -98,6 +125,16 @@ function checkWorkflow(input) {
     )
   }
 
+  // Checked separately from the per-call loop because naming a model alongside the coordinator
+  // agentType would otherwise satisfy modelPattern and pass.
+  const coordinatorPattern = new RegExp("agentType\\s*:\\s*['\"](?:" + PLUGIN_PREFIX + ")?coordinator['\"]", 'i')
+  if (coordinatorPattern.test(script)) {
+    decide(
+      'deny',
+      'Workflow scripts may not run the coordinator role. It holds the Agent tool, so an agent() running it would delegate again from inside the workflow. Name a worker role or an explicit model instead.'
+    )
+  }
+
   const modelPattern = new RegExp("model\\s*:\\s*['\"]?(" + WORKFLOW_MODELS.join('|') + ")['\"]?")
   const rolePattern = new RegExp(
     "agentType\\s*:\\s*['\"](?:" + PLUGIN_PREFIX + ')?(' + WORKFLOW_ROLES.join('|') + ")['\"]",
@@ -131,12 +168,12 @@ function checkSendMessage(input) {
   const target = isBlank(input.to) ? '' : input.to.trim()
   if (target === 'main') allow()
 
-  if (/critical-|fable/i.test(target)) {
+  if (/critical-|mid-reviewer|fable/i.test(target)) {
     decide(
       'deny',
       "SendMessage to '" +
         target +
-        "' would resume a Fable critical role. Fable workers are never resumed; start a new explicitly approved task instead."
+        "' would resume a Fable role. Fable workers are never resumed; start a new explicitly approved task instead."
     )
   }
 
@@ -161,6 +198,18 @@ function checkAgent(input) {
     )
   }
 
+  // The coordinator holds the Agent tool, so dispatching it as a subagent nests a second
+  // delegating layer inside a task that is already spending the budget. It is a session lead
+  // selected with --agent or a settings file, never a worker, and so has no allowed model set.
+  if (normalizeRole(agentType) === 'coordinator') {
+    decide(
+      'deny',
+      "'" +
+        agentType +
+        "' is a session lead, not a worker: it holds the Agent tool, so dispatching it as a subagent nests a second delegating layer under the current task budget. Run it as the session agent instead (claude --agent boom:coordinator) and dispatch a worker role here."
+    )
+  }
+
   if (model === '') {
     decide('deny', "Agent '" + agentType + "' must specify an explicit model. Model inheritance is prohibited.")
   }
@@ -180,7 +229,7 @@ function checkAgent(input) {
   if (model === 'fable') {
     decide(
       'deny',
-      "Fable is restricted to reviewer-fable, critical-implementer, and critical-reviewer; agent type '" +
+      "Fable is restricted to mid-reviewer, critical-coder, and critical-reviewer; agent type '" +
         agentType +
         "' is not approved."
     )

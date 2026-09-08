@@ -12,7 +12,7 @@ Claude Code 的默认行为在设计上是宽松的：子智能体不指定模�
 
 ### boom
 
-**版本:** 1.0.0 | **作者:** NanoBoom | **分类:** 开发
+**版本:** 1.1.0 | **作者:** NanoBoom | **分类:** 开发
 
 成本优先的委派管控。Claude Code 派发的子智能体会默默继承主会话模型——通常是最贵的档位。本插件用预算、路由表和一个强制执行两者的 hook 取代该默认行为。
 
@@ -30,25 +30,39 @@ Claude Code 的默认行为在设计上是宽松的：子智能体不指定模�
 | `/boom:setup` | 将工程策略安装为 `~/.claude/CLAUDE.md`，已存在时先备份 |
 | `/boom:detect-models` | 从子智能体的会话记录中，显示当前项目里每个被委派的子智能体实际使用的模型 |
 
-**技能 (2个):**
+**技能 (7个):**
 
 | 技能 | 描述 |
 |------|------|
 | `dispatch-policy` | L0-L4 预算、计数规则、角色到模型的路由、Fable 门禁 |
 | `workflow-authoring` | 成本受控的工作流参考：每个 `agent()` 必须指定模型 |
+| `review` | `/boom:review <pr>`：通过专家智能体审查 PR，汇总为一条规范的 GitHub 评论 |
+| `commit` | `/boom:commit`：只暂存目标改动，并写出以结果为导向的提交信息 |
+| `debug` | `/boom:debug <issue>`：根因诊断，并发布到对应的 GitHub issue |
+| `pr` | `/boom:pr`：校验已提交的差异，推送、创建并验证 GitHub PR |
+| `codebase-question` | `/boom:codebase-question <问题>`：并行研究智能体，产出有证据支撑的研究文档 |
 
-**智能体 (9个):**
+**智能体 (18个):**
 
 | 智能体 | 模型 | 描述 |
 |--------|------|------|
-| `coordinator` | opus/high | 无写入工具的委派主管，负责最终验收 |
-| `explore` | haiku/low | 针对单个狭窄问题的只读探索 |
+| `coordinator` | opus/high | 无写入工具的委派会话主管，负责最终验收。通过 `--agent` 选定，不作为 worker 派发 |
+| `codebase-explorer` | sonnet/high | 只读的仓库探索：关注点位于何处、既有先例、验证入口 |
+| `codebase-analyst` | sonnet/high | 只读的行为追踪：某条路径今天如何端到端执行 |
+| `web-researcher` | haiku/low | 只读的外部探索，基于一手来源 |
 | `planner` | sonnet/high | 基于已验证证据的受限计划 |
-| `implementer` | opus/high | 单个受限的生产或测试改动 |
-| `qa` | sonnet/high | 独立的构建、测试和运行时验证 |
+| `coder` | opus/high | 单个受限的生产或测试改动 |
+| `verifier` | sonnet/high | 独立的构建、测试和运行时验证 |
 | `reviewer` | sonnet/high | 对抗式只读正确性审查 |
-| `reviewer-fable` | fable/low | Sonnet 判断力不足时的只读审查 |
-| `critical-implementer` | fable/high | 单个指名的关键改动 |
+| `seam-analyzer` | sonnet/high | `seams` 审查范围：接缝处缺失的类型、对应项漂移 |
+| `pr-test-analyzer` | sonnet/high | `tests` 审查范围：缺少回归保护的行为变更 |
+| `comment-analyzer` | sonnet/high | `comments` 审查范围：与行为不符的注释与文档 |
+| `silent-failure-hunter` | sonnet/high | `errors` 审查范围：与成功无法区分的失败 |
+| `docs-impact-agent` | sonnet/high | `docs` 审查范围：被改动证伪或缺失的文档 |
+| `code-simplifier` | sonnet/high | `simplify` 审查范围：过早引入的机制 |
+| `root-cause-analyzer` | sonnet/high | `/boom:debug` 诊断：复现、因果链、修复边界 |
+| `mid-reviewer` | fable/low | Sonnet 判断力不足时的只读审查 |
+| `critical-coder` | fable/high | 单个指名的关键改动 |
 | `critical-reviewer` | fable/high | 单个指名的关键审计 |
 
 **Hooks (1个):** `Agent|Workflow|SendMessage` 上的 `PreToolUse`——模型必须显式且落在角色允许集内，否则拒绝。
@@ -126,16 +140,16 @@ grep -i "your-plugin" /tmp/dbg.log | grep -iE "\[WARN\]|\[ERROR\]"
 启用 `boom` 后，工作者角色用带命名空间的类型寻址，且每次派发都必须指定模型：
 
 ```
-Agent(subagent_type: "boom:explore",      model: "haiku")   # 狭窄探索
-Agent(subagent_type: "boom:planner",      model: "sonnet")  # 受限计划
-Agent(subagent_type: "boom:implementer",  model: "opus")    # 单个受限改动
-Agent(subagent_type: "boom:reviewer",     model: "sonnet")  # 对抗式审查
+Agent(subagent_type: "boom:codebase-explorer", model: "haiku")   # 狭窄探索
+Agent(subagent_type: "boom:planner",           model: "sonnet")  # 受限计划
+Agent(subagent_type: "boom:coder",             model: "opus")    # 单个受限改动
+Agent(subagent_type: "boom:reviewer",          model: "sonnet")  # 对抗式审查
 ```
 
 省略 model，hook 会直接拒绝：
 
 ```
-<error>Agent 'boom:implementer' must specify an explicit model. Model inheritance is prohibited.</error>
+<error>Agent 'boom:coder' must specify an explicit model. Model inheritance is prohibited.</error>
 ```
 
 ### 以 coordinator 身份运行会话
