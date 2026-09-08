@@ -37,20 +37,12 @@ Each role has a default model in its definition and an allowed set enforced by t
 
 | Role (`subagent_type`) | Default | Allowed | Typical work |
 |---|---|---|---|
-| `boom:codebase-explorer` | sonnet/high | haiku, sonnet, opus | Repository discovery: where a concern lives, precedents, validation surface; haiku for one narrow lookup, opus for cross-module architecture |
-| `boom:web-researcher` | haiku/low | haiku, sonnet | External discovery from primary sources; sonnet when the claim needs cross-checking or version judgment |
+| `boom:explorer` | haiku/low | haiku, sonnet | One narrow read-only discovery question, inside the repository or against external documentation; sonnet when the answer needs cross-checking or version judgment |
 | `boom:planner` | sonnet/high | sonnet, opus | Bounded plans; opus for cross-module architecture |
 | `boom:coder` | opus/high | opus, sonnet | Production and test changes; sonnet for mechanical edits you can describe precisely |
 | `boom:verifier` | sonnet/high | sonnet, opus | Builds, tests, browser checks, reproduction |
 | `boom:reviewer` | sonnet/high | sonnet, opus | Ordinary independent review; opus for permissions, data, concurrency, migration, public contracts |
-| `boom:seam-analyzer` | sonnet/high | sonnet, opus | `seams` scope of `/boom:review`: missing types at seams, counterpart drift, bypassed validators |
-| `boom:pr-test-analyzer` | sonnet/high | sonnet, opus | `tests` scope: changed behavior with no regression protection |
-| `boom:comment-analyzer` | sonnet/high | sonnet, opus | `comments` scope: changed prose that misstates behavior |
-| `boom:silent-failure-hunter` | sonnet/high | sonnet, opus | `errors` scope: failures that become indistinguishable from success |
-| `boom:docs-impact-agent` | sonnet/high | sonnet, opus | `docs` scope: documentation made false or missing by the change |
-| `boom:code-simplifier` | sonnet/high | sonnet, opus | `simplify` scope: premature machinery a smaller primitive replaces |
 | `boom:root-cause-analyzer` | sonnet/high | sonnet, opus | `/boom:debug`: reproduces a symptom, tests competing hypotheses, proves the causal chain and fix boundary; opus for unfamiliar domains or concurrency |
-| `boom:codebase-analyst` | sonnet/high | sonnet, opus | How a behavior works today, traced end to end; the `how` area of `/boom:codebase-question` |
 | `boom:mid-reviewer` | fable/low | fable | Read-only review when Sonnet's judgment is not enough; Anthropic reports Fable at low is competitive on cost per task with Sonnet or Opus at higher effort |
 | `boom:critical-coder` | fable/high | fable | One named critical change |
 | `boom:critical-reviewer` | fable/high | fable | One named critical audit |
@@ -61,9 +53,8 @@ Routing notes:
 
 - coder at opus/high is a deliberate step below the Claude Code default effort. Raise to xhigh when rework or failed verification shows the task needs it.
 - Review prompts are adversarial: ask the reviewer to refute the change and prove it does not work. A second reviewer with fresh context beats re-asking the same one.
-- The specialist review roles (`seam-analyzer` through `code-simplifier`) are read-only Sonnet starts like `reviewer`. `/boom:review` dispatches one per selected scope; each counts as a start, so the three default scopes are L2 and `all` is L3 or L4.
-- The research roles (`codebase-explorer`, `codebase-analyst`, `web-researcher`) are the discovery tier: `codebase-explorer` for anything inside the repository, `web-researcher` for anything outside it, `codebase-analyst` when the question is how a path actually executes. Route one narrow lookup to `codebase-explorer` on haiku rather than opening a research phase. `/boom:codebase-question` dispatches one per research area, so two or three areas are L2 and four or five are L3.
-- Built-in types such as `Explore`, `general-purpose`, and `Plan` also need an explicit haiku, sonnet, or opus alias. The built-in `Explore` is held to a haiku-or-sonnet set; prefer `boom:codebase-explorer`, which pins its own effort.
+- `explorer` is the discovery tier: one narrow question per start, inside the repository or against external documentation, on haiku. Do the lookup directly when the answer is within reach of the current context; dispatch `explorer` only when isolation or parallel breadth pays for the start. Tracing how a behavior executes belongs to the role that needs it (`planner`, `reviewer`, `root-cause-analyzer`), not to a separate research phase.
+- Built-in types such as `Explore`, `general-purpose`, and `Plan` also need an explicit haiku, sonnet, or opus alias. The built-in `Explore` is held to a haiku-or-sonnet set; prefer `boom:explorer`, which pins its own effort.
 - A fork ignores the model parameter and runs on the main-session model. Count it as a main-model start and use it only when the full conversation context is required.
 - Codex delegation, including codex-rescue, counts as a start and is used only when the user names Codex in the current conversation. The plugin's proactive-use guidance does not override this.
 - Preserve the configured main-session model. A dedicated coordinator session launched with its own `--settings` file may pin opus/high. `coordinator` is that session's lead, not a role in the table above: it holds the Agent tool, so the hook denies it as a `subagent_type` and inside workflow scripts rather than let a second delegating layer open under the current budget.

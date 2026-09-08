@@ -12,7 +12,7 @@ Claude Code 的默认行为在设计上是宽松的：子智能体不指定模�
 
 ### boom
 
-**版本:** 1.2.0 | **作者:** NanoBoom | **分类:** 开发
+**版本:** 2.0.0 | **作者:** NanoBoom | **分类:** 开发
 
 成本优先的委派管控。Claude Code 派发的子智能体会默默继承主会话模型——通常是最贵的档位。本插件用预算、路由表和一个强制执行两者的 hook 取代该默认行为。
 
@@ -30,36 +30,24 @@ Claude Code 的默认行为在设计上是宽松的：子智能体不指定模�
 | `/boom:setup` | 将工程策略安装为 `~/.claude/CLAUDE.md`，已存在时先备份 |
 | `/boom:detect-models` | 从子智能体的会话记录中，显示当前项目里每个被委派的子智能体实际使用的模型 |
 
-**技能 (7个):**
+**技能 (3个):**
 
 | 技能 | 描述 |
 |------|------|
 | `dispatch-policy` | L0-L4 预算、计数规则、角色到模型的路由、Fable 门禁 |
 | `workflow-authoring` | 成本受控的工作流参考：每个 `agent()` 必须指定模型 |
-| `review` | `/boom:review <pr>`：通过专家智能体审查 PR，汇总为一条规范的 GitHub 评论 |
-| `commit` | `/boom:commit`：只暂存目标改动，并写出以结果为导向的提交信息 |
 | `debug` | `/boom:debug <issue>`：根因诊断，并发布到对应的 GitHub issue |
-| `pr` | `/boom:pr`：校验已提交的差异，推送、创建并验证 GitHub PR |
-| `codebase-question` | `/boom:codebase-question <问题>`：并行研究智能体，产出有证据支撑的研究文档 |
 
-**智能体 (18个):**
+**智能体 (10个):**
 
 | 智能体 | 模型 | 描述 |
 |--------|------|------|
 | `coordinator` | opus/high | 无写入工具的委派会话主管，负责最终验收。通过 `--agent` 选定，不作为 worker 派发 |
-| `codebase-explorer` | sonnet/high | 只读的仓库探索：关注点位于何处、既有先例、验证入口 |
-| `codebase-analyst` | sonnet/high | 只读的行为追踪：某条路径今天如何端到端执行 |
-| `web-researcher` | haiku/low | 只读的外部探索，基于一手来源 |
+| `explorer` | haiku/low | 只读探索：回答一个狭窄的仓库或文档问题 |
 | `planner` | sonnet/high | 基于已验证证据的受限计划 |
 | `coder` | opus/high | 单个受限的生产或测试改动 |
 | `verifier` | sonnet/high | 独立的构建、测试和运行时验证 |
 | `reviewer` | sonnet/high | 对抗式只读正确性审查 |
-| `seam-analyzer` | sonnet/high | `seams` 审查范围：接缝处缺失的类型、对应项漂移 |
-| `pr-test-analyzer` | sonnet/high | `tests` 审查范围：缺少回归保护的行为变更 |
-| `comment-analyzer` | sonnet/high | `comments` 审查范围：与行为不符的注释与文档 |
-| `silent-failure-hunter` | sonnet/high | `errors` 审查范围：与成功无法区分的失败 |
-| `docs-impact-agent` | sonnet/high | `docs` 审查范围：被改动证伪或缺失的文档 |
-| `code-simplifier` | sonnet/high | `simplify` 审查范围：过早引入的机制 |
 | `root-cause-analyzer` | sonnet/high | `/boom:debug` 诊断：复现、因果链、修复边界 |
 | `mid-reviewer` | fable/low | Sonnet 判断力不足时的只读审查 |
 | `critical-coder` | fable/high | 单个指名的关键改动 |
@@ -138,26 +126,24 @@ grep -i "your-plugin" /tmp/dbg.log | grep -iE "\[WARN\]|\[ERROR\]"
 [`skills` CLI](https://github.com/vercel-labs/skills) 会直接读取 `.claude-plugin/marketplace.json`，因此本仓库用同一套布局同时服务两种安装器——不需要另建顶层 `skills/` 目录。
 
 ```bash
-npx skills add NanoBoom/nano-claude-code-plugins --list          # 列出 7 个 skill
+npx skills add NanoBoom/nano-claude-code-plugins --list          # 列出 3 个 skill
 npx skills add NanoBoom/nano-claude-code-plugins                 # 全部安装到当前项目
-npx skills add NanoBoom/nano-claude-code-plugins --skill review  # 只装其中一个
+npx skills add NanoBoom/nano-claude-code-plugins --skill debug   # 只装其中一个
 npx skills add NanoBoom/nano-claude-code-plugins -g              # 全局安装，对所有项目生效
 ```
 
 skill 会落到 `.agents/skills/<name>/`。Claude Code 会拿到指向它的符号链接 `.claude/skills/<name>/`；Codex、Cursor、OpenCode 等通用 agent 则直接读 `.agents/skills/`，没有符号链接这一步。来源记录在 `skills-lock.json`。以上均针对 `skills@1.5.24` 实测。
 
-**它装什么，不装什么。** 该 CLI 只搬运 skill；18 个 agent、2 个命令和派发 hook 都不会跟着走。按"还剩多少能用"，7 个 skill 分成这几类：
+**它装什么，不装什么。** 该 CLI 只搬运 skill；10 个 agent、2 个命令和派发 hook 都不会跟着走。按"还剩多少能用"，3 个 skill 分成这几类：
 
 | Skill | 通过 `npx skills` 独立安装 |
 |---|---|
-| `commit` | 开箱即用 |
-| `pr` | 可用，但正文里调用的是 `/boom:commit`，独立安装下它叫 `/commit` |
 | `dispatch-policy`、`workflow-authoring` | 作为参考文档可用；它们路由到的 `boom:*` 角色并不存在 |
-| `review`、`debug`、`codebase-question` | 请安装插件——这是它们唯一受支持的路径 |
+| `debug` | 请安装插件——这是它唯一受支持的路径 |
 
-只把 `plugins/boom/agents/` 复制到 `.claude/agents/` 救不了最后三个。那些 agent 文件的 `name:` 本来就不带前缀，复制后叫 `root-cause-analyzer`、`codebase-explorer` 等，而 skill 正文仍然派发 `boom:<role>`；`review` 还要经由随附的 `workflows/agents.md` 派发。走通这条路意味着把装好的 skill 文本里的前缀逐处改掉，而插件安装本来就免去了这一切。
+只把 `plugins/boom/agents/` 复制到 `.claude/agents/` 救不了 `debug`。那些 agent 文件的 `name:` 本来就不带前缀，复制后叫 `root-cause-analyzer`、`explorer` 等，而 skill 正文仍然派发 `boom:<role>`。走通这条路意味着把装好的 skill 文本里的前缀逐处改掉，而插件安装本来就免去了这一切。
 
-名称不带命名空间：插件里的 `/boom:commit` 会以 `/commit` 装入，和你已有的同名 skill 冲突。`/plugin install` 则把一切收在 `boom:` 命名空间下，不存在这个问题。
+名称不带命名空间：插件里的 `/boom:debug` 会以 `/debug` 装入，和你已有的同名 skill 冲突。`/plugin install` 则把一切收在 `boom:` 命名空间下，不存在这个问题。
 
 ## 快速参考
 
@@ -166,10 +152,10 @@ skill 会落到 `.agents/skills/<name>/`。Claude Code 会拿到指向它的符�
 启用 `boom` 后，工作者角色用带命名空间的类型寻址，且每次派发都必须指定模型：
 
 ```
-Agent(subagent_type: "boom:codebase-explorer", model: "haiku")   # 狭窄探索
-Agent(subagent_type: "boom:planner",           model: "sonnet")  # 受限计划
-Agent(subagent_type: "boom:coder",             model: "opus")    # 单个受限改动
-Agent(subagent_type: "boom:reviewer",          model: "sonnet")  # 对抗式审查
+Agent(subagent_type: "boom:explorer", model: "haiku")   # 狭窄探索
+Agent(subagent_type: "boom:planner",  model: "sonnet")  # 受限计划
+Agent(subagent_type: "boom:coder",    model: "opus")    # 单个受限改动
+Agent(subagent_type: "boom:reviewer", model: "sonnet")  # 对抗式审查
 ```
 
 省略 model，hook 会直接拒绝：
@@ -275,7 +261,7 @@ grep -i boom /tmp/dbg.log | grep -iE "\[WARN\]|\[ERROR\]"
 npx skills add . --list
 ```
 
-`permissionMode` 告警属于预期——Claude Code 对插件 agent 会忽略该字段。`--list` 必须报出全部 7 个 skill，且不写入任何文件；不带 `--list` 的 `npx skills add .` 则会写出 `.agents/`、`.claude/skills/` 和 `skills-lock.json`，这些已由 `.gitignore` 覆盖。
+`permissionMode` 告警属于预期——Claude Code 对插件 agent 会忽略该字段。`--list` 必须报出全部 3 个 skill，且不写入任何文件；不带 `--list` 的 `npx skills add .` 则会写出 `.agents/`、`.claude/skills/` 和 `skills-lock.json`，这些已由 `.gitignore` 覆盖。
 
 ## 市场管理
 
@@ -327,6 +313,13 @@ npx skills add . --list
 本插件市场及其插件基于 MIT 许可证发布。
 
 ## 更新日志
+
+### v2.2.0 (2026-09-08)
+- **破坏性变更（boom）：** 移除 `review`、`commit`、`pr`、`codebase-question` 四个技能，以及为它们服务的 9 个智能体（`seam-analyzer`、`pr-test-analyzer`、`comment-analyzer`、`silent-failure-hunter`、`docs-impact-agent`、`code-simplifier`、`codebase-explorer`、`codebase-analyst`、`web-researcher`）。如需找回，可从 git 历史恢复
+- 用单一的 Haiku/low `explorer` 角色取代 `codebase-explorer` 和 `web-researcher`，负责一个窄范围的仓库或文档问题
+- 统一 `reviewer`、`mid-reviewer`、`critical-reviewer` 的证据格式：文件与行号、被违反的不变量、失败路径、置信度、建议严重级别、最小修正
+- 派发 hook、`dispatch-policy`、`workflow-authoring` 和全部 README 已同步到 3 个技能、10 个智能体的新面貌
+- boom 1.2.0 → 2.0.0
 
 ### v2.1.0 (2026-09-08)
 - 补充了通过 [`npx skills`](https://github.com/vercel-labs/skills) 安装的文档。该 CLI 经由 `.claude-plugin/marketplace.json` 就能发现全部 7 个 skill，因此同时服务两种安装器无需改动目录布局——已针对 `skills@1.5.24` 用本地路径和 GitHub 源双向实测

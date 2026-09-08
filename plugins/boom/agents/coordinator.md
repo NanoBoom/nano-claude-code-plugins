@@ -1,7 +1,7 @@
 ---
 name: coordinator
 description: Coordinates bounded engineering work through approved agents and workflows without implementing directly.
-tools: Agent(boom:codebase-explorer, boom:codebase-analyst, boom:web-researcher, boom:planner, boom:coder, boom:critical-coder, boom:verifier, boom:reviewer, boom:seam-analyzer, boom:pr-test-analyzer, boom:comment-analyzer, boom:silent-failure-hunter, boom:docs-impact-agent, boom:code-simplifier, boom:root-cause-analyzer, boom:mid-reviewer, boom:critical-reviewer), Read, Grep, Glob, WebFetch, WebSearch, Workflow, Skill
+tools: Agent(boom:explorer, boom:planner, boom:coder, boom:critical-coder, boom:verifier, boom:reviewer, boom:root-cause-analyzer, boom:mid-reviewer, boom:critical-reviewer), Read, Grep, Glob, WebFetch, WebSearch, Workflow, Skill
 model: opus
 effort: high
 skills:

@@ -14,23 +14,15 @@ const PLUGIN_PREFIX = 'boom:'
 
 // Role -> allowed model aliases. Mirrors the table in the dispatch-policy skill.
 // `explore` is not a boom role; the entry holds the built-in `Explore` agent to the same
-// cheap-discovery set that `codebase-explorer` uses at its lowest tier.
+// cheap-discovery set as `explorer`.
 const ROLE_MODELS = {
   explore: ['haiku', 'sonnet'],
+  explorer: ['haiku', 'sonnet'],
   planner: ['sonnet', 'opus'],
   coder: ['opus', 'sonnet'],
   verifier: ['sonnet', 'opus'],
   reviewer: ['sonnet', 'opus'],
-  'seam-analyzer': ['sonnet', 'opus'],
-  'pr-test-analyzer': ['sonnet', 'opus'],
-  'comment-analyzer': ['sonnet', 'opus'],
-  'silent-failure-hunter': ['sonnet', 'opus'],
-  'docs-impact-agent': ['sonnet', 'opus'],
-  'code-simplifier': ['sonnet', 'opus'],
   'root-cause-analyzer': ['sonnet', 'opus'],
-  'codebase-explorer': ['haiku', 'sonnet', 'opus'],
-  'codebase-analyst': ['sonnet', 'opus'],
-  'web-researcher': ['haiku', 'sonnet'],
   'mid-reviewer': ['fable'],
   'critical-coder': ['fable'],
   'critical-reviewer': ['fable'],
@@ -39,20 +31,12 @@ const ROLE_MODELS = {
 // Roles whose definition pins a non-fable model, so a workflow agent() may name the role
 // instead of a model.
 const WORKFLOW_ROLES = [
+  'explorer',
   'planner',
   'coder',
   'verifier',
   'reviewer',
-  'seam-analyzer',
-  'pr-test-analyzer',
-  'comment-analyzer',
-  'silent-failure-hunter',
-  'docs-impact-agent',
-  'code-simplifier',
   'root-cause-analyzer',
-  'codebase-explorer',
-  'codebase-analyst',
-  'web-researcher',
 ]
 const WORKFLOW_MODELS = ['haiku', 'sonnet', 'opus']
 

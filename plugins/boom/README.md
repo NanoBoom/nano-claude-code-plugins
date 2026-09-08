@@ -18,25 +18,13 @@ The skills tell the model what to do. The hook makes it true even when the model
 | `/boom:detect-models` | command | Reads the current project's subagent transcripts and reports the model each subagent actually used |
 | `dispatch-policy` | skill | L0–L4 budgets, counting rules, role-to-model routing, Fable critical-worker gate |
 | `workflow-authoring` | skill | Cost-controlled variant of the bundled workflow reference: every `agent()` must name its model, no Fable inside workflows |
-| `review` | skill | `/boom:review <pr>`: PR review through the specialist agents, repository validation, aggregation, and one canonical GitHub comment; reports persist under `~/.boom/` |
-| `commit` | skill | `/boom:commit [target description]`: infers the intended work, stages only those changes, writes an outcome-focused subject, and verifies the commit; never commits everything by default |
 | `debug` | skill | `/boom:debug <issue | error | stacktrace>`: diagnoses through `root-cause-analyzer` and publishes the evidence-backed root cause to the matching GitHub issue, or creates one; does not implement the fix |
-| `pr` | skill | `/boom:pr [--base <branch>] [--draft]`: resolves the base branch, validates the committed diff, writes a template-conformant title and body, pushes, creates, and verifies the GitHub PR |
-| `codebase-question` | skill | `/boom:codebase-question <question> [--web] [--follow-up]`: decomposes a question into research areas, dispatches the research agents in parallel, and writes an evidence-backed research document under `~/.boom/`; documents what exists, never what should change |
 | `coordinator` | agent | Opus/high session lead with no write tools; delegates, integrates, and owns final acceptance. Selected with `--agent`, never dispatched as a worker |
-| `codebase-explorer` | agent | Sonnet/high read-only repository discovery: where a concern lives, precedents, validation surface; drops to haiku for one narrow lookup |
-| `codebase-analyst` | agent | Sonnet/high read-only behavior trace: how a path executes today, end to end |
-| `web-researcher` | agent | Haiku/low read-only external discovery from primary sources |
+| `explorer` | agent | Haiku/low read-only discovery for one narrow repository or documentation question |
 | `planner` | agent | Sonnet/high bounded plan from verified evidence |
 | `coder` | agent | Opus/high bounded production or test change |
 | `verifier` | agent | Sonnet/high independent build, test, and runtime verification |
 | `reviewer` | agent | Sonnet/high adversarial read-only review |
-| `seam-analyzer` | agent | Sonnet/high, `seams` review scope: missing types at seams, counterpart drift |
-| `pr-test-analyzer` | agent | Sonnet/high, `tests` review scope: changed behavior without regression protection |
-| `comment-analyzer` | agent | Sonnet/high, `comments` review scope: changed prose that misstates behavior |
-| `silent-failure-hunter` | agent | Sonnet/high, `errors` review scope: failures indistinguishable from success |
-| `docs-impact-agent` | agent | Sonnet/high, `docs` review scope: documentation made false or missing |
-| `code-simplifier` | agent | Sonnet/high, `simplify` review scope: premature machinery |
 | `root-cause-analyzer` | agent | Sonnet/high, advisory diagnosis for `/boom:debug`: reproduction, competing hypotheses, causal chain, fix boundary |
 | `mid-reviewer` | agent | Fable/low read-only review when Sonnet's judgment is not enough |
 | `critical-coder` | agent | Fable/high, one named critical change |
@@ -60,7 +48,7 @@ The skills tell the model what to do. The hook makes it true even when the model
 npx skills add NanoBoom/nano-claude-code-plugins
 ```
 
-The [`skills` CLI](https://github.com/vercel-labs/skills) reads the repository's `.claude-plugin/marketplace.json` and installs the seven skills into `.agents/skills/`, symlinking Claude Code's copy into `.claude/skills/`. It carries no agents, commands, or hook. `review`, `debug`, and `codebase-question` dispatch `boom:<role>` agents that exist only under a plugin install, so for those three the plugin is the only supported path. Details and the per-skill breakdown are in the [marketplace README](../../README.md#via-npx-skills-any-agent).
+The [`skills` CLI](https://github.com/vercel-labs/skills) reads the repository's `.claude-plugin/marketplace.json` and installs the three skills into `.agents/skills/`, symlinking Claude Code's copy into `.claude/skills/`. It carries no agents, commands, or hook. `debug` dispatches a `boom:<role>` agent that exists only under a plugin install, so for it the plugin is the only supported path. Details and the per-skill breakdown are in the [marketplace README](../../README.md#via-npx-skills-any-agent).
 
 ### Local Development
 
@@ -99,14 +87,12 @@ Worker roles are plugin-scoped. Pass `subagent_type` as `boom:<role>`.
 
 | Role | Default | Allowed |
 |---|---|---|
-| `boom:codebase-explorer` | sonnet/high | haiku, sonnet, opus |
-| `boom:web-researcher` | haiku/low | haiku, sonnet |
-| `boom:codebase-analyst` | sonnet/high | sonnet, opus |
+| `boom:explorer` | haiku/low | haiku, sonnet |
 | `boom:planner` | sonnet/high | sonnet, opus |
 | `boom:coder` | opus/high | opus, sonnet |
 | `boom:verifier` | sonnet/high | sonnet, opus |
 | `boom:reviewer` | sonnet/high | sonnet, opus |
-| `boom:seam-analyzer`, `boom:pr-test-analyzer`, `boom:comment-analyzer`, `boom:silent-failure-hunter`, `boom:docs-impact-agent`, `boom:code-simplifier`, `boom:root-cause-analyzer` | sonnet/high | sonnet, opus |
+| `boom:root-cause-analyzer` | sonnet/high | sonnet, opus |
 | `boom:mid-reviewer` | fable/low | fable |
 | `boom:critical-coder` | fable/high | fable |
 | `boom:critical-reviewer` | fable/high | fable |
@@ -168,7 +154,7 @@ The hook applies to **every** `Agent` dispatch in the session, including ones ma
 - **`workflow-authoring` is additive, not an override.** As a plugin skill it loads as `boom:workflow-authoring` and cannot replace Claude Code's bundled skill of the same name. Its mandatory model rule is enforced by the hook regardless of which variant the model reads. The body mirrors the bundled reference for **Claude Code 2.1.260** — re-diff it after upgrading. To make it a true override, copy it to `~/.claude/skills/workflow-authoring/SKILL.md`.
 - **`Agent(...)` scoping applies to main-thread agents only.** The coordinator's parenthesized allowlist restricts which subagent types it may spawn when run via `claude --agent boom:coordinator` or the settings file above. As a plain subagent that list would be ignored, which is why the hook denies dispatching `coordinator` as a subagent at all.
 - **`permissionMode` does not survive the port.** Claude Code ignores that field on plugin agents and logs one warning per role file that sets it, so expect a burst of them at load. The role files keep it anyway, because it *is* honored when you copy them into `.claude/agents/` or `~/.claude/agents/`, where it becomes a real second guardrail. Under the plugin loader it buys nothing, and the read-only roles stay read-only through their `tools:` list, which is honored in both modes — the coordinator genuinely has no `Write`.
-- **The built-in `Explore` agent** is held to a haiku-or-sonnet set. It is not a boom role: discovery inside the repository belongs to `boom:codebase-explorer` and external lookups to `boom:web-researcher`, both of which pin their own effort.
+- **The built-in `Explore` agent** is held to a haiku-or-sonnet set. It is not a boom role: one narrow repository or documentation lookup belongs to `boom:explorer`, which pins its own effort.
 - Model aliases (`haiku`, `sonnet`, `opus`, `fable`) resolve to the current generation. Do not pin versions, and keep `CLAUDE_CODE_SUBAGENT_MODEL_FORCE` unset so per-call and definition-level models apply.
 
 ## Credits
@@ -178,7 +164,7 @@ Ported from [@ds's](https://docs.dsdev.cn) personal `~/.claude` dispatch configu
 - https://docs.dsdev.cn/blog/fable-5-workflow/
 - https://docs.dsdev.cn/blog/claude-code-agent-workflow-prompts/
 
-Changes made during the port: PowerShell hook rewritten in Node for cross-platform use, worker `PowerShell` tool replaced with `Bash`, the generic `Explore` worker split into `codebase-explorer` and `web-researcher` and role identifiers plugin-scoped, hook registration moved from `settings.json` into the plugin.
+Changes made during the port: PowerShell hook rewritten in Node for cross-platform use, worker `PowerShell` tool replaced with `Bash`, the generic `Explore` worker replaced by a single `explorer` role and role identifiers plugin-scoped, hook registration moved from `settings.json` into the plugin.
 
 ## License
 

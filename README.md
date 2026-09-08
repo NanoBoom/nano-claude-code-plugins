@@ -12,7 +12,7 @@ Claude Code's defaults are permissive by design: a subagent that omits its model
 
 ### boom
 
-**Version:** 1.2.0 | **Author:** NanoBoom | **Category:** Development
+**Version:** 2.0.0 | **Author:** NanoBoom | **Category:** Development
 
 Cost-first delegation control. Claude Code will spawn subagents that silently inherit the main-session model — usually the most expensive tier. This plugin replaces that default with a budget, a routing table, and a hook that enforces both.
 
@@ -30,36 +30,24 @@ Cost-first delegation control. Claude Code will spawn subagents that silently in
 | `/boom:setup` | Install the engineering policy as `~/.claude/CLAUDE.md`, backing up any existing file first |
 | `/boom:detect-models` | Show which model each delegated subagent actually used in this project, from its transcript |
 
-**Skills (7):**
+**Skills (3):**
 
 | Skill | Description |
 |-------|-------------|
 | `dispatch-policy` | L0-L4 budgets, counting rules, role-to-model routing, Fable gate |
 | `workflow-authoring` | Cost-controlled workflow reference: every `agent()` must name its model |
-| `review` | `/boom:review <pr>`: PR review through the specialist agents, aggregated into one canonical GitHub comment |
-| `commit` | `/boom:commit`: stages only the intended work and writes an outcome-focused commit |
 | `debug` | `/boom:debug <issue>`: root-cause diagnosis published to the matching GitHub issue |
-| `pr` | `/boom:pr`: validates the committed diff, pushes, creates, and verifies the GitHub PR |
-| `codebase-question` | `/boom:codebase-question <question>`: parallel research agents and an evidence-backed research document |
 
-**Agents (18):**
+**Agents (10):**
 
 | Agent | Model | Description |
 |-------|-------|-------------|
 | `coordinator` | opus/high | Delegating session lead with no write tools; owns final acceptance. Selected with `--agent`, never dispatched as a worker |
-| `codebase-explorer` | sonnet/high | Read-only repository discovery: where a concern lives, precedents, validation surface |
-| `codebase-analyst` | sonnet/high | Read-only behavior trace: how a path executes today, end to end |
-| `web-researcher` | haiku/low | Read-only external discovery from primary sources |
+| `explorer` | haiku/low | Read-only discovery for one narrow repository or documentation question |
 | `planner` | sonnet/high | Bounded plan from verified evidence |
 | `coder` | opus/high | One bounded production or test change |
 | `verifier` | sonnet/high | Independent build, test, and runtime verification |
 | `reviewer` | sonnet/high | Adversarial read-only correctness review |
-| `seam-analyzer` | sonnet/high | `seams` review scope: missing types at seams, counterpart drift |
-| `pr-test-analyzer` | sonnet/high | `tests` review scope: changed behavior without regression protection |
-| `comment-analyzer` | sonnet/high | `comments` review scope: changed prose that misstates behavior |
-| `silent-failure-hunter` | sonnet/high | `errors` review scope: failures indistinguishable from success |
-| `docs-impact-agent` | sonnet/high | `docs` review scope: documentation made false or missing |
-| `code-simplifier` | sonnet/high | `simplify` review scope: premature machinery |
 | `root-cause-analyzer` | sonnet/high | `/boom:debug` diagnosis: reproduction, causal chain, fix boundary |
 | `mid-reviewer` | fable/low | Read-only review when Sonnet's judgment is not enough |
 | `critical-coder` | fable/high | One named critical change |
@@ -138,26 +126,24 @@ Team members who trust the repository will automatically have the plugin install
 The [`skills` CLI](https://github.com/vercel-labs/skills) reads `.claude-plugin/marketplace.json` directly, so this repository serves both installers from one layout — no separate top-level `skills/` directory is needed.
 
 ```bash
-npx skills add NanoBoom/nano-claude-code-plugins --list          # list the 7 skills
+npx skills add NanoBoom/nano-claude-code-plugins --list          # list the 3 skills
 npx skills add NanoBoom/nano-claude-code-plugins                 # install all into this project
-npx skills add NanoBoom/nano-claude-code-plugins --skill review  # install one
+npx skills add NanoBoom/nano-claude-code-plugins --skill debug   # install one
 npx skills add NanoBoom/nano-claude-code-plugins -g              # install for every project
 ```
 
 Skills land in `.agents/skills/<name>/`. Claude Code gets a symlink at `.claude/skills/<name>/`; Codex, Cursor, OpenCode and the other universal agents read `.agents/skills/` directly, with no symlink step. A `skills-lock.json` records the source. Verified against `skills@1.5.24`.
 
-**What this installs, and what it does not.** The CLI carries skills only; the 18 agents, 2 commands, and the dispatch hook stay behind. That sorts the seven skills by how much survives:
+**What this installs, and what it does not.** The CLI carries skills only; the 10 agents, 2 commands, and the dispatch hook stay behind. That sorts the three skills by how much survives:
 
 | Skill | Standalone via `npx skills` |
 |---|---|
-| `commit` | Works as-is |
-| `pr` | Works, but its body invokes `/boom:commit`, which a standalone install exposes as `/commit` |
 | `dispatch-policy`, `workflow-authoring` | Work as reference; the `boom:*` roles they route to are absent |
-| `review`, `debug`, `codebase-question` | Install the plugin — that is their only supported path |
+| `debug` | Install the plugin — that is its only supported path |
 
-Copying `plugins/boom/agents/` into `.claude/agents/` does **not** rescue the last three on its own. Those agent files carry unprefixed `name:` fields, so they land as `root-cause-analyzer`, `codebase-explorer`, and so on, while the skill bodies still dispatch `boom:<role>` — and `review` additionally dispatches through its bundled `workflows/agents.md`. Making that route work means editing the installed skill text to strip the prefix everywhere, which the plugin install gives you for free.
+Copying `plugins/boom/agents/` into `.claude/agents/` does **not** rescue `debug` on its own. Those agent files carry unprefixed `name:` fields, so they land as `root-cause-analyzer`, `explorer`, and so on, while the skill body still dispatches `boom:<role>`. Making that route work means editing the installed skill text to strip the prefix everywhere, which the plugin install gives you for free.
 
-Names arrive unnamespaced: the plugin's `/boom:commit` installs as `/commit`, which collides with any same-named skill you already have. `/plugin install` avoids that by namespacing everything under `boom:`.
+Names arrive unnamespaced: the plugin's `/boom:debug` installs as `/debug`, which collides with any same-named skill you already have. `/plugin install` avoids that by namespacing everything under `boom:`.
 
 ## Quick Reference
 
@@ -166,10 +152,10 @@ Names arrive unnamespaced: the plugin's `/boom:commit` installs as `/commit`, wh
 Once `boom` is enabled, worker roles are addressed by their scoped type and every dispatch must name its model:
 
 ```
-Agent(subagent_type: "boom:codebase-explorer", model: "haiku")   # narrow discovery
-Agent(subagent_type: "boom:planner",           model: "sonnet")  # bounded plan
-Agent(subagent_type: "boom:coder",             model: "opus")    # one bounded change
-Agent(subagent_type: "boom:reviewer",          model: "sonnet")  # adversarial review
+Agent(subagent_type: "boom:explorer", model: "haiku")   # narrow discovery
+Agent(subagent_type: "boom:planner",  model: "sonnet")  # bounded plan
+Agent(subagent_type: "boom:coder",    model: "opus")    # one bounded change
+Agent(subagent_type: "boom:reviewer", model: "sonnet")  # adversarial review
 ```
 
 Omit the model and the hook denies the call:
@@ -275,7 +261,7 @@ grep -i boom /tmp/dbg.log | grep -iE "\[WARN\]|\[ERROR\]"
 npx skills add . --list
 ```
 
-`permissionMode` warnings are expected — Claude Code ignores that field on plugin agents. The `--list` run must report all seven skills and writes nothing; a plain `npx skills add .` does write `.agents/`, `.claude/skills/`, and `skills-lock.json`, which `.gitignore` covers.
+`permissionMode` warnings are expected — Claude Code ignores that field on plugin agents. The `--list` run must report all three skills and writes nothing; a plain `npx skills add .` does write `.agents/`, `.claude/skills/`, and `skills-lock.json`, which `.gitignore` covers.
 
 ## Marketplace Management
 
@@ -327,6 +313,13 @@ We welcome contributions! Please follow these guidelines:
 This marketplace and its plugins are released under the MIT License.
 
 ## Changelog
+
+### v2.2.0 (2026-09-08)
+- **Breaking (boom):** removed the `review`, `commit`, `pr`, and `codebase-question` skills and the nine agents that served them (`seam-analyzer`, `pr-test-analyzer`, `comment-analyzer`, `silent-failure-hunter`, `docs-impact-agent`, `code-simplifier`, `codebase-explorer`, `codebase-analyst`, `web-researcher`). Recover them from git history if needed
+- Replaced `codebase-explorer` and `web-researcher` with a single Haiku/low `explorer` role for one narrow repository or documentation question
+- Tightened `reviewer`, `mid-reviewer`, and `critical-reviewer` around one evidence format: file and line, violated invariant, failure path, confidence, suggested severity, smallest correction
+- Updated the dispatch hook, `dispatch-policy`, `workflow-authoring`, and all READMEs to the 3-skill, 10-agent surface
+- boom 1.2.0 → 2.0.0
 
 ### v2.1.0 (2026-09-08)
 - Documented installation through [`npx skills`](https://github.com/vercel-labs/skills). The CLI discovers all seven skills through `.claude-plugin/marketplace.json`, so serving both installers required no layout change — verified against `skills@1.5.24` for both a local path and the GitHub source
