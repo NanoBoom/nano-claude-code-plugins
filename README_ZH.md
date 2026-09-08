@@ -12,7 +12,7 @@ Claude Code 的默认行为在设计上是宽松的：子智能体不指定模�
 
 ### boom
 
-**版本:** 1.1.0 | **作者:** NanoBoom | **分类:** 开发
+**版本:** 1.2.0 | **作者:** NanoBoom | **分类:** 开发
 
 成本优先的委派管控。Claude Code 派发的子智能体会默默继承主会话模型——通常是最贵的档位。本插件用预算、路由表和一个强制执行两者的 hook 取代该默认行为。
 
@@ -133,6 +133,32 @@ grep -i "your-plugin" /tmp/dbg.log | grep -iE "\[WARN\]|\[ERROR\]"
 
 信任该仓库的团队成员将自动安装插件。
 
+### 通过 `npx skills` 安装（适用于任意 agent）
+
+[`skills` CLI](https://github.com/vercel-labs/skills) 会直接读取 `.claude-plugin/marketplace.json`，因此本仓库用同一套布局同时服务两种安装器——不需要另建顶层 `skills/` 目录。
+
+```bash
+npx skills add NanoBoom/nano-claude-code-plugins --list          # 列出 7 个 skill
+npx skills add NanoBoom/nano-claude-code-plugins                 # 全部安装到当前项目
+npx skills add NanoBoom/nano-claude-code-plugins --skill review  # 只装其中一个
+npx skills add NanoBoom/nano-claude-code-plugins -g              # 全局安装，对所有项目生效
+```
+
+skill 会落到 `.agents/skills/<name>/`。Claude Code 会拿到指向它的符号链接 `.claude/skills/<name>/`；Codex、Cursor、OpenCode 等通用 agent 则直接读 `.agents/skills/`，没有符号链接这一步。来源记录在 `skills-lock.json`。以上均针对 `skills@1.5.24` 实测。
+
+**它装什么，不装什么。** 该 CLI 只搬运 skill；18 个 agent、2 个命令和派发 hook 都不会跟着走。按"还剩多少能用"，7 个 skill 分成这几类：
+
+| Skill | 通过 `npx skills` 独立安装 |
+|---|---|
+| `commit` | 开箱即用 |
+| `pr` | 可用，但正文里调用的是 `/boom:commit`，独立安装下它叫 `/commit` |
+| `dispatch-policy`、`workflow-authoring` | 作为参考文档可用；它们路由到的 `boom:*` 角色并不存在 |
+| `review`、`debug`、`codebase-question` | 请安装插件——这是它们唯一受支持的路径 |
+
+只把 `plugins/boom/agents/` 复制到 `.claude/agents/` 救不了最后三个。那些 agent 文件的 `name:` 本来就不带前缀，复制后叫 `root-cause-analyzer`、`codebase-explorer` 等，而 skill 正文仍然派发 `boom:<role>`；`review` 还要经由随附的 `workflows/agents.md` 派发。走通这条路意味着把装好的 skill 文本里的前缀逐处改掉，而插件安装本来就免去了这一切。
+
+名称不带命名空间：插件里的 `/boom:commit` 会以 `/commit` 装入，和你已有的同名 skill 冲突。`/plugin install` 则把一切收在 `boom:` 命名空间下，不存在这个问题。
+
 ## 快速参考
 
 ### 在声明的预算下委派
@@ -234,6 +260,23 @@ plugins/
     └── README.md             # 插件文档
 ```
 
+### 验证两条安装路径
+
+改动 skill 布局后，发布前应对两种安装器分别自检：
+
+```bash
+# Claude Code：清单能解析，插件能加载
+claude plugin validate .
+claude plugin validate plugins/boom
+claude -p "hi" --plugin-dir plugins/boom --debug-file /tmp/dbg.log
+grep -i boom /tmp/dbg.log | grep -iE "\[WARN\]|\[ERROR\]"
+
+# npx skills：所有 skill 仍能经市场清单被发现
+npx skills add . --list
+```
+
+`permissionMode` 告警属于预期——Claude Code 对插件 agent 会忽略该字段。`--list` 必须报出全部 7 个 skill，且不写入任何文件；不带 `--list` 的 `npx skills add .` 则会写出 `.agents/`、`.claude/skills/` 和 `skills-lock.json`，这些已由 `.gitignore` 覆盖。
+
 ## 市场管理
 
 ### 插件用户
@@ -284,6 +327,12 @@ plugins/
 本插件市场及其插件基于 MIT 许可证发布。
 
 ## 更新日志
+
+### v2.1.0 (2026-09-08)
+- 补充了通过 [`npx skills`](https://github.com/vercel-labs/skills) 安装的文档。该 CLI 经由 `.claude-plugin/marketplace.json` 就能发现全部 7 个 skill，因此同时服务两种安装器无需改动目录布局——已针对 `skills@1.5.24` 用本地路径和 GitHub 源双向实测
+- 增加了逐个 skill 的独立可用性对照表，因为该 CLI 只装 skill，不装 agent、命令和 hook
+- 为维护者增加"验证两条安装路径"小节，并把 `npx skills add .` 在本仓库产生的文件（`.agents/`、`.claude/skills/`、`skills-lock.json`）加入 `.gitignore`
+- boom 1.1.0 → 1.2.0
 
 ### v2.0.0 (2026-09-07)
 - **破坏性变更：** 移除 `prp-core` 插件及其 12 个命令和 2 个智能体。它的 manifest 声明了 `"agents": ["./agents/"]`，该写法校验失败，导致插件在 Claude Code 2.1.263 上根本无法加载。如需找回，可从 git 历史恢复。

@@ -71,3 +71,8 @@ Desktop.ini
 *.pid
 *.seed
 *.pid.lock
+
+# Artifacts of testing `npx skills add .` inside this repository
+.agents/
+.claude/skills/
+skills-lock.json

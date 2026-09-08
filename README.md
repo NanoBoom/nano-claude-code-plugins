@@ -12,7 +12,7 @@ Claude Code's defaults are permissive by design: a subagent that omits its model
 
 ### boom
 
-**Version:** 1.1.0 | **Author:** NanoBoom | **Category:** Development
+**Version:** 1.2.0 | **Author:** NanoBoom | **Category:** Development
 
 Cost-first delegation control. Claude Code will spawn subagents that silently inherit the main-session model — usually the most expensive tier. This plugin replaces that default with a budget, a routing table, and a hook that enforces both.
 
@@ -133,6 +133,32 @@ Add to your project's `.claude/settings.json`:
 
 Team members who trust the repository will automatically have the plugin installed.
 
+### Via `npx skills` (any agent)
+
+The [`skills` CLI](https://github.com/vercel-labs/skills) reads `.claude-plugin/marketplace.json` directly, so this repository serves both installers from one layout — no separate top-level `skills/` directory is needed.
+
+```bash
+npx skills add NanoBoom/nano-claude-code-plugins --list          # list the 7 skills
+npx skills add NanoBoom/nano-claude-code-plugins                 # install all into this project
+npx skills add NanoBoom/nano-claude-code-plugins --skill review  # install one
+npx skills add NanoBoom/nano-claude-code-plugins -g              # install for every project
+```
+
+Skills land in `.agents/skills/<name>/`. Claude Code gets a symlink at `.claude/skills/<name>/`; Codex, Cursor, OpenCode and the other universal agents read `.agents/skills/` directly, with no symlink step. A `skills-lock.json` records the source. Verified against `skills@1.5.24`.
+
+**What this installs, and what it does not.** The CLI carries skills only; the 18 agents, 2 commands, and the dispatch hook stay behind. That sorts the seven skills by how much survives:
+
+| Skill | Standalone via `npx skills` |
+|---|---|
+| `commit` | Works as-is |
+| `pr` | Works, but its body invokes `/boom:commit`, which a standalone install exposes as `/commit` |
+| `dispatch-policy`, `workflow-authoring` | Work as reference; the `boom:*` roles they route to are absent |
+| `review`, `debug`, `codebase-question` | Install the plugin — that is their only supported path |
+
+Copying `plugins/boom/agents/` into `.claude/agents/` does **not** rescue the last three on its own. Those agent files carry unprefixed `name:` fields, so they land as `root-cause-analyzer`, `codebase-explorer`, and so on, while the skill bodies still dispatch `boom:<role>` — and `review` additionally dispatches through its bundled `workflows/agents.md`. Making that route work means editing the installed skill text to strip the prefix everywhere, which the plugin install gives you for free.
+
+Names arrive unnamespaced: the plugin's `/boom:commit` installs as `/commit`, which collides with any same-named skill you already have. `/plugin install` avoids that by namespacing everything under `boom:`.
+
 ## Quick Reference
 
 ### Delegate under a declared budget
@@ -234,6 +260,23 @@ plugins/
     └── README.md             # Plugin documentation
 ```
 
+### Verifying both install paths
+
+Any change to the skill layout should be checked against both installers before release:
+
+```bash
+# Claude Code: manifests parse, plugin loads
+claude plugin validate .
+claude plugin validate plugins/boom
+claude -p "hi" --plugin-dir plugins/boom --debug-file /tmp/dbg.log
+grep -i boom /tmp/dbg.log | grep -iE "\[WARN\]|\[ERROR\]"
+
+# npx skills: every skill is still discovered through the marketplace manifest
+npx skills add . --list
+```
+
+`permissionMode` warnings are expected — Claude Code ignores that field on plugin agents. The `--list` run must report all seven skills and writes nothing; a plain `npx skills add .` does write `.agents/`, `.claude/skills/`, and `skills-lock.json`, which `.gitignore` covers.
+
 ## Marketplace Management
 
 ### For Plugin Users
@@ -284,6 +327,12 @@ We welcome contributions! Please follow these guidelines:
 This marketplace and its plugins are released under the MIT License.
 
 ## Changelog
+
+### v2.1.0 (2026-09-08)
+- Documented installation through [`npx skills`](https://github.com/vercel-labs/skills). The CLI discovers all seven skills through `.claude-plugin/marketplace.json`, so serving both installers required no layout change — verified against `skills@1.5.24` for both a local path and the GitHub source
+- Added a per-skill breakdown of what works standalone, because the CLI installs skills but not the agents, commands, or hook
+- Added a "Verifying both install paths" section for maintainers, and `.gitignore` entries for the artifacts `npx skills add .` writes into this repository (`.agents/`, `.claude/skills/`, `skills-lock.json`)
+- boom 1.1.0 → 1.2.0
 
 ### v2.0.0 (2026-09-07)
 - **Breaking:** removed the `prp-core` plugin and its 12 commands and 2 agents. Its manifest declared `"agents": ["./agents/"]`, which fails validation and made the plugin fail to load in Claude Code 2.1.263. Recover it from git history if needed.

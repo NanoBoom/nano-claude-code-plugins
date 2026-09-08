@@ -54,6 +54,14 @@ The skills tell the model what to do. The hook makes it true even when the model
 /plugin install boom@nano-claude-code-plugins
 ```
 
+### Via `npx skills` (skills only)
+
+```bash
+npx skills add NanoBoom/nano-claude-code-plugins
+```
+
+The [`skills` CLI](https://github.com/vercel-labs/skills) reads the repository's `.claude-plugin/marketplace.json` and installs the seven skills into `.agents/skills/`, symlinking Claude Code's copy into `.claude/skills/`. It carries no agents, commands, or hook. `review`, `debug`, and `codebase-question` dispatch `boom:<role>` agents that exist only under a plugin install, so for those three the plugin is the only supported path. Details and the per-skill breakdown are in the [marketplace README](../../README.md#via-npx-skills-any-agent).
+
 ### Local Development
 
 Load the plugin for one session, without installing it:
