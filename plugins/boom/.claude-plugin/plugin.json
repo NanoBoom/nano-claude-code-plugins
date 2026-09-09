@@ -1,7 +1,7 @@
 {
   "name": "boom",
   "displayName": "Boom",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Cost-first delegation control for Claude Code: L0-L4 task budgets, role-to-model routing, a Fable critical-worker gate, bounded worker agents, and a PreToolUse hook that denies model inheritance on Agent, Workflow, and SendMessage dispatches",
   "author": {
     "name": "NanoBoom",

@@ -19,7 +19,7 @@ The skills tell the model what to do. The hook makes it true even when the model
 | `dispatch-policy` | skill | L0–L4 budgets, counting rules, role-to-model routing, Fable critical-worker gate |
 | `workflow-authoring` | skill | Cost-controlled variant of the bundled workflow reference: every `agent()` must name its model, no Fable inside workflows |
 | `debug` | skill | `/boom:debug <issue | error | stacktrace>`: diagnoses through `root-cause-analyzer` and publishes the evidence-backed root cause to the matching GitHub issue, or creates one; does not implement the fix |
-| `coordinator` | agent | Opus/high session lead with no write tools; delegates, integrates, and owns final acceptance. Selected with `--agent`, never dispatched as a worker |
+| `coordinator` | agent | Opus/high session lead with no Edit or Write, Bash only for git branch work; delegates, integrates, and owns final acceptance. Selected with `--agent`, never dispatched as a worker |
 | `explorer` | agent | Haiku/low read-only discovery for one narrow repository or documentation question |
 | `viewer` | agent | Sonnet/high read-only context brief before planning or implementation: applicable guidance, owning code, precedents, primitives, contracts, verification commands |
 | `planner` | agent | Sonnet/high bounded plan from verified evidence |
@@ -105,9 +105,8 @@ Escalate in order: a worker that *did not try hard enough* (skipped a file, did 
 
 Code changes land on a new branch unless the user asks, in the current conversation, to stay on the current one. The rule lives in `reference/engineering-policy.md` (install it with `/boom:setup`), the `dispatch-policy` skill, and the `coordinator` and `coder` agents:
 
-- The lead decides before the first write-capable dispatch and puts the branch instruction in every worker packet.
-- A lead with Bash runs `git switch -c <type>/<short-slug>` itself. The `coordinator` has no Bash, so it names the branch and the first `coder` or `critical-coder` creates it before its first edit.
-- One branch per user task; later workers stay on it. Creating and switching branches needs no authorization, while staging, committing, and pushing still do.
+- The lead creates the branch with `git switch -c <type>/<short-slug>` before the first write-capable dispatch and names it in every worker packet. The `coordinator` carries Bash for this and for read-only git inspection; it still has no Edit or Write.
+- One branch per user task. Workers confirm the branch before editing and stop if it differs; they never create, switch, or reset branches. Creating and switching branches needs no authorization, while staging, committing, and pushing still do.
 - `isolation: worktree` is reserved for parallel writers: a subagent worktree branches from the default branch and does not merge back on its own.
 
 This is an instruction-level rule, not a hook. The exception is stated in natural language, which a `PreToolUse` gate on `Edit` and `Write` cannot see without an opt-out knob.
@@ -159,7 +158,7 @@ The hook applies to **every** `Agent` dispatch in the session, including ones ma
 `/plugin install` wires up skills, agents, and hooks — nothing else. The three files under `reference/` are **never** installed or loaded by the plugin, because Claude Code has no plugin mechanism for memory files or session settings. Copy them yourself if you want the full setup:
 
 - **`engineering-policy.md`** → run `/boom:setup` to install it as `~/.claude/CLAUDE.md`. The command copies when no file is there, and when one already exists it shows the diff, writes a timestamped backup, and asks whether to replace or append — it never overwrites your global instructions silently. To install it by hand instead, merge it into `~/.claude/CLAUDE.md` or drop it in as `~/.claude/rules/engineering-policy.md`; both load into every session, and `rules/` keeps it a separate file. Without this the delegation contract only binds the coordinator agent, since a plugin cannot ship a `CLAUDE.md`.
-- **`coordinator.settings.json`** → keep it anywhere and pass it per session: `claude --settings /path/to/coordinator.settings.json`. That gives an Opus/high lead session with no write tools, because its `agent` key selects `boom:coordinator`. `--settings` overrides only the keys it names for that session; everything else still comes from your settings files. Add `--agent boom:coordinator` if you want the agent without the rest of the file. Claude Code has no `--profile` flag or `~/.claude/profiles/` directory — verified against 2.1.263 and the CLI reference.
+- **`coordinator.settings.json`** → keep it anywhere and pass it per session: `claude --settings /path/to/coordinator.settings.json`. That gives an Opus/high lead session with no Edit or Write, because its `agent` key selects `boom:coordinator`. `--settings` overrides only the keys it names for that session; everything else still comes from your settings files. Add `--agent boom:coordinator` if you want the agent without the rest of the file. Claude Code has no `--profile` flag or `~/.claude/profiles/` directory — verified against 2.1.263 and the CLI reference.
 - **`settings.snippet.json`** → merge into `~/.claude/settings.json` for the spawn-depth and concurrency caps (`CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH=1`, concurrency 4, `workflowSizeGuideline: small`, `ultracode: false`). Hook registration is **not** in the snippet — the plugin registers its own hook.
 
 ## Notes and caveats

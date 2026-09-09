@@ -12,7 +12,7 @@ Claude Code 的默认行为在设计上是宽松的：子智能体不指定模�
 
 ### boom
 
-**版本:** 2.2.0 | **作者:** NanoBoom | **分类:** 开发
+**版本:** 2.2.1 | **作者:** NanoBoom | **分类:** 开发
 
 成本优先的委派管控。Claude Code 派发的子智能体会默默继承主会话模型——通常是最贵的档位。本插件用预算、路由表和一个强制执行两者的 hook 取代该默认行为。
 
@@ -43,7 +43,7 @@ Claude Code 的默认行为在设计上是宽松的：子智能体不指定模�
 
 | 智能体 | 模型 | 描述 |
 |--------|------|------|
-| `coordinator` | opus/high | 无写入工具的委派会话主管，负责最终验收。通过 `--agent` 选定，不作为 worker 派发 |
+| `coordinator` | opus/high | 委派会话主管，无 Edit、Write，Bash 仅用于 git 分支操作；负责最终验收。通过 `--agent` 选定，不作为 worker 派发 |
 | `explorer` | haiku/low | 只读探索：回答一个狭窄的仓库或文档问题 |
 | `viewer` | sonnet/high | 规划或实现前的只读上下文简报：适用规范、归属代码、最近先例、可复用原语、契约、验证命令 |
 | `planner` | sonnet/high | 基于已验证证据的受限计划 |
@@ -169,7 +169,7 @@ Agent(subagent_type: "boom:reviewer", model: "sonnet")  # 对抗式审查
 
 ### 以 coordinator 身份运行会话
 
-`coordinator` 角色负责委派和集成，但不持有任何写入工具：
+`coordinator` 角色负责委派和集成；它没有 Edit、Write，Bash 仅用于创建任务分支和检查 git：
 
 ```bash
 claude --agent boom:coordinator
@@ -316,6 +316,10 @@ npx skills add . --list
 本插件市场及其插件基于 MIT 许可证发布。
 
 ## 更新日志
+
+### v2.4.1 (2026-09-09)
+- 开分支的职责集中到 `coordinator`：它新增 `Bash`，仅用于 git 分支操作和只读检查（仍无 Edit、Write），在第一次写入型派发前创建任务分支并写进每个任务包。`coder` 和 `critical-coder` 只确认所在分支，不再创建、切换或重置分支
+- boom 2.2.0 → 2.2.1
 
 ### v2.4.0 (2026-09-09)
 - 任务分支纪律：除非用户在当前对话中要求停留在当前分支，所有代码修改都在新分支上进行。规则写入工程策略、`dispatch-policy` 技能以及 `coordinator` 和 `coder` 智能体；coordinator 没有 Bash，因此由它命名分支、第一个 coder 创建分支

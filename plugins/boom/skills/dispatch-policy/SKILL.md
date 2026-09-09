@@ -66,8 +66,8 @@ Routing notes:
 
 Code changes land on a new branch unless the user asked in this conversation to stay on the current one. The lead decides before the first write-capable dispatch and puts the decision in every packet.
 
-- A lead with Bash creates the branch itself with `git switch -c <type>/<short-slug>` before dispatching. A lead without Bash (the coordinator) names the branch in the first `coder` or `critical-coder` packet and requires `git switch -c` before its first edit.
-- One branch per user task. Every later worker stays on it; no worker creates a second branch or switches away.
+- The lead (including the coordinator, whose Bash exists for this) creates the branch itself with `git switch -c <type>/<short-slug>` before dispatching, and names it in every packet.
+- One branch per user task. Workers confirm the branch with `git branch --show-current` and stop if it differs; no worker creates, switches, or resets branches.
 - Creating and switching branches needs no separate authorization. Staging, committing, and pushing still do.
 - `isolation: worktree` on an Agent call or workflow `agent()` is for parallel writers only. It branches from the default branch, not from the task branch, and nothing merges it back automatically. Serial coder, verifier, and reviewer starts share the main working tree.
 

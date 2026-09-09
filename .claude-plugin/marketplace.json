@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "nano-claude-code-plugins",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "Plugins for Claude Code that put cost and delegation discipline under explicit control",
   "owner": {
     "name": "NanoBoom",
@@ -14,7 +14,7 @@
       "description": "Cost-first delegation control: L0-L4 task budgets, role-to-model routing, a Fable critical-worker gate, bounded worker agents, and a PreToolUse hook that denies model inheritance on Agent, Workflow, and SendMessage dispatches",
       "source": "./plugins/boom",
       "category": "development",
-      "version": "2.2.0",
+      "version": "2.2.1",
       "license": "MIT",
       "strict": true,
       "homepage": "https://github.com/NanoBoom/nano-claude-code-plugins/tree/main/plugins/boom",

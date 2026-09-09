@@ -12,7 +12,7 @@ Claude Code's defaults are permissive by design: a subagent that omits its model
 
 ### boom
 
-**Version:** 2.2.0 | **Author:** NanoBoom | **Category:** Development
+**Version:** 2.2.1 | **Author:** NanoBoom | **Category:** Development
 
 Cost-first delegation control. Claude Code will spawn subagents that silently inherit the main-session model — usually the most expensive tier. This plugin replaces that default with a budget, a routing table, and a hook that enforces both.
 
@@ -43,7 +43,7 @@ Cost-first delegation control. Claude Code will spawn subagents that silently in
 
 | Agent | Model | Description |
 |-------|-------|-------------|
-| `coordinator` | opus/high | Delegating session lead with no write tools; owns final acceptance. Selected with `--agent`, never dispatched as a worker |
+| `coordinator` | opus/high | Delegating session lead with no Edit or Write, Bash only for git branch work; owns final acceptance. Selected with `--agent`, never dispatched as a worker |
 | `explorer` | haiku/low | Read-only discovery for one narrow repository or documentation question |
 | `viewer` | sonnet/high | Read-only context brief before planning or implementation: applicable guidance, owning code, precedents, primitives, contracts, verification commands |
 | `planner` | sonnet/high | Bounded plan from verified evidence |
@@ -169,7 +169,7 @@ Omit the model and the hook denies the call:
 
 ### Run a session as the coordinator
 
-The `coordinator` role delegates and integrates but holds no write tools:
+The `coordinator` role delegates and integrates; it has no Edit or Write, and uses Bash only to create the task branch and inspect git:
 
 ```bash
 claude --agent boom:coordinator
@@ -316,6 +316,10 @@ We welcome contributions! Please follow these guidelines:
 This marketplace and its plugins are released under the MIT License.
 
 ## Changelog
+
+### v2.4.1 (2026-09-09)
+- Branch creation moves into the `coordinator`: it now carries `Bash` for git branch work and read-only inspection (still no Edit or Write), creates the task branch before the first write-capable dispatch, and names it in every packet. `coder` and `critical-coder` only confirm the branch and never create, switch, or reset one
+- boom 2.2.0 → 2.2.1
 
 ### v2.4.0 (2026-09-09)
 - Task-branch discipline: code changes land on a new branch unless the user asks in the conversation to stay on the current one. Added to the engineering policy, the `dispatch-policy` skill, and the `coordinator` and `coder` agents; the coordinator names the branch and the first coder creates it, since the coordinator has no Bash
