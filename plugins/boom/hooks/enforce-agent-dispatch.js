@@ -18,6 +18,7 @@ const PLUGIN_PREFIX = 'boom:'
 const ROLE_MODELS = {
   explore: ['haiku', 'sonnet'],
   explorer: ['haiku', 'sonnet'],
+  viewer: ['sonnet', 'opus'],
   planner: ['sonnet', 'opus'],
   coder: ['opus', 'sonnet'],
   verifier: ['sonnet', 'opus'],
@@ -32,6 +33,7 @@ const ROLE_MODELS = {
 // instead of a model.
 const WORKFLOW_ROLES = [
   'explorer',
+  'viewer',
   'planner',
   'coder',
   'verifier',

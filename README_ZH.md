@@ -38,12 +38,13 @@ Claude Code 的默认行为在设计上是宽松的：子智能体不指定模�
 | `workflow-authoring` | 成本受控的工作流参考：每个 `agent()` 必须指定模型 |
 | `debug` | `/boom:debug <issue>`：根因诊断，并发布到对应的 GitHub issue |
 
-**智能体 (10个):**
+**智能体 (11个):**
 
 | 智能体 | 模型 | 描述 |
 |--------|------|------|
 | `coordinator` | opus/high | 无写入工具的委派会话主管，负责最终验收。通过 `--agent` 选定，不作为 worker 派发 |
 | `explorer` | haiku/low | 只读探索：回答一个狭窄的仓库或文档问题 |
+| `viewer` | sonnet/high | 规划或实现前的只读上下文简报：适用规范、归属代码、最近先例、可复用原语、契约、验证命令 |
 | `planner` | sonnet/high | 基于已验证证据的受限计划 |
 | `coder` | opus/high | 单个受限的生产或测试改动 |
 | `verifier` | sonnet/high | 独立的构建、测试和运行时验证 |
@@ -134,7 +135,7 @@ npx skills add NanoBoom/nano-claude-code-plugins -g              # 全局安装�
 
 skill 会落到 `.agents/skills/<name>/`。Claude Code 会拿到指向它的符号链接 `.claude/skills/<name>/`；Codex、Cursor、OpenCode 等通用 agent 则直接读 `.agents/skills/`，没有符号链接这一步。来源记录在 `skills-lock.json`。以上均针对 `skills@1.5.24` 实测。
 
-**它装什么，不装什么。** 该 CLI 只搬运 skill；10 个 agent、2 个命令和派发 hook 都不会跟着走。按"还剩多少能用"，3 个 skill 分成这几类：
+**它装什么，不装什么。** 该 CLI 只搬运 skill；11 个 agent、2 个命令和派发 hook 都不会跟着走。按"还剩多少能用"，3 个 skill 分成这几类：
 
 | Skill | 通过 `npx skills` 独立安装 |
 |---|---|
@@ -153,6 +154,7 @@ skill 会落到 `.agents/skills/<name>/`。Claude Code 会拿到指向它的符�
 
 ```
 Agent(subagent_type: "boom:explorer", model: "haiku")   # 狭窄探索
+Agent(subagent_type: "boom:viewer",   model: "sonnet")  # 规划/编码前的上下文简报
 Agent(subagent_type: "boom:planner",  model: "sonnet")  # 受限计划
 Agent(subagent_type: "boom:coder",    model: "opus")    # 单个受限改动
 Agent(subagent_type: "boom:reviewer", model: "sonnet")  # 对抗式审查

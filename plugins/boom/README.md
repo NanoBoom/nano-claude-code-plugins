@@ -21,6 +21,7 @@ The skills tell the model what to do. The hook makes it true even when the model
 | `debug` | skill | `/boom:debug <issue | error | stacktrace>`: diagnoses through `root-cause-analyzer` and publishes the evidence-backed root cause to the matching GitHub issue, or creates one; does not implement the fix |
 | `coordinator` | agent | Opus/high session lead with no write tools; delegates, integrates, and owns final acceptance. Selected with `--agent`, never dispatched as a worker |
 | `explorer` | agent | Haiku/low read-only discovery for one narrow repository or documentation question |
+| `viewer` | agent | Sonnet/high read-only context brief before planning or implementation: applicable guidance, owning code, precedents, primitives, contracts, verification commands |
 | `planner` | agent | Sonnet/high bounded plan from verified evidence |
 | `coder` | agent | Opus/high bounded production or test change |
 | `verifier` | agent | Sonnet/high independent build, test, and runtime verification |
@@ -88,6 +89,7 @@ Worker roles are plugin-scoped. Pass `subagent_type` as `boom:<role>`.
 | Role | Default | Allowed |
 |---|---|---|
 | `boom:explorer` | haiku/low | haiku, sonnet |
+| `boom:viewer` | sonnet/high | sonnet, opus |
 | `boom:planner` | sonnet/high | sonnet, opus |
 | `boom:coder` | opus/high | opus, sonnet |
 | `boom:verifier` | sonnet/high | sonnet, opus |

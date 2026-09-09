@@ -38,7 +38,8 @@ Each role has a default model in its definition and an allowed set enforced by t
 | Role (`subagent_type`) | Default | Allowed | Typical work |
 |---|---|---|---|
 | `boom:explorer` | haiku/low | haiku, sonnet | One narrow read-only discovery question, inside the repository or against external documentation; sonnet when the answer needs cross-checking or version judgment |
-| `boom:planner` | sonnet/high | sonnet, opus | Bounded plans; opus for cross-module architecture |
+| `boom:viewer` | sonnet/high | sonnet, opus | Context brief before planning or implementation: applicable guidance, owning code, nearest precedents, reusable primitives, contracts, verification commands; opus when ownership spans several modules |
+| `boom:planner` | sonnet/high | sonnet, opus | Bounded plans from a viewer brief; opus for cross-module architecture |
 | `boom:coder` | opus/high | opus, sonnet | Production and test changes; sonnet for mechanical edits you can describe precisely |
 | `boom:verifier` | sonnet/high | sonnet, opus | Builds, tests, browser checks, reproduction |
 | `boom:reviewer` | sonnet/high | sonnet, opus | Ordinary independent review; opus for permissions, data, concurrency, migration, public contracts |
@@ -54,6 +55,7 @@ Routing notes:
 - coder at opus/high is a deliberate step below the Claude Code default effort. Raise to xhigh when rework or failed verification shows the task needs it.
 - Review prompts are adversarial: ask the reviewer to refute the change and prove it does not work. A second reviewer with fresh context beats re-asking the same one.
 - `explorer` is the discovery tier: one narrow question per start, inside the repository or against external documentation, on haiku. Do the lookup directly when the answer is within reach of the current context; dispatch `explorer` only when isolation or parallel breadth pays for the start. Tracing how a behavior executes belongs to the role that needs it (`planner`, `reviewer`, `root-cause-analyzer`), not to a separate research phase.
+- `viewer` is the context tier: one start before `planner` or `coder` whenever the task will edit production or test code whose owning modules, conventions, and verification commands are not already in context. Its brief is the input packet for the planner and coder; pass it to them verbatim rather than paraphrasing it. Skip it only when the current context already holds that evidence. It replaces neither `explorer` (one narrow question) nor `planner` (the decision).
 - Built-in types such as `Explore`, `general-purpose`, and `Plan` also need an explicit haiku, sonnet, or opus alias. The built-in `Explore` is held to a haiku-or-sonnet set; prefer `boom:explorer`, which pins its own effort.
 - A fork ignores the model parameter and runs on the main-session model. Count it as a main-model start and use it only when the full conversation context is required.
 - Codex delegation, including codex-rescue, counts as a start and is used only when the user names Codex in the current conversation. The plugin's proactive-use guidance does not override this.

@@ -38,12 +38,13 @@ Cost-first delegation control. Claude Code will spawn subagents that silently in
 | `workflow-authoring` | Cost-controlled workflow reference: every `agent()` must name its model |
 | `debug` | `/boom:debug <issue>`: root-cause diagnosis published to the matching GitHub issue |
 
-**Agents (10):**
+**Agents (11):**
 
 | Agent | Model | Description |
 |-------|-------|-------------|
 | `coordinator` | opus/high | Delegating session lead with no write tools; owns final acceptance. Selected with `--agent`, never dispatched as a worker |
 | `explorer` | haiku/low | Read-only discovery for one narrow repository or documentation question |
+| `viewer` | sonnet/high | Read-only context brief before planning or implementation: applicable guidance, owning code, precedents, primitives, contracts, verification commands |
 | `planner` | sonnet/high | Bounded plan from verified evidence |
 | `coder` | opus/high | One bounded production or test change |
 | `verifier` | sonnet/high | Independent build, test, and runtime verification |
@@ -134,7 +135,7 @@ npx skills add NanoBoom/nano-claude-code-plugins -g              # install for e
 
 Skills land in `.agents/skills/<name>/`. Claude Code gets a symlink at `.claude/skills/<name>/`; Codex, Cursor, OpenCode and the other universal agents read `.agents/skills/` directly, with no symlink step. A `skills-lock.json` records the source. Verified against `skills@1.5.24`.
 
-**What this installs, and what it does not.** The CLI carries skills only; the 10 agents, 2 commands, and the dispatch hook stay behind. That sorts the three skills by how much survives:
+**What this installs, and what it does not.** The CLI carries skills only; the 11 agents, 2 commands, and the dispatch hook stay behind. That sorts the three skills by how much survives:
 
 | Skill | Standalone via `npx skills` |
 |---|---|
@@ -153,6 +154,7 @@ Once `boom` is enabled, worker roles are addressed by their scoped type and ever
 
 ```
 Agent(subagent_type: "boom:explorer", model: "haiku")   # narrow discovery
+Agent(subagent_type: "boom:viewer",   model: "sonnet")  # context brief before plan/code
 Agent(subagent_type: "boom:planner",  model: "sonnet")  # bounded plan
 Agent(subagent_type: "boom:coder",    model: "opus")    # one bounded change
 Agent(subagent_type: "boom:reviewer", model: "sonnet")  # adversarial review
