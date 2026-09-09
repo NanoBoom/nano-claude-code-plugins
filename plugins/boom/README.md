@@ -101,6 +101,17 @@ Worker roles are plugin-scoped. Pass `subagent_type` as `boom:<role>`.
 
 Escalate in order: a worker that *did not try hard enough* (skipped a file, did not run tests) needs more effort or a sharper prompt on the same model; a worker that *did not know enough* (subtle bug, unfamiliar domain, architecture call) needs a stronger model. Judge cost per completed task, not per token.
 
+## Task branch
+
+Code changes land on a new branch unless the user asks, in the current conversation, to stay on the current one. The rule lives in `reference/engineering-policy.md` (install it with `/boom:setup`), the `dispatch-policy` skill, and the `coordinator` and `coder` agents:
+
+- The lead decides before the first write-capable dispatch and puts the branch instruction in every worker packet.
+- A lead with Bash runs `git switch -c <type>/<short-slug>` itself. The `coordinator` has no Bash, so it names the branch and the first `coder` or `critical-coder` creates it before its first edit.
+- One branch per user task; later workers stay on it. Creating and switching branches needs no authorization, while staging, committing, and pushing still do.
+- `isolation: worktree` is reserved for parallel writers: a subagent worktree branches from the default branch and does not merge back on its own.
+
+This is an instruction-level rule, not a hook. The exception is stated in natural language, which a `PreToolUse` gate on `Edit` and `Write` cannot see without an opt-out knob.
+
 ## What the hook denies
 
 | Dispatch | Decision |

@@ -12,7 +12,7 @@ Claude Code's defaults are permissive by design: a subagent that omits its model
 
 ### boom
 
-**Version:** 2.0.0 | **Author:** NanoBoom | **Category:** Development
+**Version:** 2.2.0 | **Author:** NanoBoom | **Category:** Development
 
 Cost-first delegation control. Claude Code will spawn subagents that silently inherit the main-session model — usually the most expensive tier. This plugin replaces that default with a budget, a routing table, and a hook that enforces both.
 
@@ -22,6 +22,7 @@ Cost-first delegation control. Claude Code will spawn subagents that silently in
 - Fable critical-worker gate: at most one critical start per task, never inside a workflow
 - `PreToolUse` hook that denies any `Agent`, `Workflow`, or `SendMessage` dispatch omitting its model
 - Bounded worker agents with pinned model, effort, turn cap, and tool boundary
+- Task-branch discipline: code changes land on a new branch unless the user asks to stay on the current one
 
 **Commands (2):**
 
@@ -315,6 +316,15 @@ We welcome contributions! Please follow these guidelines:
 This marketplace and its plugins are released under the MIT License.
 
 ## Changelog
+
+### v2.4.0 (2026-09-09)
+- Task-branch discipline: code changes land on a new branch unless the user asks in the conversation to stay on the current one. Added to the engineering policy, the `dispatch-policy` skill, and the `coordinator` and `coder` agents; the coordinator names the branch and the first coder creates it, since the coordinator has no Bash
+- Documented why `isolation: worktree` stays reserved for parallel writers: a subagent worktree branches from the default branch and does not merge back on its own
+- boom 2.1.0 → 2.2.0
+
+### v2.3.0 (2026-09-09)
+- Added the Sonnet/high `viewer` agent: a read-only context brief before planning or implementation
+- boom 2.0.0 → 2.1.0
 
 ### v2.2.0 (2026-09-08)
 - **Breaking (boom):** removed the `review`, `commit`, `pr`, and `codebase-question` skills and the nine agents that served them (`seam-analyzer`, `pr-test-analyzer`, `comment-analyzer`, `silent-failure-hunter`, `docs-impact-agent`, `code-simplifier`, `codebase-explorer`, `codebase-analyst`, `web-researcher`). Recover them from git history if needed

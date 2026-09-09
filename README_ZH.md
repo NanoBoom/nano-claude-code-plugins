@@ -12,7 +12,7 @@ Claude Code 的默认行为在设计上是宽松的：子智能体不指定模�
 
 ### boom
 
-**版本:** 2.0.0 | **作者:** NanoBoom | **分类:** 开发
+**版本:** 2.2.0 | **作者:** NanoBoom | **分类:** 开发
 
 成本优先的委派管控。Claude Code 派发的子智能体会默默继承主会话模型——通常是最贵的档位。本插件用预算、路由表和一个强制执行两者的 hook 取代该默认行为。
 
@@ -22,6 +22,7 @@ Claude Code 的默认行为在设计上是宽松的：子智能体不指定模�
 - Fable 关键工作者门禁：每个任务最多一次关键启动，且绝不放入工作流
 - `PreToolUse` hook 拒绝任何未显式指定模型的 `Agent`、`Workflow`、`SendMessage` 派发
 - 受限的工作者智能体，模型、effort、轮次上限和工具边界均已固定
+- 任务分支纪律：除非用户要求停留在当前分支，所有代码修改都在新分支上进行
 
 **命令 (2个):**
 
@@ -315,6 +316,15 @@ npx skills add . --list
 本插件市场及其插件基于 MIT 许可证发布。
 
 ## 更新日志
+
+### v2.4.0 (2026-09-09)
+- 任务分支纪律：除非用户在当前对话中要求停留在当前分支，所有代码修改都在新分支上进行。规则写入工程策略、`dispatch-policy` 技能以及 `coordinator` 和 `coder` 智能体；coordinator 没有 Bash，因此由它命名分支、第一个 coder 创建分支
+- 说明 `isolation: worktree` 仅用于并行写入：子智能体的 worktree 从默认分支创建，且不会自动合并回来
+- boom 2.1.0 → 2.2.0
+
+### v2.3.0 (2026-09-09)
+- 新增 Sonnet/high 的 `viewer` 智能体：在规划或实现之前产出只读的上下文简报
+- boom 2.0.0 → 2.1.0
 
 ### v2.2.0 (2026-09-08)
 - **破坏性变更（boom）：** 移除 `review`、`commit`、`pr`、`codebase-question` 四个技能，以及为它们服务的 9 个智能体（`seam-analyzer`、`pr-test-analyzer`、`comment-analyzer`、`silent-failure-hunter`、`docs-impact-agent`、`code-simplifier`、`codebase-explorer`、`codebase-analyst`、`web-researcher`）。如需找回，可从 git 历史恢复

@@ -62,6 +62,15 @@ Routing notes:
 - Preserve the configured main-session model. A dedicated coordinator session launched with its own `--settings` file may pin opus/high. `coordinator` is that session's lead, not a role in the table above: it holds the Agent tool, so the hook denies it as a `subagent_type` and inside workflow scripts rather than let a second delegating layer open under the current budget.
 - Do not use Agent Teams unless workers must talk to each other. Do not enable ultracode.
 
+## Task branch
+
+Code changes land on a new branch unless the user asked in this conversation to stay on the current one. The lead decides before the first write-capable dispatch and puts the decision in every packet.
+
+- A lead with Bash creates the branch itself with `git switch -c <type>/<short-slug>` before dispatching. A lead without Bash (the coordinator) names the branch in the first `coder` or `critical-coder` packet and requires `git switch -c` before its first edit.
+- One branch per user task. Every later worker stays on it; no worker creates a second branch or switches away.
+- Creating and switching branches needs no separate authorization. Staging, committing, and pushing still do.
+- `isolation: worktree` on an Agent call or workflow `agent()` is for parallel writers only. It branches from the default branch, not from the task branch, and nothing merges it back automatically. Serial coder, verifier, and reviewer starts share the main working tree.
+
 ## Fable worker gate
 
 Two kinds of Fable worker exist and are budgeted differently.

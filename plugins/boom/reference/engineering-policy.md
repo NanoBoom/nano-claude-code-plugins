@@ -28,6 +28,9 @@
 
 ## Delivery and Git
 
+- Code changes land on a task branch. Before the first edit to a tracked file in a task, create one from the current HEAD with `git switch -c <type>/<short-slug>` (`feat`, `fix`, `refactor`, `docs`, `chore`) and keep every later edit in the task on it. Skip this only when the user asks in the current conversation to stay on the current branch. Creating and switching branches needs no separate authorization; staging and committing still do.
+- One branch per user task. Reuse the branch already created for this task; never create a second one. Uncommitted changes carry over with `git switch`; never stash, reset, or discard them to switch.
+- Use a worktree (`--worktree`, `EnterWorktree`, or Agent `isolation: worktree`) only when parallel writers would collide. A subagent worktree branches from the default branch and does not merge back on its own.
 - Verify in proportion to risk. Distinguish local proof from external service, device, browser, or release evidence that was not available.
 - Stage, commit, push, publish, and destructive actions require explicit user authorization in the current conversation.
 - An active goal does not expand authorization. When it conflicts with a later instruction or reaches an unauthorized action, follow the later instruction, name the blocked action, and ask the user to run `/goal clear` or replace the condition.
